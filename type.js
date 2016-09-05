@@ -8,12 +8,12 @@
 //     f32 f64
 //     str
 // other value type:
-//     instance of #
+//     inst of #
 // other ast type:
 //     self
 //     path
 //     call
-//     func
+//     code
 
 // lookup mode:
 //     global, local
@@ -25,6 +25,20 @@ const literal = (type, value) => {
         },
         value: () => {
             return value;
+        },
+    };
+};
+
+const instance = (code, types) => {
+    return {
+        type: () => {
+            // return 'inst'; // TODO
+        },
+        code: () => {
+            return code;
+        },
+        types: () => {
+            return types;
         },
     };
 };
@@ -68,10 +82,10 @@ const call = (source, args) => {
     };
 };
 
-const func = (source, params, code) => {
+const code = (source, params, ast) => {
     return {
         type: () => {
-            return 'func';
+            return 'code';
         },
         source: () => {
             return source;
@@ -79,8 +93,8 @@ const func = (source, params, code) => {
         params: () => {
             return params;
         },
-        code: () => {
-            return code;
+        ast: () => {
+            return ast;
         },
     };
 };
