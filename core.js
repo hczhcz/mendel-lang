@@ -14,16 +14,15 @@
 //     path
 //     call
 //     code
-
 // lookup mode:
 //     global, mixed, local
 
-const literal = (type, value) => {
+module.exports.literal = (type, value) => {
     return {
         astType: () => {
             return 'literal';
         },
-        literalType: () => {
+        dataType: () => {
             return type;
         },
         value: () => {
@@ -32,7 +31,7 @@ const literal = (type, value) => {
     };
 };
 
-const instance = (code, types) => {
+module.exports.instance = (code, types) => {
     return {
         astType: () => {
             return 'instance';
@@ -46,7 +45,7 @@ const instance = (code, types) => {
     };
 };
 
-const root = (mode) => {
+module.exports.root = (mode) => {
     return {
         astType: () => {
             return 'root';
@@ -57,7 +56,7 @@ const root = (mode) => {
     };
 };
 
-const path = (source, name) => {
+module.exports.path = (source, name) => {
     return {
         astType: () => {
             return 'path';
@@ -71,7 +70,7 @@ const path = (source, name) => {
     };
 };
 
-const call = (source, args) => {
+module.exports.call = (source, args) => {
     return {
         astType: () => {
             return 'call';
@@ -85,7 +84,7 @@ const call = (source, args) => {
     };
 };
 
-const code = (source, params, ast) => {
+module.exports.code = (source, params, ast) => {
     return {
         astType: () => {
             return 'code';
