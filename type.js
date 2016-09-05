@@ -7,16 +7,16 @@
 //     u8 u16 u32 u64
 //     f32 f64
 //     str
-// other value type:
+// other data type:
 //     inst of #
 // other ast type:
-//     self
+//     root
 //     path
 //     call
 //     code
 
 // lookup mode:
-//     global, local
+//     global, mixed, local
 
 const literal = (type, value) => {
     return {
@@ -43,24 +43,24 @@ const instance = (code, types) => {
     };
 };
 
-const self = () => {
+const root = (mode) => {
     return {
         type: () => {
-            return 'self';
+            return 'root';
+        },
+        mode: () => {
+            return mode;
         },
     };
 };
 
-const path = (source, mode, name) => {
+const path = (source, name) => {
     return {
         type: () => {
             return 'path';
         },
         source: () => {
             return source;
-        },
-        mode: () => {
-            return mode;
         },
         name: () => {
             return name;
