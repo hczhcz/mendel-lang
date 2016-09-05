@@ -1,20 +1,22 @@
 'use strict';
 
-// value type:
+// literal type:
 //     void
 //     bool
 //     i8 i16 i32 i64
 //     u8 u16 u32 u64
 //     f32 f64
 //     str
-// other ast node type:
-//     sym
+// other value type:
+//     instance of #
+// other ast type:
+//     self
 //     path
 //     call
 //     func
 
 // lookup mode:
-//     global, mixed, local
+//     global, local
 
 const literal = (type, value) => {
     return {
@@ -27,16 +29,10 @@ const literal = (type, value) => {
     };
 };
 
-const symbol = (mode, name) => {
+const self = () => {
     return {
         type: () => {
-            return 'sym';
-        },
-        mode: () => {
-            return mode;
-        },
-        name: () => {
-            return name;
+            return 'self';
         },
     };
 };
