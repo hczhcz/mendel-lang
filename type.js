@@ -8,7 +8,7 @@
 //     f32 f64
 //     str
 // other data type:
-//     inst of #
+//     instance of #
 // other ast type:
 //     root
 //     path
@@ -20,7 +20,10 @@
 
 const literal = (type, value) => {
     return {
-        type: () => {
+        astType: () => {
+            return 'literal';
+        },
+        literalType: () => {
             return type;
         },
         value: () => {
@@ -31,8 +34,8 @@ const literal = (type, value) => {
 
 const instance = (code, types) => {
     return {
-        type: () => {
-            // return 'inst'; // TODO
+        astType: () => {
+            return 'instance';
         },
         code: () => {
             return code;
@@ -45,7 +48,7 @@ const instance = (code, types) => {
 
 const root = (mode) => {
     return {
-        type: () => {
+        astType: () => {
             return 'root';
         },
         mode: () => {
@@ -56,7 +59,7 @@ const root = (mode) => {
 
 const path = (source, name) => {
     return {
-        type: () => {
+        astType: () => {
             return 'path';
         },
         source: () => {
@@ -70,7 +73,7 @@ const path = (source, name) => {
 
 const call = (source, args) => {
     return {
-        type: () => {
+        astType: () => {
             return 'call';
         },
         source: () => {
@@ -84,7 +87,7 @@ const call = (source, args) => {
 
 const code = (source, params, ast) => {
     return {
-        type: () => {
+        astType: () => {
             return 'code';
         },
         source: () => {
