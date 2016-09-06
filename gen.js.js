@@ -18,6 +18,6 @@ module.exports = {
     },
 
     visit: (session, instance, ast) => {
-        this[ast.astType()](session, instance, ast);
+        module.exports[ast.astType()](session, instance, ast);
     },
 };

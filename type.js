@@ -12,23 +12,29 @@ module.exports = {
         let result;
 
         switch (ast.mode()) {
-            case 'global':
-                result = session.root().find(ast.name());
+        case 'global': {
+            result = session.root().find(ast.name());
 
-                break;
-            case 'mixed':
-                let target = instance;
+            break;
+        }
+        case 'mixed': {
+            let target = instance;
 
-                while (!result && target) {
-                    result = target.find(ast.name());
-                    target = target.find('parent');
-                }
+            while (!result && target) {
+                result = target.find(ast.name());
+                target = target.find('parent');
+            }
 
-                break;
-            case 'local':
-                result = instance.find(ast.name());
+            break;
+        }
+        case 'local': {
+            result = instance.find(ast.name());
 
-                break;
+            break;
+        }
+        default: {
+            throw 1; // never reach
+        }
         }
 
         if (!result) {
@@ -38,29 +44,28 @@ module.exports = {
         return result;
     },
     symbolIn: (session, instance, ast) => {
-        return this._symbolLookup(
+        return module.exports._symbolLookup(
             session, instance, ast
         );
     },
     symbolOut: (session, instance, ast, type) => {
         if (
-            this._symbolLookup(
+            module.exports._symbolLookup(
                 session, instance, ast
             ) !== type
         ) {
             throw 1;
         }
-
     },
 
     pathIn: (session, instance, ast) => {
-        return this.visitIn(
+        return module.exports.visitIn(
             session, instance, ast.source()
         ).find(ast.name());
     },
     pathOut: (session, instance, ast, type) => {
         if (
-            this.visitIn(
+            module.exports.visitIn(
                 session, instance, ast.source()
             ).find(ast.name()) !== type
         ) {
@@ -83,12 +88,12 @@ module.exports = {
     },
 
     visitIn: (session, instance, ast) => {
-        return this[ast.astType() + 'In'](
+        return module.exports[ast.astType() + 'In'](
             session, instance, ast
         );
     },
     visitOut: (session, instance, ast, type) => {
-        this[ast.astType() + 'Out'](
+        module.exports[ast.astType() + 'Out'](
             session, instance, ast, type
         );
     },
