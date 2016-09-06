@@ -8,6 +8,7 @@ module.exports = {
             value: value,
         };
     },
+
     symbol: (mode, name) => {
         return {
             __type: 'symbol',
@@ -15,6 +16,7 @@ module.exports = {
             name: name,
         };
     },
+
     path: (source, name) => {
         return {
             __type: 'path',
@@ -22,6 +24,7 @@ module.exports = {
             name: name,
         };
     },
+
     call: (callee, closure, args) => {
         return {
             __type: 'call',
@@ -30,15 +33,8 @@ module.exports = {
             args: args,
         };
     },
-    code: (params, ast) => {
-        // const instance = (code, types) => {
-        //     return {
-        //         code: code,
-        //         _types: types,
-        //         find: (name) => {}, // TODO
-        //     };
-        // };
 
+    code: (params, ast) => {
         return {
             __type: 'code',
             params: params,
