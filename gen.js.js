@@ -1,13 +1,10 @@
 'use strict';
 
-module.exports = require('./util.visiting')({
+module.exports = {
     literal: (session, instance, ast) => {
         //
     },
-    instance: (session, instance, ast) => {
-        //
-    },
-    root: (session, instance, ast) => {
+    symbol: (session, instance, ast) => {
         //
     },
     path: (session, instance, ast) => {
@@ -23,4 +20,4 @@ module.exports = require('./util.visiting')({
     visit: (session, instance, ast) => {
         this[ast.astType()](session, instance, ast);
     },
-});
+};
