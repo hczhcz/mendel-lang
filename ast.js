@@ -1,20 +1,20 @@
 'use strict';
 
-// literal type:
+// data types:
 //     void
 //     bool
 //     i8 i16 i32 i64
 //     u8 u16 u32 u64
 //     f32 f64
 //     str
-// other data type:
-//     instance of #
-// other ast type:
-//     root
+//     instance<...>
+// ast node types:
+//     literal
+//     symbol
 //     path
 //     call
 //     code
-// lookup mode:
+// lookup modes:
 //     global, mixed, local
 
 module.exports = {
@@ -31,26 +31,16 @@ module.exports = {
             },
         };
     },
-    instance: (code, types) => {
+    symbol: (mode, name) => {
         return {
             astType: () => {
-                return 'instance';
-            },
-            code: () => {
-                return code;
-            },
-            types: () => {
-                return types;
-            },
-        };
-    },
-    root: (mode) => {
-        return {
-            astType: () => {
-                return 'root';
+                return 'symbol';
             },
             mode: () => {
                 return mode;
+            },
+            name: () => {
+                return name;
             },
         };
     },
@@ -81,6 +71,20 @@ module.exports = {
         };
     },
     code: (source, params, ast) => {
+        // const instance = (code, types) => {
+        //     return {
+        //         astType: () => {
+        //             return 'instance';
+        //         },
+        //         code: () => {
+        //             return code;
+        //         },
+        //         types: () => {
+        //             return types;
+        //         },
+        //     };
+        // };
+
         return {
             astType: () => {
                 return 'code';
