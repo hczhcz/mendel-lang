@@ -3,28 +3,28 @@
 module.exports = {
     literal: (type, value) => {
         return {
-            astType: 'literal',
-            dataType: type,
+            __type: 'literal',
+            type: type,
             value: value,
         };
     },
     symbol: (mode, name) => {
         return {
-            astType: 'symbol',
+            __type: 'symbol',
             mode: mode,
             name: name,
         };
     },
     path: (source, name) => {
         return {
-            astType: 'path',
+            __type: 'path',
             source: source,
             name: name,
         };
     },
     call: (callee, closure, args) => {
         return {
-            astType: 'call',
+            __type: 'call',
             callee: callee,
             closure: closure,
             args: args,
@@ -40,7 +40,7 @@ module.exports = {
         // };
 
         return {
-            astType: 'code',
+            __type: 'code',
             params: params,
             ast: ast,
         };

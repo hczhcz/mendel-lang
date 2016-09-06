@@ -2,7 +2,7 @@
 
 module.exports = {
     literalIn: (root, instance, ast) => {
-        return ast.dataType;
+        return ast.type;
     },
     literalOut: (root, instance, ast, type) => {
         throw 1;
@@ -94,12 +94,12 @@ module.exports = {
     },
 
     visitIn: (root, instance, ast) => {
-        return module.exports[ast.astType + 'In'](
+        return module.exports[ast.__type + 'In'](
             root, instance, ast
         );
     },
     visitOut: (root, instance, ast, type) => {
-        module.exports[ast.astType + 'Out'](
+        module.exports[ast.__type + 'Out'](
             root, instance, ast, type
         );
     },
