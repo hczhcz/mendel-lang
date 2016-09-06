@@ -1,23 +1,23 @@
 'use strict';
 
 module.exports = {
-    literal: (session, instance, ast) => {
+    literal: (root, instance, ast) => {
         //
     },
-    symbol: (session, instance, ast) => {
+    symbol: (root, instance, ast) => {
         //
     },
-    path: (session, instance, ast) => {
+    path: (root, instance, ast) => {
         //
     },
-    call: (session, instance, ast) => {
+    call: (root, instance, ast) => {
         //
     },
-    code: (session, instance, ast) => {
+    code: (root, instance, ast) => {
         //
     },
 
-    visit: (session, instance, ast) => {
-        module.exports[ast.astType()](session, instance, ast);
+    visit: (root, instance, ast) => {
+        module.exports[ast.astType()](root, instance, ast);
     },
 };

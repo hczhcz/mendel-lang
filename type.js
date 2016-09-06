@@ -1,19 +1,19 @@
 'use strict';
 
 module.exports = {
-    literalIn: (session, instance, ast) => {
+    literalIn: (root, instance, ast) => {
         return ast.dataType();
     },
-    literalOut: (session, instance, ast, type) => {
+    literalOut: (root, instance, ast, type) => {
         throw 1;
     },
 
-    _symbolLookup: (session, instance, ast) => {
+    _symbolLookup: (root, instance, ast) => {
         let result;
 
         switch (ast.mode()) {
         case 'global': {
-            result = session.root().find(ast.name());
+            result = root.find(ast.name());
 
             break;
         }
@@ -43,58 +43,58 @@ module.exports = {
 
         return result;
     },
-    symbolIn: (session, instance, ast) => {
+    symbolIn: (root, instance, ast) => {
         return module.exports._symbolLookup(
-            session, instance, ast
+            root, instance, ast
         );
     },
-    symbolOut: (session, instance, ast, type) => {
+    symbolOut: (root, instance, ast, type) => {
         if (
             module.exports._symbolLookup(
-                session, instance, ast
+                root, instance, ast
             ) !== type
         ) {
             throw 1;
         }
     },
 
-    pathIn: (session, instance, ast) => {
+    pathIn: (root, instance, ast) => {
         return module.exports.visitIn(
-            session, instance, ast.source()
+            root, instance, ast.source()
         ).find(ast.name());
     },
-    pathOut: (session, instance, ast, type) => {
+    pathOut: (root, instance, ast, type) => {
         if (
             module.exports.visitIn(
-                session, instance, ast.source()
+                root, instance, ast.source()
             ).find(ast.name()) !== type
         ) {
             throw 1;
         }
     },
 
-    callIn: (session, instance, ast) => {
+    callIn: (root, instance, ast) => {
         // TODO
     },
-    callOut: (session, instance, ast, type) => {
+    callOut: (root, instance, ast, type) => {
         // TODO
     },
 
-    codeIn: (session, instance, ast) => {
+    codeIn: (root, instance, ast) => {
         return ast;
     },
-    codeOut: (session, instance, ast, type) => {
+    codeOut: (root, instance, ast, type) => {
         throw 1;
     },
 
-    visitIn: (session, instance, ast) => {
+    visitIn: (root, instance, ast) => {
         return module.exports[ast.astType() + 'In'](
-            session, instance, ast
+            root, instance, ast
         );
     },
-    visitOut: (session, instance, ast, type) => {
+    visitOut: (root, instance, ast, type) => {
         module.exports[ast.astType() + 'Out'](
-            session, instance, ast, type
+            root, instance, ast, type
         );
     },
 };
