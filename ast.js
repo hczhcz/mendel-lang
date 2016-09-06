@@ -57,20 +57,23 @@ module.exports = {
             },
         };
     },
-    call: (source, args) => {
+    call: (callee, closure, args) => {
         return {
             astType: () => {
                 return 'call';
             },
-            source: () => {
-                return source;
+            callee: () => {
+                return callee;
+            },
+            closure: () => {
+                return closure;
             },
             args: () => {
                 return args;
             },
         };
     },
-    code: (source, params, ast) => {
+    code: (params, ast) => {
         // const instance = (code, types) => {
         //     return {
         //         astType: () => {
@@ -89,9 +92,6 @@ module.exports = {
         return {
             astType: () => {
                 return 'code';
-            },
-            source: () => {
-                return source;
             },
             params: () => {
                 return params;

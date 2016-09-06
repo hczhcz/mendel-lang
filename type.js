@@ -22,7 +22,7 @@ module.exports = {
 
             while (!result && target) {
                 result = target.find(ast.name());
-                target = target.find('parent');
+                target = target.find('__parent');
             }
 
             break;
@@ -73,11 +73,17 @@ module.exports = {
         }
     },
 
+    _callConstruct: (root, instance, ast) => {
+        const callee = module.exports.visitIn(
+            root, instance, ast.callee()
+        );
+        const closure = module.exports.visitIn(
+            root, instance, ast.closure()
+        );
+    },
     callIn: (root, instance, ast) => {
-        // TODO
     },
     callOut: (root, instance, ast, type) => {
-        // TODO
     },
 
     codeIn: (root, instance, ast) => {
