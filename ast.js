@@ -20,85 +20,46 @@
 module.exports = {
     literal: (type, value) => {
         return {
-            astType: () => {
-                return 'literal';
-            },
-            dataType: () => {
-                return type;
-            },
-            value: () => {
-                return value;
-            },
+            astType: 'literal',
+            dataType: type,
+            value: value,
         };
     },
     symbol: (mode, name) => {
         return {
-            astType: () => {
-                return 'symbol';
-            },
-            mode: () => {
-                return mode;
-            },
-            name: () => {
-                return name;
-            },
+            astType: 'symbol',
+            mode: mode,
+            name: name,
         };
     },
     path: (source, name) => {
         return {
-            astType: () => {
-                return 'path';
-            },
-            source: () => {
-                return source;
-            },
-            name: () => {
-                return name;
-            },
+            astType: 'path',
+            source: source,
+            name: name,
         };
     },
     call: (callee, closure, args) => {
         return {
-            astType: () => {
-                return 'call';
-            },
-            callee: () => {
-                return callee;
-            },
-            closure: () => {
-                return closure;
-            },
-            args: () => {
-                return args;
-            },
+            astType: 'call',
+            callee: callee,
+            closure: closure,
+            args: args,
         };
     },
     code: (params, ast) => {
         // const instance = (code, types) => {
         //     return {
-        //         astType: () => {
-        //             return 'instance';
-        //         },
-        //         code: () => {
-        //             return code;
-        //         },
-        //         types: () => {
-        //             return types;
-        //         },
+        //         code: code,
+        //         _types: types,
         //         find: (name) => {}, // TODO
         //     };
         // };
 
         return {
-            astType: () => {
-                return 'code';
-            },
-            params: () => {
-                return params;
-            },
-            ast: () => {
-                return ast;
-            },
+            astType: 'code',
+            params: params,
+            ast: ast,
         };
     },
 };

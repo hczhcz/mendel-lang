@@ -2,7 +2,7 @@
 
 module.exports = {
     literalIn: (root, instance, ast) => {
-        return ast.dataType();
+        return ast.dataType;
     },
     literalOut: (root, instance, ast, type) => {
         throw 1;
@@ -11,9 +11,9 @@ module.exports = {
     _symbolLookup: (root, instance, ast) => {
         let result;
 
-        switch (ast.mode()) {
+        switch (ast.mode) {
         case 'global': {
-            result = root.find(ast.name());
+            result = root.find(ast.name);
 
             break;
         }
@@ -21,14 +21,14 @@ module.exports = {
             let target = instance;
 
             while (!result && target) {
-                result = target.find(ast.name());
+                result = target.find(ast.name);
                 target = target.find('__parent');
             }
 
             break;
         }
         case 'local': {
-            result = instance.find(ast.name());
+            result = instance.find(ast.name);
 
             break;
         }
@@ -60,14 +60,14 @@ module.exports = {
 
     pathIn: (root, instance, ast) => {
         return module.exports.visitIn(
-            root, instance, ast.source()
-        ).find(ast.name());
+            root, instance, ast.source
+        ).find(ast.name);
     },
     pathOut: (root, instance, ast, type) => {
         if (
             module.exports.visitIn(
-                root, instance, ast.source()
-            ).find(ast.name()) !== type
+                root, instance, ast.source
+            ).find(ast.name) !== type
         ) {
             throw 1;
         }
@@ -75,10 +75,10 @@ module.exports = {
 
     _callConstruct: (root, instance, ast) => {
         const callee = module.exports.visitIn(
-            root, instance, ast.callee()
+            root, instance, ast.callee
         );
         const closure = module.exports.visitIn(
-            root, instance, ast.closure()
+            root, instance, ast.closure
         );
     },
     callIn: (root, instance, ast) => {
@@ -94,12 +94,12 @@ module.exports = {
     },
 
     visitIn: (root, instance, ast) => {
-        return module.exports[ast.astType() + 'In'](
+        return module.exports[ast.astType + 'In'](
             root, instance, ast
         );
     },
     visitOut: (root, instance, ast, type) => {
-        module.exports[ast.astType() + 'Out'](
+        module.exports[ast.astType + 'Out'](
             root, instance, ast, type
         );
     },
