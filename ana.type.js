@@ -1,5 +1,7 @@
 'use strict';
 
+const coreType = require('./core.type');
+
 module.exports = {
     literalIn: (root, instance, ast) => {
         return ast.type;
@@ -8,7 +10,7 @@ module.exports = {
         throw 1;
     },
 
-    _symbolLookup: (root, instance, ast) => {
+    symbolLookup: (root, instance, ast) => {
         let result;
 
         switch (ast.mode) {
@@ -44,13 +46,13 @@ module.exports = {
         return result;
     },
     symbolIn: (root, instance, ast) => {
-        return module.exports._symbolLookup(
+        return module.exports.symbolLookup(
             root, instance, ast
         );
     },
     symbolOut: (root, instance, ast, type) => {
         if (
-            module.exports._symbolLookup(
+            module.exports.symbolLookup(
                 root, instance, ast
             ).name !== type.name // TODO: type checking
         ) {
@@ -73,7 +75,7 @@ module.exports = {
         }
     },
 
-    _callConstruct: (root, instance, ast) => {
+    callConstruct: (instance, ast, before, after) => {
         const callee = module.exports.visitIn(
             root, instance, ast.callee
         );

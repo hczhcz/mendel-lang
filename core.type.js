@@ -16,11 +16,11 @@ module.exports = {
         };
     },
 
-    instance: (code, initTypes) => {
-        const finalTypes = {};
+    instance: (code, initMembers) => {
+        const finalMembers = {};
 
-        for (const i in initTypes) {
-            finalTypes[i] = initTypes[i];
+        for (const i in initMembers) {
+            finalMembers[i] = initMembers[i];
         }
 
         ++instanceId;
@@ -29,17 +29,17 @@ module.exports = {
             __type: module.exports.builtin('instance'),
             name: 'instance' + instanceId,
             code: code,
-            initTypes: initTypes,
-            finalTypes: finalTypes,
+            initMembers: initMembers,
+            finalMembers: finalMembers,
             add: (name, type) => {
-                if (finalTypes[name]) {
+                if (finalMembers[name]) {
                     throw 1;
                 }
 
-                finalTypes[name] = type;
+                finalMembers[name] = type;
             },
             find: (name) => {
-                return finalTypes[name];
+                return finalMembers[name];
             },
         };
     },
