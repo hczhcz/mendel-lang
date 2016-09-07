@@ -9,13 +9,21 @@ types:
     typeinfo types (compile time):
         builtin
         instance
-    ast node types (compile time):
+    pass-1 ast node types (compile time):
         literal
         symbol
         lookup
         path
         call
         code
+    pass-2 ast node types (compile time):
+        literal // duplicated
+        self
+        root
+        pathOut
+        pathIn
+        callOut
+        callIn
 
 symbol modes:
     const, out, var
