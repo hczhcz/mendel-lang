@@ -1,11 +1,9 @@
 'use strict';
 
-const coreType = require('./core.type');
-
 module.exports = {
     literal: (type, value) => {
         return {
-            __type: coreType.builtin('literal'),
+            __type: 'literal',
             type: type,
             value: value,
         };
@@ -13,7 +11,7 @@ module.exports = {
 
     symbol: (name, mode) => {
         return {
-            __type: coreType.builtin('symbol'),
+            __type: 'symbol',
             name: name,
             mode: mode,
         };
@@ -21,7 +19,7 @@ module.exports = {
 
     lookup: (name, mode) => {
         return {
-            __type: coreType.builtin('lookup'),
+            __type: 'lookup',
             name: name,
             mode: mode,
         };
@@ -29,7 +27,7 @@ module.exports = {
 
     path: (source, name) => {
         return {
-            __type: coreType.builtin('path'),
+            __type: 'path',
             source: source,
             name: name,
         };
@@ -37,7 +35,7 @@ module.exports = {
 
     call: (callee, closure, args) => {
         return {
-            __type: coreType.builtin('call'),
+            __type: 'call',
             callee: callee,
             closure: closure,
             args: args,
@@ -46,7 +44,7 @@ module.exports = {
 
     code: (params, ast) => {
         return {
-            __type: coreType.builtin('code'),
+            __type: 'code',
             params: params,
             ast: ast,
         };

@@ -6,8 +6,7 @@ types:
         u8 u16 u32 u64
         f32 f64
         string
-    typeinfo types (compile time):
-        builtin
+    info container types (compile time):
         instance
     pass-1 ast node types (compile time):
         literal

@@ -1,28 +1,27 @@
 'use strict';
 
-const coreType = require('./core.type');
-const coreAst1 = require('./core.ast1');
+const ast1 = require('./ast.1');
 
 module.exports = {
-    literal: coreAst1.literal,
+    literal: ast1.literal,
 
     self: (type) => {
         return {
-            __type: coreType.builtin('self'),
+            __type: 'self',
             type: type,
         };
     },
 
     root: (type) => {
         return {
-            __type: coreType.builtin('root'),
+            __type: 'root',
             type: type,
         };
     },
 
     pathOut: (type, source, name) => {
         return {
-            __type: coreType.builtin('pathOut'),
+            __type: 'pathOut',
             type: type,
             source: source,
             name: name,
@@ -31,28 +30,32 @@ module.exports = {
 
     pathIn: (source, name) => {
         return {
-            __type: coreType.builtin('pathIn'),
+            __type: 'pathIn',
             source: source,
             name: name,
         };
     },
 
-    callOut: (type, callee, closure, args) => {
+    callOut: (type, callee, closure, instance, outArgs, inArgs) => {
         return {
-            __type: coreType.builtin('callOut'),
+            __type: 'callOut',
             type: type,
             callee: callee,
             closure: closure,
-            args: args,
+            instance: instance,
+            outArgs: outArgs,
+            inArgs: inArgs,
         };
     },
 
-    callIn: (callee, closure, args) => {
+    callIn: (callee, closure, instance, outArgs, inArgs) => {
         return {
-            __type: coreType.builtin('callIn'),
+            __type: 'callIn',
             callee: callee,
             closure: closure,
-            args: args,
+            instance: instance,
+            outArgs: outArgs,
+            inArgs: inArgs,
         };
     },
 };
