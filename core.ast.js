@@ -19,6 +19,14 @@ module.exports = {
         };
     },
 
+    lookup: (mode, name) => {
+        return {
+            __type: coreType.builtin('lookup'),
+            mode: mode,
+            name: name,
+        };
+    },
+
     path: (source, name) => {
         return {
             __type: coreType.builtin('path'),

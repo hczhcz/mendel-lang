@@ -10,6 +10,13 @@ module.exports = {
         throw 1;
     },
 
+    symbolOut: (root, instance, ast) => {
+        // TODO
+    },
+    symbolIn: (root, instance, ast, type) => {
+        // TODO
+    },
+
     lookup: (root, instance, ast) => {
         let result;
 
@@ -45,12 +52,12 @@ module.exports = {
 
         return result;
     },
-    symbolOut: (root, instance, ast) => {
+    lookupOut: (root, instance, ast) => {
         return module.exports.lookup(
             root, instance, ast
         );
     },
-    symbolIn: (root, instance, ast, type) => {
+    lookupIn: (root, instance, ast, type) => {
         if (
             module.exports.lookup(
                 root, instance, ast

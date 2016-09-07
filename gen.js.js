@@ -7,6 +7,9 @@ module.exports = {
     symbol: (root, instance, ast) => {
         //
     },
+    lookup: (root, instance, ast) => {
+        //
+    },
     path: (root, instance, ast) => {
         //
     },

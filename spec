@@ -12,9 +12,13 @@ types:
     ast node types (compile time):
         literal
         symbol
+        lookup
         path
         call
         code
+
+symbol modes:
+    const, out, var
 
 lookup modes:
     global, mixed, local
