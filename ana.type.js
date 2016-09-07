@@ -52,7 +52,7 @@ module.exports = {
         if (
             module.exports._symbolLookup(
                 root, instance, ast
-            ) !== type
+            ).name !== type.name // TODO: type checking
         ) {
             throw 1;
         }
@@ -67,7 +67,7 @@ module.exports = {
         if (
             module.exports.visitIn(
                 root, instance, ast.source
-            ).find(ast.name) !== type
+            ).find(ast.name).name !== type.name // TODO: type checking
         ) {
             throw 1;
         }
@@ -80,10 +80,13 @@ module.exports = {
         const closure = module.exports.visitIn(
             root, instance, ast.closure
         );
+        // TODO
     },
     callIn: (root, instance, ast) => {
+        // TODO
     },
     callOut: (root, instance, ast, type) => {
+        // TODO
     },
 
     codeIn: (root, instance, ast) => {
