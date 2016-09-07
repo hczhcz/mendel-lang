@@ -3,14 +3,14 @@
 const coreType = require('./core.type');
 
 module.exports = {
-    literalIn: (root, instance, ast) => {
+    literalOut: (root, instance, ast) => {
         return ast.type;
     },
-    literalOut: (root, instance, ast, type) => {
+    literalIn: (root, instance, ast, type) => {
         throw 1;
     },
 
-    symbolLookup: (root, instance, ast) => {
+    lookup: (root, instance, ast) => {
         let result;
 
         switch (ast.mode) {
@@ -45,14 +45,14 @@ module.exports = {
 
         return result;
     },
-    symbolIn: (root, instance, ast) => {
-        return module.exports.symbolLookup(
+    symbolOut: (root, instance, ast) => {
+        return module.exports.lookup(
             root, instance, ast
         );
     },
-    symbolOut: (root, instance, ast, type) => {
+    symbolIn: (root, instance, ast, type) => {
         if (
-            module.exports.symbolLookup(
+            module.exports.lookup(
                 root, instance, ast
             ).name !== type.name // TODO: type checking
         ) {
@@ -60,14 +60,14 @@ module.exports = {
         }
     },
 
-    pathIn: (root, instance, ast) => {
-        return module.exports.visitIn(
+    pathOut: (root, instance, ast) => {
+        return module.exports.visitOut(
             root, instance, ast.source
         ).find(ast.name);
     },
-    pathOut: (root, instance, ast, type) => {
+    pathIn: (root, instance, ast, type) => {
         if (
-            module.exports.visitIn(
+            module.exports.visitOut(
                 root, instance, ast.source
             ).find(ast.name).name !== type.name // TODO: type checking
         ) {
@@ -75,36 +75,36 @@ module.exports = {
         }
     },
 
-    callConstruct: (instance, ast, before, after) => {
-        const callee = module.exports.visitIn(
+    call: (instance, ast, before, after) => {
+        const callee = module.exports.visitOut(
             root, instance, ast.callee
         );
-        const closure = module.exports.visitIn(
+        const closure = module.exports.visitOut(
             root, instance, ast.closure
         );
         // TODO
     },
-    callIn: (root, instance, ast) => {
+    callOut: (root, instance, ast) => {
         // TODO
     },
-    callOut: (root, instance, ast, type) => {
+    callIn: (root, instance, ast, type) => {
         // TODO
     },
 
-    codeIn: (root, instance, ast) => {
+    codeOut: (root, instance, ast) => {
         return ast;
     },
-    codeOut: (root, instance, ast, type) => {
+    codeIn: (root, instance, ast, type) => {
         throw 1;
     },
 
-    visitIn: (root, instance, ast) => {
-        return module.exports[ast.__type + 'In'](
+    visitOut: (root, instance, ast) => {
+        return module.exports[ast.__type + 'Out'](
             root, instance, ast
         );
     },
-    visitOut: (root, instance, ast, type) => {
-        module.exports[ast.__type + 'Out'](
+    visitIn: (root, instance, ast, type) => {
+        module.exports[ast.__type + 'In'](
             root, instance, ast, type
         );
     },
