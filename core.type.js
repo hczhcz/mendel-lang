@@ -6,7 +6,7 @@ const builtinMeta = {
 };
 builtinMeta.__type = builtinMeta;
 
-let instanceId = -1;
+let instanceId = 0;
 
 module.exports = {
     builtin: (name) => {
@@ -16,31 +16,31 @@ module.exports = {
         };
     },
 
-    instance: (code, initMembers) => {
-        const finalMembers = {};
-
-        for (const i in initMembers) {
-            finalMembers[i] = initMembers[i];
-        }
-
-        ++instanceId;
-
-        return {
+    instance: (code, initModes, initTypes) => {
+        const result = {
             __type: module.exports.builtin('instance'),
             name: 'instance' + instanceId,
             code: code,
-            initMembers: initMembers,
-            finalMembers: finalMembers,
-            add: (name, type) => {
-                if (finalMembers[name]) {
+            initModes: initModes,
+            initTypes: initTypes,
+            modes: {},
+            types: {},
+            add: (name, mode, type) => {
+                if (result.modes[name]) {
                     throw 1;
                 }
 
-                finalMembers[name] = type;
-            },
-            find: (name) => {
-                return finalMembers[name];
+                result.modes[name] = mode;
+                result.types[name] = type;
             },
         };
+
+        ++instanceId;
+
+        for (const i in initModes) {
+            result.add(i, initModes[i], initTypes[i]);
+        }
+
+        return result;
     },
 };

@@ -11,10 +11,10 @@ module.exports = {
     },
 
     symbolOut: (root, instance, ast) => {
-        // TODO
+        throw 1;
     },
     symbolIn: (root, instance, ast, type) => {
-        // TODO
+        instance.add(ast.name, ast.mode, type);
     },
 
     lookup: (root, instance, ast) => {
@@ -22,7 +22,7 @@ module.exports = {
 
         switch (ast.mode) {
         case 'global': {
-            result = root.find(ast.name);
+            result = root.types[ast.name];
 
             break;
         }
@@ -30,14 +30,14 @@ module.exports = {
             let target = instance;
 
             while (!result && target) {
-                result = target.find(ast.name);
-                target = target.find('__parent');
+                result = target.types[ast.name];
+                target = target.types['__parent'];
             }
 
             break;
         }
         case 'local': {
-            result = instance.find(ast.name);
+            result = instance.types[ast.name];
 
             break;
         }
@@ -70,13 +70,13 @@ module.exports = {
     pathOut: (root, instance, ast) => {
         return module.exports.visitOut(
             root, instance, ast.source
-        ).find(ast.name);
+        ).types[ast.name];
     },
     pathIn: (root, instance, ast, type) => {
         if (
             module.exports.visitOut(
                 root, instance, ast.source
-            ).find(ast.name).name !== type.name // TODO: type checking
+            ).types[ast.name].name !== type.name // TODO: type checking
         ) {
             throw 1;
         }

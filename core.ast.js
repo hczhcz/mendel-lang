@@ -11,19 +11,19 @@ module.exports = {
         };
     },
 
-    symbol: (mode, name) => {
+    symbol: (name, mode) => {
         return {
             __type: coreType.builtin('symbol'),
-            mode: mode,
             name: name,
+            mode: mode,
         };
     },
 
-    lookup: (mode, name) => {
+    lookup: (name, mode) => {
         return {
             __type: coreType.builtin('lookup'),
-            mode: mode,
             name: name,
+            mode: mode,
         };
     },
 
