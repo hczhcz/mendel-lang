@@ -1,11 +1,8 @@
 'use strict';
 
-let instanceId = 0;
-
 module.exports = (ast, initModes, initTypes) => {
     const result = {
         __type: 'instance',
-        type: 'instance' + instanceId,
         ast: ast,
         initModes: initModes,
         initTypes: initTypes,
@@ -20,8 +17,6 @@ module.exports = (ast, initModes, initTypes) => {
             result.types[name] = type;
         },
     };
-
-    ++instanceId;
 
     for (const i in initModes) {
         result.add(i, initModes[i], initTypes[i]);
