@@ -6,9 +6,12 @@ types:
         u8 u16 u32 u64
         f32 f64
         string
-    instance types:
+    typeinfo types:
+        <string>
+        <closure #>
         <instance #>
     info container types (compile time):
+        closure
         instance
     pass-1 ast node types (compile time):
         literal
