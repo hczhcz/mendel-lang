@@ -1,5 +1,6 @@
 'use strict';
 
+const typeinfo = require('./typeinfo');
 const ast2 = require('./ast.2');
 
 module.exports = {
@@ -156,10 +157,10 @@ module.exports = {
     },
 
     codeOut: (root, instance, ast) => {
-        // return ast;
+        return typeinfo.closure(instance, ast.params, ast.impl);
     },
     codeIn: (root, instance, ast, type) => {
-        // throw 1;
+        throw 1;
     },
 
     visitOut: (root, instance, ast) => {

@@ -1,16 +1,21 @@
 'use strict';
 
 module.exports = {
-    closure: (parent, code) => {
+    closure: (parent, params, impl) => {
         __type: 'closure',
         parent: parent,
-        code: code,
+        params: params,
+        impl: impl,
+        instances: {},
+        add: (instance) => {
+            // TODO
+        },
     },
 
     instance: (ast, initModes, initTypes) => {
         const result = {
             __type: 'instance',
-            ast: ast,
+            ast: ast, // pass 2 ast
             initModes: initModes,
             initTypes: initTypes,
             modes: {},

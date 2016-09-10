@@ -41,11 +41,11 @@ module.exports = {
         };
     },
 
-    code: (params, ast) => {
+    code: (params, impl) => {
         return {
             __type: 'code',
             params: params,
-            ast: ast,
+            impl: impl,
         };
     },
 };
