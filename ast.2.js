@@ -36,23 +36,21 @@ module.exports = {
         };
     },
 
-    callOut: (type, callee, closure, instance, outArgs, inArgs) => {
+    callOut: (type, callee, instance, outArgs, inArgs) => {
         return {
             __type: 'callOut',
             type: type,
             callee: callee,
-            closure: closure,
             instance: instance,
             outArgs: outArgs,
             inArgs: inArgs,
         };
     },
 
-    callIn: (callee, closure, instance, outArgs, inArgs) => {
+    callIn: (callee, instance, outArgs, inArgs) => {
         return {
             __type: 'callIn',
             callee: callee,
-            closure: closure,
             instance: instance,
             outArgs: outArgs,
             inArgs: inArgs,

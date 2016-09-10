@@ -33,11 +33,10 @@ module.exports = {
         };
     },
 
-    call: (callee, closure, args) => {
+    call: (callee, args) => {
         return {
             __type: 'call',
             callee: callee,
-            closure: closure,
             args: args,
         };
     },
