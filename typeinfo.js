@@ -12,14 +12,17 @@ module.exports = {
         },
     },
 
-    instance: (ast, initModes, initTypes) => {
+    instance: () => {
         const result = {
             __type: 'instance',
-            ast: ast, // pass 2 ast
-            initModes: initModes,
-            initTypes: initTypes,
             modes: {},
             types: {},
+            inits: {},
+            ast: ast, // ast for the second pass
+            initAdd: (name, mode, type) => {
+                result.add(name, mode, type);
+                result.inits[name] = true;
+            },
             add: (name, mode, type) => {
                 if (result.modes[name]) {
                     throw 1;
@@ -29,10 +32,6 @@ module.exports = {
                 result.types[name] = type;
             },
         };
-
-        for (const i in initModes) {
-            result.add(i, initModes[i], initTypes[i]);
-        }
 
         return result;
     },
