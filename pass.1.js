@@ -169,6 +169,7 @@ module.exports = {
             }
         }
 
+        result = closure.add(root, result, module.exports.visitOut);
 
         for (const i in ast.args) {
             if (

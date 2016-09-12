@@ -9,8 +9,29 @@ module.exports = {
             paramModes: paramModes,
             impl1: impl1, // private
             instances: {},
-            add: (instance) => {
-                // TODO
+            add: (root, instance, builder) => {
+                // find exist instance
+
+                for (const i in instnaces) {
+                    if (false) { // TODO
+                        return instances[i];
+                    }
+                }
+
+                // new instance
+
+                instances.push(instance);
+
+                const impl2 = builder(root, instance, closure.impl1);
+
+                // type checking
+                if (impl2.type === 'void') {
+                    instance.impl2 = impl2;
+
+                    return instance;
+                } else {
+                    throw 1;
+                }
             },
         };
 
