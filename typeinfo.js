@@ -16,31 +16,64 @@ module.exports = {
     instance: () => {
         const result = {
             __type: 'instance',
-            modes: {},
-            types: {},
             inits: {},
+            modes: {},
+            types: {}, // do not access directly
             ast: ast, // ast for the second pass
-            init: (name, mode) => {
-                result.add(name, mode);
-                result.inits[name] = true;
+            addInit: (name, mode) => {
+                if (!result.modes[name]) {
+                    result.inits[name] = true;
+                    result.modes[name] = mode;
+                } else {
+                    throw 1;
+                }
             },
             add: (name, mode) => {
-                if (result.modes[name]) {
+                if (!result.modes[name]) {
+                    result.modes[name] = mode;
+                } else {
                     throw 1;
                 }
 
-                result.modes[name] = mode;
             },
-            typing: (name, type) => {
+            addType: (name, type) => {
+                if (result.modes[name] && !result.types[name]) {
+                    result.types[name] = type;
+                } else {
+                    throw 1;
+                }
+
+            },
+            accessOut: (name) => {
                 if (
-                    !result.modes[name]
-                    || result.types[name]
+                    result.modes[name] === 'const'
+                    || result.modes[name] === 'var'
                 ) {
+                    if (result.types[name]) {
+                        return result.types[name];
+                    } else {
+                        throw 1;
+                    }
+                } else {
                     throw 1;
                 }
-
-                result.types[name] = type;
             },
+            accessIn: (name, type) => {
+                if (
+                    result.modes[name] === 'out'
+                    || result.modes[name] === 'var'
+                ) {
+                    if (result.types[name]) {
+                        // type checking
+                        if (!result.types[name] === type) {
+                            throw 1;
+                        }
+                    } else {
+                        result.types[name] = type;
+                    }
+                } else {
+                    throw 1;
+                }
         };
 
         return result;

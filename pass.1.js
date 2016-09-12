@@ -26,7 +26,7 @@ module.exports = {
         instance.add(
             ast.name, ast.mode
         );
-        instance.typing(
+        instance.addType(
             ast.name, type
         );
 
@@ -47,15 +47,10 @@ module.exports = {
             case 'mixed': {
                 source = ast2.self(instance);
 
-                while (
-                    !source.type.modes[ast.name] && (
-                        source.type.modes.__parent === 'const'
-                        || source.type.modes.__parent === 'var'
-                    )
-                ) {
+                while (!source.type.modes[ast.name]) {
                     source = ast2.pathOut(
                         source, '__parent',
-                        source.type.types.__parent
+                        source.type.accessOut('__parent')
                     );
                 }
 
@@ -82,35 +77,24 @@ module.exports = {
             root, instance, ast
         );
 
-        if (
-            source.type.modes[ast.name] === 'const'
-            || source.type.modes[ast.name] === 'var'
-        ) {
-            return ast2.pathOut(
-                source, ast.name,
-                source.type.types[ast.name]
-            );
-        } else {
-            throw 1;
-        }
+        return ast2.pathOut(
+            source, ast.name,
+            source.type.accessOut(ast.name)
+        );
     },
     lookupIn: (root, instance, ast, type) => {
         const source = module.exports.lookup(
             root, instance, ast
         );
 
-        if (
-            (
-                source.type.modes[ast.name] === 'out'
-                || source.type.modes[ast.name] === 'var'
-            ) && source.type.types[ast.name] === type // TODO: type checking
-        ) {
-            return ast2.pathIn(
-                source, ast.name
-            );
-        } else {
-            throw 1;
-        }
+        source.type.accessIn(
+            ast.name,
+            type
+        );
+
+        return ast2.pathIn(
+            source, ast.name
+        );
     },
 
     pathOut: (root, instance, ast) => {
@@ -118,35 +102,24 @@ module.exports = {
             root, instance, ast.source
         );
 
-        if (
-            source.type.modes[ast.name] === 'const'
-            || source.type.modes[ast.name] === 'var'
-        ) {
-            return ast2.pathOut(
-                source, ast.name,
-                source.type.types[ast.name]
-            );
-        } else {
-            throw 1;
-        }
+        return ast2.pathOut(
+            source, ast.name,
+            source.type.accessOut(ast.name)
+        );
     },
     pathIn: (root, instance, ast, type) => {
         const source = module.exports.visitOut(
             root, instance, ast.source
         );
 
-        if (
-            (
-                source.type.modes.__parent === 'out'
-                || source.type.modes.__parent === 'var'
-            ) && source.type.types[ast.name] === type // TODO: type checking
-        ) {
-            return ast2.pathIn(
-                source, ast.name
-            );
-        } else {
-            throw 1;
-        }
+        source.type.accessIn(
+            ast.name,
+            type
+        );
+
+        return ast2.pathIn(
+            source, ast.name
+        );
     },
 
     call: (instance, ast, before, after) => {
@@ -163,17 +136,17 @@ module.exports = {
 
         let result = typeinfo.instance();
 
-        result.init(
+        result.addInit(
             '__parent', 'var'
         ); // TODO: mode?
 
         for (const i in callee.type.paramNames) {
-            result.init(
+            result.addInit(
                 callee.type.paramNames[i], callee.type.paramModes[i]
             );
         }
 
-        result.typing(
+        result.addType(
             '__parent', instance
         );
 
@@ -188,7 +161,7 @@ module.exports = {
                     root, instance, ast.args[i]
                 );
 
-                result.typing(
+                result.addType(
                     callee.type.paramNames[i],
                     arg.type
                 );
@@ -203,7 +176,7 @@ module.exports = {
             ) {
                 const arg = module.exports.visitIn(
                     root, instance, ast.args[i],
-                    result.types[callee.type.paramNames[i]]
+                    result.accessOut(callee.type.paramNames[i])
                 );
             }
         }
@@ -219,7 +192,7 @@ module.exports = {
 
     codeOut: (root, instance, ast) => {
         return typeinfo.closure(
-            instance, ast.params, ast.impl
+            instance, ast.paramNames, ast.paramModes, ast.impl
         );
     },
     codeIn: (root, instance, ast, type) => {
