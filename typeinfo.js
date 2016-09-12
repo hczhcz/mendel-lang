@@ -2,7 +2,7 @@
 
 module.exports = {
     closure: (parent, paramNames, paramModes, impl) => {
-        return {
+        const result = {
             __type: 'closure',
             parent: parent,
             paramNames: paramNames,
@@ -13,6 +13,8 @@ module.exports = {
                 // TODO
             },
         };
+
+        return result;
     },
 
     instance: () => {

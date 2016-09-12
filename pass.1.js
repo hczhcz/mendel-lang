@@ -126,10 +126,11 @@ module.exports = {
         const callee = module.exports.visitOut(
             root, instance, ast.callee
         );
+        const closure = callee.type;
 
         if (
-            callee.type.__type !== 'closure'
-            || ast.args.length !== callee.type.params.length
+            closure.__type !== 'closure'
+            || ast.args.length !== closure.params.length
         ) {
             throw 1;
         }
@@ -140,9 +141,9 @@ module.exports = {
             '__parent', 'var'
         ); // TODO: mode?
 
-        for (const i in callee.type.paramNames) {
+        for (const i in closure.paramNames) {
             result.addInit(
-                callee.type.paramNames[i], callee.type.paramModes[i]
+                closure.paramNames[i], closure.paramModes[i]
             );
         }
 
@@ -154,15 +155,15 @@ module.exports = {
 
         for (const i in ast.args) {
             if (
-                callee.type.paramModes[i] === 'const'
-                || callee.type.paramModes[i] === 'var'
+                closure.paramModes[i] === 'const'
+                || closure.paramModes[i] === 'var'
             ) {
                 const arg = module.exports.visitOut(
                     root, instance, ast.args[i]
                 );
 
                 result.addType(
-                    callee.type.paramNames[i],
+                    closure.paramNames[i],
                     arg.type
                 );
             }
@@ -171,12 +172,12 @@ module.exports = {
 
         for (const i in ast.args) {
             if (
-                callee.type.paramModes[i] === 'out'
-                || callee.type.paramModes[i] === 'var'
+                closure.paramModes[i] === 'out'
+                || closure.paramModes[i] === 'var'
             ) {
                 const arg = module.exports.visitIn(
                     root, instance, ast.args[i],
-                    result.accessOut(callee.type.paramNames[i])
+                    result.accessOut(closure.paramNames[i])
                 );
             }
         }
@@ -205,7 +206,7 @@ module.exports = {
         );
     },
     visitIn: (root, instance, ast, type) => {
-        module.exports[ast.__type + 'In'](
+        return module.exports[ast.__type + 'In'](
             root, instance, ast,
             type
         );
