@@ -2,15 +2,17 @@
 
 module.exports = {
     closure: (parent, paramNames, paramModes, impl) => {
-        __type: 'closure',
-        parent: parent,
-        paramNames: paramNames,
-        paramModes: paramModes,
-        impl: impl,
-        instances: {},
-        add: (instance) => {
-            // TODO
-        },
+        return {
+            __type: 'closure',
+            parent: parent,
+            paramNames: paramNames,
+            paramModes: paramModes,
+            impl: impl,
+            instances: {},
+            add: (instance) => {
+                // TODO
+            },
+        };
     },
 
     instance: () => {
@@ -19,7 +21,7 @@ module.exports = {
             inits: {},
             modes: {},
             types: {}, // do not access directly
-            ast: ast, // ast for the second pass
+            ast: undefined, // ast for the second pass
             addInit: (name, mode) => {
                 if (!result.modes[name]) {
                     result.inits[name] = true;
@@ -34,7 +36,6 @@ module.exports = {
                 } else {
                     throw 1;
                 }
-
             },
             addType: (name, type) => {
                 if (result.modes[name] && !result.types[name]) {
@@ -42,7 +43,6 @@ module.exports = {
                 } else {
                     throw 1;
                 }
-
             },
             accessOut: (name) => {
                 if (
@@ -74,6 +74,10 @@ module.exports = {
                 } else {
                     throw 1;
                 }
+            },
+            makeAst: (ast) => {
+                result.ast = ast; // TODO
+            },
         };
 
         return result;
