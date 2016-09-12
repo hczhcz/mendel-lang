@@ -1,10 +1,11 @@
 'use strict';
 
 module.exports = {
-    closure: (parent, params, impl) => {
+    closure: (parent, paramNames, paramModes, impl) => {
         __type: 'closure',
         parent: parent,
-        params: params,
+        paramNames: paramNames,
+        paramModes: paramModes,
         impl: impl,
         instances: {},
         add: (instance) => {
@@ -19,16 +20,25 @@ module.exports = {
             types: {},
             inits: {},
             ast: ast, // ast for the second pass
-            initAdd: (name, mode, type) => {
-                result.add(name, mode, type);
+            init: (name, mode) => {
+                result.add(name, mode);
                 result.inits[name] = true;
             },
-            add: (name, mode, type) => {
+            add: (name, mode) => {
                 if (result.modes[name]) {
                     throw 1;
                 }
 
                 result.modes[name] = mode;
+            },
+            typing: (name, type) => {
+                if (
+                    !result.modes[name]
+                    || result.types[name]
+                ) {
+                    throw 1;
+                }
+
                 result.types[name] = type;
             },
         };

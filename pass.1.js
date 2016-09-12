@@ -5,19 +5,34 @@ const ast2 = require('./ast.2');
 
 module.exports = {
     literalOut: (root, instance, ast) => {
-        return ast2.literal(ast.type, ast.value);
+        return ast2.literal(
+            ast.value, ast.type
+        );
     },
     literalIn: (root, instance, ast, type) => {
         throw 1;
     },
 
     symbolOut: (root, instance, ast) => {
-        throw 1;
+        instance.add(
+            ast.name, ast.mode
+        );
+
+        return ast2.literal(
+            undefined, 'void'
+        );
     },
     symbolIn: (root, instance, ast, type) => {
-        instance.add(ast.name, ast.mode, type);
+        instance.add(
+            ast.name, ast.mode
+        );
+        instance.typing(
+            ast.name, type
+        );
 
-        return ast2.pathIn(ast2.self(instance), ast.name);
+        return ast2.pathIn(
+            ast2.self(instance), ast.name
+        );
     },
 
     lookup: (root, instance, ast) => {
@@ -39,9 +54,8 @@ module.exports = {
                     )
                 ) {
                     source = ast2.pathOut(
-                        source.type.types.__parent,
-                        source,
-                        '__parent'
+                        source, '__parent',
+                        source.type.types.__parent
                     );
                 }
 
@@ -64,23 +78,26 @@ module.exports = {
         return source;
     },
     lookupOut: (root, instance, ast) => {
-        const source = module.exports.lookup(root, instance, ast);
+        const source = module.exports.lookup(
+            root, instance, ast
+        );
 
         if (
             source.type.modes[ast.name] === 'const'
             || source.type.modes[ast.name] === 'var'
         ) {
             return ast2.pathOut(
-                source.type.types[ast.name],
-                source,
-                ast.name
+                source, ast.name,
+                source.type.types[ast.name]
             );
         } else {
             throw 1;
         }
     },
     lookupIn: (root, instance, ast, type) => {
-        const source = module.exports.lookup(root, instance, ast);
+        const source = module.exports.lookup(
+            root, instance, ast
+        );
 
         if (
             (
@@ -89,8 +106,7 @@ module.exports = {
             ) && source.type.types[ast.name] === type // TODO: type checking
         ) {
             return ast2.pathIn(
-                source,
-                ast.name
+                source, ast.name
             );
         } else {
             throw 1;
@@ -98,23 +114,26 @@ module.exports = {
     },
 
     pathOut: (root, instance, ast) => {
-        const source = module.exports.visitOut(root, instance, ast.source);
+        const source = module.exports.visitOut(
+            root, instance, ast.source
+        );
 
         if (
             source.type.modes[ast.name] === 'const'
             || source.type.modes[ast.name] === 'var'
         ) {
             return ast2.pathOut(
-                source.type.types[ast.name],
-                source,
-                ast.name
+                source, ast.name,
+                source.type.types[ast.name]
             );
         } else {
             throw 1;
         }
     },
     pathIn: (root, instance, ast, type) => {
-        const source = module.exports.visitOut(root, instance, ast.source);
+        const source = module.exports.visitOut(
+            root, instance, ast.source
+        );
 
         if (
             (
@@ -123,8 +142,7 @@ module.exports = {
             ) && source.type.types[ast.name] === type // TODO: type checking
         ) {
             return ast2.pathIn(
-                source,
-                ast.name
+                source, ast.name
             );
         } else {
             throw 1;
@@ -132,22 +150,65 @@ module.exports = {
     },
 
     call: (instance, ast, before, after) => {
-        // const callee = module.exports.visitOut(
-        //     root, instance, ast.callee
-        // );
-        // const closure = module.exports.visitOut(
-        //     root, instance, ast.closure
-        // );
+        const callee = module.exports.visitOut(
+            root, instance, ast.callee
+        );
 
-        // // const initMembers = {};
+        if (
+            callee.type.__type !== 'closure'
+            || ast.args.length !== callee.type.params.length
+        ) {
+            throw 1;
+        }
 
-        // if (ast.args.length !== callee.params.length) {
-        //     throw 1;
-        // }
+        let result = typeinfo.instance();
 
-        // for (const i in ast.args) {
-        //     //
-        // }
+        result.init(
+            '__parent', 'var'
+        ); // TODO: mode?
+
+        for (const i in callee.type.paramNames) {
+            result.init(
+                callee.type.paramNames[i], callee.type.paramModes[i]
+            );
+        }
+
+        result.typing(
+            '__parent', instance
+        );
+
+        before(result);
+
+        for (const i in ast.args) {
+            if (
+                callee.type.paramModes[i] === 'const'
+                || callee.type.paramModes[i] === 'var'
+            ) {
+                const arg = module.exports.visitOut(
+                    root, instance, ast.args[i]
+                );
+
+                result.typing(
+                    callee.type.paramNames[i],
+                    arg.type
+                );
+            }
+        }
+
+
+        for (const i in ast.args) {
+            if (
+                callee.type.paramModes[i] === 'out'
+                || callee.type.paramModes[i] === 'var'
+            ) {
+                const arg = module.exports.visitIn(
+                    root, instance, ast.args[i],
+                    result.types[callee.type.paramNames[i]]
+                );
+            }
+        }
+
+        after(result);
     },
     callOut: (root, instance, ast) => {
         // TODO
@@ -157,7 +218,9 @@ module.exports = {
     },
 
     codeOut: (root, instance, ast) => {
-        return typeinfo.closure(instance, ast.params, ast.impl);
+        return typeinfo.closure(
+            instance, ast.params, ast.impl
+        );
     },
     codeIn: (root, instance, ast, type) => {
         throw 1;
@@ -170,7 +233,8 @@ module.exports = {
     },
     visitIn: (root, instance, ast, type) => {
         module.exports[ast.__type + 'In'](
-            root, instance, ast, type
+            root, instance, ast,
+            type
         );
     },
 };
