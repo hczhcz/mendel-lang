@@ -36,28 +36,28 @@ module.exports = {
     },
 
     lookup: (root, instance, ast) => {
-        let source;
+        let upper;
 
         switch (ast.mode) {
             case 'global': {
-                source = ast2.root(root);
+                upper = ast2.root(root);
 
                 break;
             }
             case 'mixed': {
-                source = ast2.self(instance);
+                upper = ast2.self(instance);
 
-                while (!source.type.modes[ast.name]) {
-                    source = ast2.pathOut(
-                        source, '__parent',
-                        source.type.accessOut('__parent')
+                while (!upper.type.modes[ast.name]) {
+                    upper = ast2.pathOut(
+                        upper, '__parent',
+                        upper.type.accessOut('__parent')
                     );
                 }
 
                 break;
             }
             case 'local': {
-                source = ast2.self(instance);
+                upper = ast2.self(instance);
 
                 break;
             }
@@ -66,59 +66,59 @@ module.exports = {
             }
         }
 
-        if (!source.type.modes[ast.name]) {
+        if (!upper.type.modes[ast.name]) {
             throw 1;
         }
 
-        return source;
+        return upper;
     },
     lookupOut: (root, instance, ast) => {
-        const source = module.exports.lookup(
+        const upper = module.exports.lookup(
             root, instance, ast
         );
 
         return ast2.pathOut(
-            source, ast.name,
-            source.type.accessOut(ast.name)
+            upper, ast.name,
+            upper.type.accessOut(ast.name)
         );
     },
     lookupIn: (root, instance, ast, type) => {
-        const source = module.exports.lookup(
+        const upper = module.exports.lookup(
             root, instance, ast
         );
 
-        source.type.accessIn(
+        upper.type.accessIn(
             ast.name,
             type
         );
 
         return ast2.pathIn(
-            source, ast.name
+            upper, ast.name
         );
     },
 
     pathOut: (root, instance, ast) => {
-        const source = module.exports.visitOut(
-            root, instance, ast.source
+        const upper = module.exports.visitOut(
+            root, instance, ast.upper
         );
 
         return ast2.pathOut(
-            source, ast.name,
-            source.type.accessOut(ast.name)
+            upper, ast.name,
+            upper.type.accessOut(ast.name)
         );
     },
     pathIn: (root, instance, ast, type) => {
-        const source = module.exports.visitOut(
-            root, instance, ast.source
+        const upper = module.exports.visitOut(
+            root, instance, ast.upper
         );
 
-        source.type.accessIn(
+        upper.type.accessIn(
             ast.name,
             type
         );
 
         return ast2.pathIn(
-            source, ast.name
+            upper, ast.name
         );
     },
 
@@ -193,7 +193,7 @@ module.exports = {
 
     codeOut: (root, instance, ast) => {
         return typeinfo.closure(
-            instance, ast.paramNames, ast.paramModes, ast.impl
+            instance, ast.paramNames, ast.paramModes, ast.impl1
         );
     },
     codeIn: (root, instance, ast, type) => {

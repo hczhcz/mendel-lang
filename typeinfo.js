@@ -1,58 +1,58 @@
 'use strict';
 
 module.exports = {
-    closure: (parent, paramNames, paramModes, impl) => {
-        const result = {
+    closure: (parent, paramNames, paramModes, impl1) => {
+        const closure = {
             __type: 'closure',
             parent: parent,
             paramNames: paramNames,
             paramModes: paramModes,
-            impl: impl,
+            impl1: impl1, // private
             instances: {},
             add: (instance) => {
                 // TODO
             },
         };
 
-        return result;
+        return closure;
     },
 
     instance: () => {
-        const result = {
+        const instance = {
             __type: 'instance',
             inits: {},
             modes: {},
-            types: {}, // do not access directly
-            ast: undefined, // ast for the second pass
+            types: {}, // private
+            impl2: undefined, // set by closure
             addInit: (name, mode) => {
-                if (!result.modes[name]) {
-                    result.inits[name] = true;
-                    result.modes[name] = mode;
+                if (!instance.modes[name]) {
+                    instance.inits[name] = true;
+                    instance.modes[name] = mode;
                 } else {
                     throw 1;
                 }
             },
             add: (name, mode) => {
-                if (!result.modes[name]) {
-                    result.modes[name] = mode;
+                if (!instance.modes[name]) {
+                    instance.modes[name] = mode;
                 } else {
                     throw 1;
                 }
             },
             addType: (name, type) => {
-                if (result.modes[name] && !result.types[name]) {
-                    result.types[name] = type;
+                if (instance.modes[name] && !instance.types[name]) {
+                    instance.types[name] = type;
                 } else {
                     throw 1;
                 }
             },
             accessOut: (name) => {
                 if (
-                    result.modes[name] === 'const'
-                    || result.modes[name] === 'var'
+                    instance.modes[name] === 'const'
+                    || instance.modes[name] === 'var'
                 ) {
-                    if (result.types[name]) {
-                        return result.types[name];
+                    if (instance.types[name]) {
+                        return instance.types[name];
                     } else {
                         throw 1;
                     }
@@ -62,26 +62,23 @@ module.exports = {
             },
             accessIn: (name, type) => {
                 if (
-                    result.modes[name] === 'out'
-                    || result.modes[name] === 'var'
+                    instance.modes[name] === 'out'
+                    || instance.modes[name] === 'var'
                 ) {
-                    if (result.types[name]) {
+                    if (instance.types[name]) {
                         // type checking
-                        if (!result.types[name] === type) {
+                        if (!instance.types[name] === type) {
                             throw 1;
                         }
                     } else {
-                        result.types[name] = type;
+                        instance.types[name] = type;
                     }
                 } else {
                     throw 1;
                 }
             },
-            makeAst: (ast) => {
-                result.ast = ast; // TODO
-            },
         };
 
-        return result;
+        return instance;
     },
 };

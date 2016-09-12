@@ -19,19 +19,19 @@ module.exports = {
         };
     },
 
-    pathOut: (source, name, type) => {
+    pathOut: (upper, name, type) => {
         return {
             __type: 'pathOut',
-            source: source,
+            upper: upper,
             name: name,
             type: type,
         };
     },
 
-    pathIn: (source, name) => {
+    pathIn: (upper, name) => {
         return {
             __type: 'pathIn',
-            source: source,
+            upper: upper,
             name: name,
         };
     },

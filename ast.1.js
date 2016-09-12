@@ -25,10 +25,10 @@ module.exports = {
         };
     },
 
-    path: (source, name) => {
+    path: (upper, name) => {
         return {
             __type: 'path',
-            source: source,
+            upper: upper,
             name: name,
         };
     },
@@ -41,12 +41,12 @@ module.exports = {
         };
     },
 
-    code: (paramNames, paramModes, impl) => {
+    code: (paramNames, paramModes, impl1) => {
         return {
             __type: 'code',
             paramNames: paramNames,
             paramModes: paramModes,
-            impl: impl,
+            impl1: impl1,
         };
     },
 };
