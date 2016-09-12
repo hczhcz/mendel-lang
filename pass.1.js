@@ -138,22 +138,13 @@ module.exports = {
         let result = typeinfo.instance();
 
         result.addInit(
-            '__parent', 'var'
+            '__parent', 'var',
+            instance
         ); // TODO: mode?
-
-        for (const i in closure.paramNames) {
-            result.addInit(
-                closure.paramNames[i], closure.paramModes[i]
-            );
-        }
-
-        result.addType(
-            '__parent', instance
-        );
 
         before(result);
 
-        for (const i in ast.args) {
+        for (const i in closure.paramNames) {
             if (
                 closure.paramModes[i] === 'const'
                 || closure.paramModes[i] === 'var'
@@ -162,16 +153,20 @@ module.exports = {
                     root, instance, ast.args[i]
                 );
 
-                result.addType(
-                    closure.paramNames[i],
+                result.addInit(
+                    closure.paramNames[i], closure.paramModes[i],
                     arg.type
+                );
+            } else {
+                result.add(
+                    closure.paramNames[i], closure.paramModes[i]
                 );
             }
         }
 
         result = closure.add(root, result, module.exports.visitOut);
 
-        for (const i in ast.args) {
+        for (const i in closure.paramNames) {
             if (
                 closure.paramModes[i] === 'out'
                 || closure.paramModes[i] === 'var'

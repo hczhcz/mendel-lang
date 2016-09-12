@@ -13,8 +13,22 @@ module.exports = {
                 // find exist instance
 
                 for (const i in instnaces) {
-                    if (false) { // TODO
-                        return instances[i];
+                    if (instances[i].inits.length === instance.inits.length) {
+                        let ok = true;
+
+                        for (const name of instances[i].inits) {
+                            // type checking
+                            if (
+                                instances[i].modes[name] !== instance.modes[name]
+                                || instances[i].types[name] !== instance.types[name]
+                            ) {
+                                ok = false;
+                            }
+                        }
+
+                        if (ok) {
+                            return instances[i];
+                        }
                     }
                 }
 
@@ -41,17 +55,14 @@ module.exports = {
     instance: () => {
         const instance = {
             __type: 'instance',
-            inits: {},
+            inits: [],
             modes: {},
             types: {}, // private
             impl2: undefined, // set by closure
-            addInit: (name, mode) => {
-                if (!instance.modes[name]) {
-                    instance.inits[name] = true;
-                    instance.modes[name] = mode;
-                } else {
-                    throw 1;
-                }
+            addInit: (name, mode, type) => {
+                instance.inits.push(name);
+                instance.add(name, mode);
+                instance.addType(name, type);
             },
             add: (name, mode) => {
                 if (!instance.modes[name]) {
