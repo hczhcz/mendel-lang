@@ -1,11 +1,11 @@
 'use strict';
 
 module.exports = {
-    literal: (type, value) => {
+    literal: (value, type) => {
         return {
             __type: 'literal',
-            type: type,
             value: value,
+            type: type,
         };
     },
 

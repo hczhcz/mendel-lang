@@ -19,12 +19,12 @@ module.exports = {
         };
     },
 
-    pathOut: (type, source, name) => {
+    pathOut: (source, name, type) => {
         return {
             __type: 'pathOut',
-            type: type,
             source: source,
             name: name,
+            type: type,
         };
     },
 
@@ -36,14 +36,14 @@ module.exports = {
         };
     },
 
-    callOut: (type, callee, instance, outArgs, inArgs) => {
+    callOut: (callee, instance, outArgs, inArgs, type) => {
         return {
             __type: 'callOut',
-            type: type,
             callee: callee,
             instance: instance,
             outArgs: outArgs,
             inArgs: inArgs,
+            type: type,
         };
     },
 
