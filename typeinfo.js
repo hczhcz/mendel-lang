@@ -12,29 +12,29 @@ module.exports = {
             add: (root, instance, builder) => {
                 // find exist instance
 
-                for (const i in instnaces) {
-                    if (instances[i].inits.length === instance.inits.length) {
+                for (const i in closure.instnaces) {
+                    if (closure.instances[i].inits.length === instance.inits.length) {
                         let ok = true;
 
-                        for (const name of instances[i].inits) {
+                        for (const name of closure.instances[i].inits) {
                             // type checking
                             if (
-                                instances[i].modes[name] !== instance.modes[name]
-                                || instances[i].types[name] !== instance.types[name]
+                                closure.instances[i].modes[name] !== instance.modes[name]
+                                || closure.instances[i].types[name] !== instance.types[name]
                             ) {
                                 ok = false;
                             }
                         }
 
                         if (ok) {
-                            return instances[i];
+                            return closure.instances[i];
                         }
                     }
                 }
 
                 // new instance
 
-                instances.push(instance);
+                closure.instances.push(instance);
 
                 const impl2 = builder(root, instance, closure.impl1);
 
