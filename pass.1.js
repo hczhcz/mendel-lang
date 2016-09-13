@@ -122,7 +122,7 @@ module.exports = {
         );
     },
 
-    call: (instance, ast, before, after) => {
+    call: (root, instance, ast, before, after, builder) => {
         const callee = module.exports.visitOut(
             root, instance, ast.callee
         );
@@ -135,56 +135,89 @@ module.exports = {
             throw 1;
         }
 
-        let result = typeinfo.instance();
+        let child = typeinfo.instance();
 
-        result.addInit(
+        child.addInit(
             '__parent', 'var',
             instance
         ); // TODO: mode?
 
-        before(result);
+        before(child);
 
+        const outArgs = {};
         for (const i in closure.paramNames) {
             if (
                 closure.paramModes[i] === 'const'
                 || closure.paramModes[i] === 'var'
             ) {
-                const arg = module.exports.visitOut(
+                outArgs[i] = module.exports.visitOut(
                     root, instance, ast.args[i]
                 );
 
-                result.addInit(
+                child.addInit(
                     closure.paramNames[i], closure.paramModes[i],
-                    arg.type
+                    outArgs[i].type
                 );
             } else {
-                result.add(
+                child.add(
                     closure.paramNames[i], closure.paramModes[i]
                 );
             }
         }
 
-        result = closure.add(root, result, module.exports.visitOut);
+        child = closure.add(root, child, module.exports.visitOut);
 
+        const inArgs = {};
         for (const i in closure.paramNames) {
             if (
                 closure.paramModes[i] === 'out'
                 || closure.paramModes[i] === 'var'
             ) {
-                const arg = module.exports.visitIn(
+                inArgs[i] = module.exports.visitIn(
                     root, instance, ast.args[i],
-                    result.accessOut(closure.paramNames[i])
+                    child.accessOut(closure.paramNames[i])
                 );
             }
         }
 
-        after(result);
+        after(child);
+
+        return builder(callee, child, outArgs, inArgs);
     },
     callOut: (root, instance, ast) => {
-        // TODO
+        let type;
+
+        return module.exports.call(
+            root, instance, ast,
+            (child) => {
+                child.add(
+                    '__result', 'out'
+                );
+            },
+            (child) => {
+                type = child.accessOut('__result');
+            },
+            (callee, child, outArgs, inArgs) => {
+                return ast2.callOut(callee, child, outArgs, inArgs, type);
+            }
+        );
     },
     callIn: (root, instance, ast, type) => {
-        // TODO
+        return module.exports.call(
+            root, instance, ast,
+            (child) => {
+                child.addInit(
+                    '__input', 'in',
+                    type
+                );
+            },
+            (child) => {
+                // nothing
+            },
+            (callee, child, outArgs, inArgs) => {
+                return ast2.callIn(callee, child, outArgs, inArgs);
+            }
+        );
     },
 
     codeOut: (root, instance, ast) => {
