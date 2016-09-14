@@ -9,6 +9,7 @@ module.exports = {
             ast.value, ast.type
         );
     },
+
     literalIn: (root, instance, ast, type) => {
         throw 1;
     },
@@ -22,6 +23,7 @@ module.exports = {
             undefined, 'void'
         );
     },
+
     symbolIn: (root, instance, ast, type) => {
         instance.add(
             ast.name, ast.mode
@@ -72,6 +74,7 @@ module.exports = {
 
         return upper;
     },
+
     lookupOut: (root, instance, ast) => {
         const upper = module.exports.lookup(
             root, instance, ast
@@ -82,6 +85,7 @@ module.exports = {
             upper.type.accessOut(ast.name)
         );
     },
+
     lookupIn: (root, instance, ast, type) => {
         const upper = module.exports.lookup(
             root, instance, ast
@@ -107,6 +111,7 @@ module.exports = {
             upper.type.accessOut(ast.name)
         );
     },
+
     pathIn: (root, instance, ast, type) => {
         const upper = module.exports.visitOut(
             root, instance, ast.upper
@@ -184,6 +189,7 @@ module.exports = {
 
         return builder(callee, child, outArgs, inArgs);
     },
+
     callOut: (root, instance, ast) => {
         let type;
 
@@ -202,6 +208,7 @@ module.exports = {
             }
         );
     },
+
     callIn: (root, instance, ast, type) => {
         return module.exports.call(
             root, instance, ast,
@@ -225,6 +232,7 @@ module.exports = {
             instance, ast.paramNames, ast.paramModes, ast.impl1
         );
     },
+
     codeIn: (root, instance, ast, type) => {
         throw 1;
     },
@@ -234,6 +242,7 @@ module.exports = {
             root, instance, ast
         );
     },
+
     visitIn: (root, instance, ast, type) => {
         return module.exports[ast.__type + 'In'](
             root, instance, ast,

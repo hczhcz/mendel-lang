@@ -4,19 +4,28 @@ module.exports = {
     literal: (root, instance, ast) => {
         //
     },
-    symbol: (root, instance, ast) => {
+
+    self: (root, instance, ast) => {
         //
     },
-    lookup: (root, instance, ast) => {
+
+    root: (root, instance, ast) => {
         //
     },
-    path: (root, instance, ast) => {
+
+    pathOut: (root, instance, ast) => {
         //
     },
-    call: (root, instance, ast) => {
+
+    pathIn: (root, instance, ast) => {
         //
     },
-    code: (root, instance, ast) => {
+
+    callOut: (root, instance, ast) => {
+        //
+    },
+
+    callIn: (root, instance, ast) => {
         //
     },
 
