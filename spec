@@ -6,11 +6,11 @@ types:
         u8 u16 u32 u64
         f32 f64
         string
-    typeinfo types:
-        <string>
+    user defined types:
         <closure #>
         <instance #>
-    info container types (compile time):
+    type info types (compile time, hidden to user):
+        string // duplicated
         closure
         instance
     pass-1 ast node types (compile time):
