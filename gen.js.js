@@ -39,13 +39,13 @@ module.exports = {
     },
 
     pathOut: (root, instance, ast) => {
-        const upperJs = module.exports.visit(ast.upper);
+        const upperJs = module.exports.visit(root, instance, ast.upper);
 
         return upperJs + '.get\(' + JSON.stringify(ast.name) + ')';
     },
 
     pathIn: (root, instance, ast) => {
-        const upperJs = module.exports.visit(ast.upper);
+        const upperJs = module.exports.visit(root, instance, ast.upper);
 
         return upperJs + '.get\(' + JSON.stringify(ast.name) + ')';
     },
@@ -59,6 +59,10 @@ module.exports = {
     },
 
     visit: (root, instance, ast) => {
-        module.exports[ast.__type()](root, instance, ast);
+        module.exports[ast.__type](root, instance, ast, target);
+    },
+
+    build: (root, instance) => {
+        //
     },
 };
