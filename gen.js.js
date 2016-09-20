@@ -1,10 +1,10 @@
 'use strict';
 
 module.exports = {
-    literal: (root, instance, ast) => {
+    literal: (root, instance, ast, target) => {
         switch (ast.type) {
             case 'void': {
-                return 'undefined';
+                return [target + ' = undefined'];
             }
             case 'boolean':
             case 'i8':
@@ -15,10 +15,10 @@ module.exports = {
             case 'u32':
             case 'f32':
             case 'f64': {
-                return ast.value.toString();
+                return [target + ' = ' + ast.value.toString()];
             }
             case 'string': {
-                return JSON.stringify(ast.value);
+                return [target + ' = ' + JSON.stringify(ast.value)];
             }
             case 'i64':
             case 'u64': {
@@ -30,35 +30,35 @@ module.exports = {
         }
     },
 
-    self: (root, instance, ast) => {
-        return '__self';
+    self: (root, instance, ast, target) => {
+        return [target + ' = __self'];
     },
 
-    root: (root, instance, ast) => {
-        return '__root';
+    root: (root, instance, ast, target) => {
+        return [target + ' = __root'];
     },
 
-    pathOut: (root, instance, ast) => {
-        const upperJs = module.exports.visit(root, instance, ast.upper);
+    pathOut: (root, instance, ast, target) => {
+        const upper = module.exports.visit(root, instance, ast.upper, '__upper');
 
-        return upperJs + '.get\(' + JSON.stringify(ast.name) + ')';
+        upper.push(target + ' = __upper.get(' + JSON.stringify(ast.name) + ')');
     },
 
-    pathIn: (root, instance, ast) => {
-        const upperJs = module.exports.visit(root, instance, ast.upper);
+    pathIn: (root, instance, ast, target) => {
+        const upper = module.exports.visit(root, instance, ast.upper, '__upper');
 
-        return upperJs + '.get\(' + JSON.stringify(ast.name) + ')';
+        upper.push('__upper.set(' + JSON.stringify(ast.name) + ', ' + target + ')');
     },
 
-    callOut: (root, instance, ast) => {
+    callOut: (root, instance, ast, target) => {
         //
     },
 
-    callIn: (root, instance, ast) => {
+    callIn: (root, instance, ast, target) => {
         //
     },
 
-    visit: (root, instance, ast) => {
+    visit: (root, instance, ast, target) => {
         module.exports[ast.__type](root, instance, ast, target);
     },
 
