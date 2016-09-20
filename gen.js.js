@@ -89,15 +89,23 @@ module.exports = (out) => {
         },
 
         callOut: (root, instance, ast, target) => {
-            //
+            call(root, instance, ast, target);
+            out.line(target('inner.get(\'__result\')'));
         },
 
         callIn: (root, instance, ast, value) => {
-            //
+            out.line('inner.set(\'__input\', ' + value + ')'));
+            call(root, instance, ast, target);
         },
 
-        visit: (root, instance, ast, target) => {
+        visitOut: (root, instance, ast, target) => {
+            // TODO: check ast.__type
             module.exports[ast.__type](root, instance, ast, target);
+        },
+
+        visitIn: (root, instance, ast, value) => {
+            // TODO: check ast.__type
+            module.exports[ast.__type](root, instance, ast, value);
         },
 
         build: (root, instance) => {
