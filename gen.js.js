@@ -83,6 +83,16 @@ module.exports = (out) => {
             }
 
             // TODO
+            // out.line('self.set(\'__func\', ???)');
+            // out.line('callee.set(\'__func\', ???)');
+
+            out.line('callee.set(\'__caller\', self)');
+            out.line('self = callee');
+
+            // TODO: make call
+
+            out.line('callee = self');
+            out.line('self = callee.get(\'__caller\')');
 
             for (const i in ast.inArgs) {
                 module.exports.visit(
@@ -93,6 +103,7 @@ module.exports = (out) => {
 
             after();
 
+            out.line('inner = callee');
             out.line('callee = inner.get(\'__outer\')');
         },
 
