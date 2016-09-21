@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = (out) => {
-    return {
+    const generator = {
         literal: (root, instance, ast, target) => {
             switch (ast.type) {
                 case 'void': {
@@ -40,7 +40,7 @@ module.exports = (out) => {
         },
 
         pathOut: (root, instance, ast, target) => {
-            module.exports.visit(
+            generator.visit(
                 root, instance, ast.upper,
                 (value) => {
                     return 'upper = ' + value;
@@ -51,7 +51,7 @@ module.exports = (out) => {
         },
 
         pathIn: (root, instance, ast, value) => {
-            module.exports.visit(
+            generator.visit(
                 root, instance, ast.upper,
                 (value) => {
                     return 'upper = ' + value;
@@ -62,7 +62,7 @@ module.exports = (out) => {
         },
 
         call: (root, instance, ast, before, after) => {
-            module.exports.visit(
+            generator.visit(
                 root, instance, ast.callee,
                 'callee'
             );
@@ -75,7 +75,7 @@ module.exports = (out) => {
             before();
 
             for (const i in ast.outArgs) {
-                module.exports.visit(
+                generator.visit(
                     root, instance, ast.callee,
                     (value) => {
                         return 'callee.set(' + JSON.stringify(i) + ', ' + value + ')';
@@ -98,7 +98,7 @@ module.exports = (out) => {
             out.line('self = callee.get(\'__caller\')');
 
             for (const i in ast.inArgs) {
-                module.exports.visit(
+                generator.visit(
                     root, instance, ast.callee,
                     'callee.get(' + JSON.stringify(i) + ')'
                 );
@@ -111,7 +111,7 @@ module.exports = (out) => {
         },
 
         callOut: (root, instance, ast, target) => {
-            module.exports.call(
+            generator.call(
                 root, instance, ast,
                 () => {
                     //
@@ -123,7 +123,7 @@ module.exports = (out) => {
         },
 
         callIn: (root, instance, ast, value) => {
-            module.exports.call(
+            generator.call(
                 root, instance, ast,
                 () => {
                     out.line('callee.set(\'__input\', ' + value + ')'));
@@ -136,7 +136,7 @@ module.exports = (out) => {
 
         visitOut: (root, instance, ast, target) => {
             // TODO: check ast.__type
-            module.exports[ast.__type](
+            generator[ast.__type](
                 root, instance, ast,
                 target
             );
@@ -144,7 +144,7 @@ module.exports = (out) => {
 
         visitIn: (root, instance, ast, value) => {
             // TODO: check ast.__type
-            module.exports[ast.__type](
+            generator[ast.__type](
                 root, instance, ast,
                 value
             );
@@ -154,4 +154,6 @@ module.exports = (out) => {
             //
         },
     };
+
+    return generator;
 };
