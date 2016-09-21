@@ -68,6 +68,7 @@ module.exports = (out) => {
             );
 
             out.line('inner = new Map()');
+            out.line('inner.set(\'__func\', ???)');
             out.line('inner.set(\'__outer\', callee)');
             out.line('callee = inner');
 
@@ -82,14 +83,16 @@ module.exports = (out) => {
                 );
             }
 
-            // TODO
-            // out.line('self.set(\'__func\', ???)');
-            // out.line('callee.set(\'__func\', ???)');
-
             out.line('callee.set(\'__caller\', self)');
             out.line('self = callee');
 
-            // TODO: make call
+            // call
+            out.line('func = callee.get(\'__func\')');
+            out.line('callee.set(\'__func\', ???)');
+            out.line('func()');
+
+            out.line('}');
+            out.line('const ??? = () => {'); // TODO
 
             out.line('callee = self');
             out.line('self = callee.get(\'__caller\')');
