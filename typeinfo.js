@@ -9,6 +9,7 @@ module.exports = {
             paramModes: paramModes,
             impl1: impl1, // private
             instances: {},
+
             add: (root, instance, builder) => {
                 // find exist instance
 
@@ -59,11 +60,13 @@ module.exports = {
             modes: {},
             types: {}, // private
             impl2: undefined, // set by closure
+
             addInit: (name, mode, type) => {
                 instance.inits.push(name);
                 instance.add(name, mode);
                 instance.addType(name, type);
             },
+
             add: (name, mode) => {
                 if (!instance.modes[name]) {
                     instance.modes[name] = mode;
@@ -71,6 +74,7 @@ module.exports = {
                     throw 1;
                 }
             },
+
             addType: (name, type) => {
                 if (instance.modes[name] && !instance.types[name]) {
                     instance.types[name] = type;
@@ -78,6 +82,7 @@ module.exports = {
                     throw 1;
                 }
             },
+
             accessOut: (name) => {
                 if (
                     instance.modes[name] === 'const'
@@ -92,6 +97,7 @@ module.exports = {
                     throw 1;
                 }
             },
+
             accessIn: (name, type) => {
                 if (
                     instance.modes[name] === 'out'
