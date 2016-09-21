@@ -61,13 +61,15 @@ module.exports = (out) => {
             out.line('upper.set(' + JSON.stringify(ast.name) + ', ' + value + ')');
         },
 
-        call: (root, instance, ast, target) => {
+        call: (root, instance, ast, before, after) => {
             module.exports.visit(
                 root, instance, ast.callee,
                 'callee'
             );
 
             out.line('inner = new Map()');
+
+            before();
 
             for (const i in ast.outArgs) {
                 module.exports.visit(
@@ -86,26 +88,48 @@ module.exports = (out) => {
                     'inner.get(' + JSON.stringify(i) + ')'
                 );
             }
+
+            after();
         },
 
         callOut: (root, instance, ast, target) => {
-            call(root, instance, ast, target);
-            out.line(target('inner.get(\'__result\')'));
+            module.exports.call(
+                root, instance, ast,
+                () => {
+                    //
+                },
+                () => {
+                    out.line(target('inner.get(\'__result\')'));
+                }
+            );
         },
 
         callIn: (root, instance, ast, value) => {
-            out.line('inner.set(\'__input\', ' + value + ')'));
-            call(root, instance, ast, target);
+            module.exports.call(
+                root, instance, ast,
+                () => {
+                    out.line('inner.set(\'__input\', ' + value + ')'));
+                },
+                () => {
+                    //
+                }
+            );
         },
 
         visitOut: (root, instance, ast, target) => {
             // TODO: check ast.__type
-            module.exports[ast.__type](root, instance, ast, target);
+            module.exports[ast.__type](
+                root, instance, ast,
+                target
+            );
         },
 
         visitIn: (root, instance, ast, value) => {
             // TODO: check ast.__type
-            module.exports[ast.__type](root, instance, ast, value);
+            module.exports[ast.__type](
+                root, instance, ast,
+                value
+            );
         },
 
         build: (root, instance) => {
