@@ -68,6 +68,8 @@ module.exports = (out) => {
             );
 
             out.line('inner = new Map()');
+            out.line('inner.set(\'__outer\', callee)');
+            out.line('callee = inner');
 
             before();
 
@@ -75,7 +77,7 @@ module.exports = (out) => {
                 module.exports.visit(
                     root, instance, ast.callee,
                     (value) => {
-                        return 'inner.set(' + JSON.stringify(i) + ', ' + value + ')';
+                        return 'callee.set(' + JSON.stringify(i) + ', ' + value + ')';
                     }
                 );
             }
@@ -85,11 +87,13 @@ module.exports = (out) => {
             for (const i in ast.inArgs) {
                 module.exports.visit(
                     root, instance, ast.callee,
-                    'inner.get(' + JSON.stringify(i) + ')'
+                    'callee.get(' + JSON.stringify(i) + ')'
                 );
             }
 
             after();
+
+            out.line('callee = inner.get(\'__outer\')');
         },
 
         callOut: (root, instance, ast, target) => {
@@ -99,7 +103,7 @@ module.exports = (out) => {
                     //
                 },
                 () => {
-                    out.line(target('inner.get(\'__result\')'));
+                    out.line(target('callee.get(\'__result\')'));
                 }
             );
         },
@@ -108,7 +112,7 @@ module.exports = (out) => {
             module.exports.call(
                 root, instance, ast,
                 () => {
-                    out.line('inner.set(\'__input\', ' + value + ')'));
+                    out.line('callee.set(\'__input\', ' + value + ')'));
                 },
                 () => {
                     //
