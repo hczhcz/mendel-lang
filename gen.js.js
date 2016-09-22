@@ -1,14 +1,18 @@
 'use strict';
 
-module.exports = (line, id) => {
+module.exports = () => {
     const generator = {
-        line: line,
-        id: id,
+        code: [],
+        buffer: [],
+
+        write: (line) => {
+            buffer.back().push(line + ';\n');
+        },
 
         literal: (root, instance, ast, target) => {
             switch (ast.type) {
                 case 'void': {
-                    generator.line(target('undefined'));
+                    generator.write(target('undefined'));
 
                     break;
                 }
@@ -21,12 +25,12 @@ module.exports = (line, id) => {
                 case 'u32':
                 case 'f32':
                 case 'f64': {
-                    generator.line(target(ast.value.toString()));
+                    generator.write(target(ast.value.toString()));
 
                     break;
                 }
                 case 'string': {
-                    generator.line(target(JSON.stringify(ast.value)));
+                    generator.write(target(JSON.stringify(ast.value)));
 
                     break;
                 }
@@ -41,11 +45,11 @@ module.exports = (line, id) => {
         },
 
         self: (root, instance, ast, target) => {
-            generator.line(target('self'));
+            generator.write(target('self'));
         },
 
         root: (root, instance, ast, target) => {
-            generator.line(target('root'));
+            generator.write(target('root'));
         },
 
         pathOut: (root, instance, ast, target) => {
@@ -56,7 +60,7 @@ module.exports = (line, id) => {
                 }
             );
 
-            generator.line(target('upper.get(' + JSON.stringify(ast.name) + ')'));
+            generator.write(target('upper.get(' + JSON.stringify(ast.name) + ')'));
         },
 
         pathIn: (root, instance, ast, value) => {
@@ -67,7 +71,7 @@ module.exports = (line, id) => {
                 }
             );
 
-            generator.line('upper.set(' + JSON.stringify(ast.name) + ', ' + value + ')');
+            generator.write('upper.set(' + JSON.stringify(ast.name) + ', ' + value + ')');
         },
 
         call: (root, instance, ast, before, after) => {
@@ -79,10 +83,10 @@ module.exports = (line, id) => {
             const calleeId = generator.build(root, ast.instance);
             const returnId = generator.id();
 
-            generator.line('inner = new Map()');
-            generator.line('inner.set(\'__func\', ' + calleeId + ')');
-            generator.line('inner.set(\'__outer\', callee)');
-            generator.line('callee = inner');
+            generator.write('inner = new Map()');
+            generator.write('inner.set(\'__func\', ' + calleeId + ')');
+            generator.write('inner.set(\'__outer\', callee)');
+            generator.write('callee = inner');
 
             before();
 
@@ -95,19 +99,19 @@ module.exports = (line, id) => {
                 );
             }
 
-            generator.line('callee.set(\'__caller\', self)');
-            generator.line('self = callee');
+            generator.write('callee.set(\'__caller\', self)');
+            generator.write('self = callee');
 
             // call
-            generator.line('func = callee.get(\'__func\')');
-            generator.line('callee.set(\'__func\', ' + returnId + ')');
-            generator.line('func()');
+            generator.write('func = callee.get(\'__func\')');
+            generator.write('callee.set(\'__func\', ' + returnId + ')');
+            generator.write('func()');
 
-            generator.line('}');
-            generator.line('const ' + returnId + ' = () => {'); // TODO
+            generator.write('}');
+            generator.write('const ' + returnId + ' = () => {'); // TODO
 
-            generator.line('callee = self');
-            generator.line('self = callee.get(\'__caller\')');
+            generator.write('callee = self');
+            generator.write('self = callee.get(\'__caller\')');
 
             for (const i in ast.inArgs) {
                 generator.visit(
@@ -118,8 +122,8 @@ module.exports = (line, id) => {
 
             after();
 
-            generator.line('inner = callee');
-            generator.line('callee = inner.get(\'__outer\')');
+            generator.write('inner = callee');
+            generator.write('callee = inner.get(\'__outer\')');
         },
 
         callOut: (root, instance, ast, target) => {
@@ -129,7 +133,7 @@ module.exports = (line, id) => {
                     //
                 },
                 () => {
-                    generator.line(target('callee.get(\'__result\')'));
+                    generator.write(target('callee.get(\'__result\')'));
                 }
             );
         },
@@ -138,7 +142,7 @@ module.exports = (line, id) => {
             generator.call(
                 root, instance, ast,
                 () => {
-                    generator.line('callee.set(\'__input\', ' + value + ')');
+                    generator.write('callee.set(\'__input\', ' + value + ')');
                 },
                 () => {
                     //
