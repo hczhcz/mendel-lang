@@ -9,6 +9,8 @@ module.exports = (line, id) => {
             switch (ast.type) {
                 case 'void': {
                     generator.line(target('undefined'));
+
+                    break;
                 }
                 case 'boolean':
                 case 'i8':
@@ -20,9 +22,13 @@ module.exports = (line, id) => {
                 case 'f32':
                 case 'f64': {
                     generator.line(target(ast.value.toString()));
+
+                    break;
                 }
                 case 'string': {
                     generator.line(target(JSON.stringify(ast.value)));
+
+                    break;
                 }
                 case 'i64':
                 case 'u64': {
@@ -132,7 +138,7 @@ module.exports = (line, id) => {
             generator.call(
                 root, instance, ast,
                 () => {
-                    generator.line('callee.set(\'__input\', ' + value + ')'));
+                    generator.line('callee.set(\'__input\', ' + value + ')');
                 },
                 () => {
                     //
