@@ -6,7 +6,7 @@ module.exports = () => {
         buffer: [],
 
         write: (line) => {
-            buffer.back().push(line + ';\n');
+            generator.buffer.back().push(line + ';\n');
         },
 
         literal: (root, instance, ast, target) => {
@@ -53,7 +53,7 @@ module.exports = () => {
         },
 
         pathOut: (root, instance, ast, target) => {
-            generator.visit(
+            generator.visitOut(
                 root, instance, ast.upper,
                 (value) => {
                     return 'upper = ' + value;
@@ -64,7 +64,7 @@ module.exports = () => {
         },
 
         pathIn: (root, instance, ast, value) => {
-            generator.visit(
+            generator.visitOut(
                 root, instance, ast.upper,
                 (value) => {
                     return 'upper = ' + value;
@@ -75,9 +75,11 @@ module.exports = () => {
         },
 
         call: (root, instance, ast, before, after) => {
-            generator.visit(
+            generator.visitOut(
                 root, instance, ast.callee,
-                'callee'
+                (value) => {
+                    return 'callee = ' + value;
+                }
             );
 
             const calleeId = generator.build(
@@ -98,7 +100,7 @@ module.exports = () => {
             before();
 
             for (const i in ast.outArgs) {
-                generator.visit(
+                generator.visitOut(
                     root, instance, ast.callee,
                     (value) => {
                         return 'callee.set(' + JSON.stringify(i) + ', ' + value + ')';
@@ -121,7 +123,7 @@ module.exports = () => {
             generator.write('self = callee.get(\'__caller\')');
 
             for (const i in ast.inArgs) {
-                generator.visit(
+                generator.visitIn(
                     root, instance, ast.callee,
                     'callee.get(' + JSON.stringify(i) + ')'
                 );
@@ -137,7 +139,7 @@ module.exports = () => {
             generator.call(
                 root, instance, ast,
                 () => {
-                    //
+                    // nothing
                 },
                 () => {
                     generator.write(target('callee.get(\'__result\')'));
@@ -152,7 +154,7 @@ module.exports = () => {
                     generator.write('callee.set(\'__input\', ' + value + ')');
                 },
                 () => {
-                    //
+                    // nothing
                 }
             );
         },
