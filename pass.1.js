@@ -6,9 +6,7 @@ const ast2 = require('./ast.2');
 module.exports = () => {
     const pass = {
         literalOut: (root, instance, ast) => {
-            return ast2.literal(
-                ast.value, ast.type
-            );
+            return ast2.literal(ast.value, ast.type);
         },
 
         literalIn: (root, instance, ast, type) => {
@@ -20,9 +18,7 @@ module.exports = () => {
                 ast.name, ast.mode
             );
 
-            return ast2.literal(
-                undefined, 'void'
-            );
+            return ast2.literal(undefined, 'void');
         },
 
         symbolIn: (root, instance, ast, type) => {
@@ -30,11 +26,13 @@ module.exports = () => {
                 ast.name, ast.mode
             );
             instance.addType(
-                ast.name, type
+                ast.name,
+                type
             );
 
             return ast2.pathIn(
-                ast2.self(instance), ast.name
+                ast2.self(instance),
+                ast.name
             );
         },
 
@@ -98,7 +96,8 @@ module.exports = () => {
             );
 
             return ast2.pathIn(
-                upper, ast.name
+                upper,
+                ast.name
             );
         },
 
@@ -124,7 +123,8 @@ module.exports = () => {
             );
 
             return ast2.pathIn(
-                upper, ast.name
+                upper,
+                ast.name
             );
         },
 
@@ -205,10 +205,16 @@ module.exports = () => {
                     type = child.accessOut('__result');
                 },
                 (root, child, ast) => {
-                    return pass.visitOut(root, child, ast);
+                    return pass.visitOut(
+                        root, child, ast
+                    );
                 },
                 (callee, child, outArgs, inArgs) => {
-                    return ast2.callOut(callee, child, outArgs, inArgs, type);
+                    return ast2.callOut(
+                        callee, child,
+                        outArgs, inArgs,
+                        type
+                    );
                 }
             );
         },
@@ -226,10 +232,16 @@ module.exports = () => {
                     // nothing
                 },
                 (root, child, ast) => {
-                    return pass.visitIn(root, child, ast, type);
+                    return pass.visitIn(
+                        root, child, ast,
+                        type
+                    );
                 },
                 (callee, child, outArgs, inArgs) => {
-                    return ast2.callIn(callee, child, outArgs, inArgs);
+                    return ast2.callIn(
+                        callee, child,
+                        outArgs, inArgs
+                    );
                 }
             );
         },
