@@ -80,7 +80,12 @@ module.exports = () => {
                 'callee'
             );
 
-            const calleeId = generator.build(root, ast.instance);
+            const calleeId = generator.build(
+                ast.instance,
+                () => {
+                    //
+                }
+            ); // TODO
 
             generator.write('inner = new Map()');
             generator.write('inner.set(\'__func\', ' + calleeId + ')');
@@ -168,14 +173,14 @@ module.exports = () => {
             );
         },
 
-        build: (root, instance) => {
+        build: (instance, builder) => {
             // TODO: remove duplicated
 
             const id = generator.code.length;
 
             generator.buffer.push([]);
 
-            generator.visit(root, instance, instance.impl2); // TODO
+            builder();
 
             generator.code.push(generator.buffer.pop());
 

@@ -128,7 +128,7 @@ module.exports = () => {
             );
         },
 
-        call: (root, instance, ast, before, after, builder) => {
+        call: (root, instance, ast, before, after, builder, constructor) => {
             const callee = pass.visitOut(
                 root, instance, ast.callee
             );
@@ -171,7 +171,7 @@ module.exports = () => {
                 }
             }
 
-            child = closure.add(root, child, pass.visitOut);
+            child = closure.add(root, child, builder);
 
             const inArgs = {};
             for (const i in closure.paramNames) {
@@ -188,7 +188,7 @@ module.exports = () => {
 
             after(child);
 
-            return builder(callee, child, outArgs, inArgs);
+            return constructor(callee, child, outArgs, inArgs);
         },
 
         callOut: (root, instance, ast) => {
@@ -203,6 +203,9 @@ module.exports = () => {
                 },
                 (child) => {
                     type = child.accessOut('__result');
+                },
+                (root, child, ast) => {
+                    return pass.visitOut(root, child, ast);
                 },
                 (callee, child, outArgs, inArgs) => {
                     return ast2.callOut(callee, child, outArgs, inArgs, type);
@@ -221,6 +224,9 @@ module.exports = () => {
                 },
                 (child) => {
                     // nothing
+                },
+                (root, child, ast) => {
+                    return pass.visitIn(root, child, ast, type);
                 },
                 (callee, child, outArgs, inArgs) => {
                     return ast2.callIn(callee, child, outArgs, inArgs);
