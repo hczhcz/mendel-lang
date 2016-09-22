@@ -74,7 +74,7 @@ module.exports = () => {
             generator.write('upper.set(' + JSON.stringify(ast.name) + ', ' + value + ')');
         },
 
-        call: (root, instance, ast, before, after) => {
+        call: (root, instance, ast, before, after, builder) => {
             generator.visitOut(
                 root, instance, ast.callee,
                 (value) => {
@@ -82,12 +82,7 @@ module.exports = () => {
                 }
             );
 
-            const calleeId = generator.build(
-                ast.instance,
-                () => {
-                    //
-                }
-            ); // TODO
+            const calleeId = generator.build(ast.instance, builder);
 
             generator.write('inner = new Map()');
             generator.write('inner.set(\'__func\', ' + calleeId + ')');
@@ -117,7 +112,8 @@ module.exports = () => {
             generator.write('func()');
 
             generator.write('}');
-            generator.write('const ' + returnId + ' = () => {'); // TODO
+            generator.write('');
+            generator.write('const ' + returnId + ' = () => {');
 
             generator.write('callee = self');
             generator.write('self = callee.get(\'__caller\')');
@@ -143,6 +139,14 @@ module.exports = () => {
                 },
                 () => {
                     generator.write(target('callee.get(\'__result\')'));
+                },
+                (child, ast) => {
+                    generator.visitOut(
+                        root, child, ast,
+                        (value) => {
+                            return 'self.set(\'__result\', ' + value + ')';
+                        }
+                    );
                 }
             );
         },
@@ -155,6 +159,12 @@ module.exports = () => {
                 },
                 () => {
                     // nothing
+                },
+                (child, ast) => {
+                    generator.visitIn(
+                        root, child, ast,
+                        'self.get(\'__input\')'
+                    );
                 }
             );
         },
@@ -182,7 +192,7 @@ module.exports = () => {
 
             generator.buffer.push([]);
 
-            builder();
+            builder(instance, instance.impl2);
 
             generator.code.push(generator.buffer.pop());
 
