@@ -188,11 +188,16 @@ module.exports = () => {
         build: (instance, builder) => {
             // TODO: remove duplicated
 
-            const id = generator.code.length;
+            const id = 'func_' + generator.code.length;
 
             generator.buffer.push([]);
 
+            generator.write('const ' + id + ' = () => {');
+
             builder(instance, instance.impl2);
+
+            generator.write('}');
+            generator.write('');
 
             generator.code.push(generator.buffer.pop());
 
