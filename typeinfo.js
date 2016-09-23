@@ -40,13 +40,13 @@ module.exports = {
                 const impl2 = builder(root, instance, closure.impl1);
 
                 // type checking
-                if (impl2.type === 'void') {
-                    instance.impl2 = impl2;
-
-                    return instance;
-                } else {
+                if (impl2.type !== 'void') {
                     throw 1;
                 }
+
+                instance.impl2 = impl2;
+
+                return instance;
             },
         };
 
@@ -68,51 +68,55 @@ module.exports = {
             },
 
             add: (name, mode) => {
-                if (!instance.modes[name]) {
-                    instance.modes[name] = mode;
-                } else {
+                if (instance.modes[name]) {
                     throw 1;
                 }
+
+                instance.modes[name] = mode;
             },
 
             addType: (name, type) => {
-                if (instance.modes[name] && !instance.types[name]) {
-                    instance.types[name] = type;
-                } else {
+                if (!instance.modes[name]) {
                     throw 1;
                 }
+
+                if (instance.types[name]) {
+                    throw 1;
+                }
+
+                instance.types[name] = type;
             },
 
             accessOut: (name) => {
                 if (
-                    instance.modes[name] === 'const'
-                    || instance.modes[name] === 'var'
+                    instance.modes[name] !== 'const'
+                    && instance.modes[name] !== 'var'
                 ) {
-                    if (instance.types[name]) {
-                        return instance.types[name];
-                    } else {
-                        throw 1;
-                    }
-                } else {
                     throw 1;
                 }
+
+                if (!instance.types[name]) {
+                    throw 1;
+                }
+
+                return instance.types[name];
             },
 
             accessIn: (name, type) => {
                 if (
-                    instance.modes[name] === 'out'
-                    || instance.modes[name] === 'var'
+                    instance.modes[name] !== 'out'
+                    && instance.modes[name] !== 'var'
                 ) {
-                    if (instance.types[name]) {
-                        // type checking
-                        if (!instance.types[name] === type) {
-                            throw 1;
-                        }
-                    } else {
-                        instance.types[name] = type;
+                    throw 1;
+                }
+
+                if (instance.types[name]) {
+                    // type checking
+                    if (instance.types[name] !== type) {
+                        throw 1;
                     }
                 } else {
-                    throw 1;
+                    instance.types[name] = type;
                 }
             },
         };

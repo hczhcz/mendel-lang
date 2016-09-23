@@ -151,6 +151,7 @@ module.exports = () => {
             before(child);
 
             const outArgs = {};
+
             for (const i in closure.paramNames) {
                 if (
                     closure.paramModes[i] === 'const'
@@ -174,6 +175,7 @@ module.exports = () => {
             child = closure.add(root, child, builder);
 
             const inArgs = {};
+
             for (const i in closure.paramNames) {
                 if (
                     closure.paramModes[i] === 'out'
