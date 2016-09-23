@@ -3,20 +3,20 @@
 const typeinfo = require('./typeinfo');
 const ast2 = require('./ast.2');
 
-module.exports = () => {
+module.exports = (root) => {
     const pass = {
-        literalOut: (root, instance, ast) => {
+        literalOut: (instance, ast) => {
             return ast2.literal(
                 ast.value,
                 ast.type
             );
         },
 
-        literalIn: (root, instance, ast, type) => {
+        literalIn: (instance, ast, type) => {
             throw 1;
         },
 
-        symbolOut: (root, instance, ast) => {
+        symbolOut: (instance, ast) => {
             instance.add(
                 ast.name, ast.mode
             );
@@ -27,7 +27,7 @@ module.exports = () => {
             );
         },
 
-        symbolIn: (root, instance, ast, type) => {
+        symbolIn: (instance, ast, type) => {
             instance.add(
                 ast.name, ast.mode
             );
@@ -42,7 +42,7 @@ module.exports = () => {
             );
         },
 
-        lookup: (root, instance, ast) => {
+        lookup: (instance, ast) => {
             let upper;
 
             // TODO: allow access to __self and __root?
@@ -82,9 +82,9 @@ module.exports = () => {
             return upper;
         },
 
-        lookupOut: (root, instance, ast) => {
+        lookupOut: (instance, ast) => {
             const upper = pass.lookup(
-                root, instance, ast
+                instance, ast
             );
 
             return ast2.pathOut(
@@ -93,9 +93,9 @@ module.exports = () => {
             );
         },
 
-        lookupIn: (root, instance, ast, type) => {
+        lookupIn: (instance, ast, type) => {
             const upper = pass.lookup(
-                root, instance, ast
+                instance, ast
             );
 
             upper.type.accessIn(
@@ -109,9 +109,9 @@ module.exports = () => {
             );
         },
 
-        pathOut: (root, instance, ast) => {
+        pathOut: (instance, ast) => {
             const upper = pass.visitOut(
-                root, instance, ast.upper
+                instance, ast.upper
             );
 
             return ast2.pathOut(
@@ -120,9 +120,9 @@ module.exports = () => {
             );
         },
 
-        pathIn: (root, instance, ast, type) => {
+        pathIn: (instance, ast, type) => {
             const upper = pass.visitOut(
-                root, instance, ast.upper
+                instance, ast.upper
             );
 
             upper.type.accessIn(
@@ -136,9 +136,9 @@ module.exports = () => {
             );
         },
 
-        call: (root, instance, ast, before, after, builder, constructor) => {
+        call: (instance, ast, before, after, builder, constructor) => {
             const callee = pass.visitOut(
-                root, instance, ast.callee
+                instance, ast.callee
             );
             const closure = callee.type;
 
@@ -166,7 +166,7 @@ module.exports = () => {
                     || closure.paramModes[i] === 'var'
                 ) {
                     outArgs[i] = pass.visitOut(
-                        root, instance, ast.args[i]
+                        instance, ast.args[i]
                     );
 
                     child.addInit(
@@ -180,7 +180,7 @@ module.exports = () => {
                 }
             }
 
-            child = closure.add(root, child, builder);
+            child = closure.add(child, builder);
 
             const inArgs = {};
 
@@ -190,7 +190,7 @@ module.exports = () => {
                     || closure.paramModes[i] === 'var'
                 ) {
                     inArgs[i] = pass.visitIn(
-                        root, instance, ast.args[i],
+                        instance, ast.args[i],
                         child.accessOut(closure.paramNames[i])
                     );
                 }
@@ -201,11 +201,11 @@ module.exports = () => {
             return constructor(callee, child, outArgs, inArgs);
         },
 
-        callOut: (root, instance, ast) => {
+        callOut: (instance, ast) => {
             let type;
 
             return pass.call(
-                root, instance, ast,
+                instance, ast,
                 (child) => {
                     child.add(
                         '__result', 'out'
@@ -214,9 +214,9 @@ module.exports = () => {
                 (child) => {
                     type = child.accessOut('__result');
                 },
-                (root, child, ast) => {
+                (child, ast) => {
                     return pass.visitOut(
-                        root, child, ast
+                        child, ast
                     );
                 },
                 (callee, child, outArgs, inArgs) => {
@@ -229,9 +229,9 @@ module.exports = () => {
             );
         },
 
-        callIn: (root, instance, ast, type) => {
+        callIn: (instance, ast, type) => {
             return pass.call(
-                root, instance, ast,
+                instance, ast,
                 (child) => {
                     child.addInit(
                         '__input', 'in',
@@ -241,9 +241,9 @@ module.exports = () => {
                 (child) => {
                     // nothing
                 },
-                (root, child, ast) => {
+                (child, ast) => {
                     return pass.visitIn(
-                        root, child, ast,
+                        child, ast,
                         type
                     );
                 },
@@ -256,26 +256,26 @@ module.exports = () => {
             );
         },
 
-        codeOut: (root, instance, ast) => {
+        codeOut: (instance, ast) => {
             return ast2.self(typeinfo.closure(
                 instance, ast.paramNames, ast.paramModes,
                 ast.impl1
             ));
         },
 
-        codeIn: (root, instance, ast, type) => {
+        codeIn: (instance, ast, type) => {
             throw 1;
         },
 
-        visitOut: (root, instance, ast) => {
+        visitOut: (instance, ast) => {
             return pass[ast.__type + 'Out'](
-                root, instance, ast
+                instance, ast
             );
         },
 
-        visitIn: (root, instance, ast, type) => {
+        visitIn: (instance, ast, type) => {
             return pass[ast.__type + 'In'](
-                root, instance, ast,
+                instance, ast,
                 type
             );
         },

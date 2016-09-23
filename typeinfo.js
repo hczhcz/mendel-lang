@@ -10,7 +10,7 @@ module.exports = {
             impl1: impl1, // private
             instances: {},
 
-            add: (root, instance, builder) => {
+            add: (instance, builder) => {
                 // find exist instance
 
                 for (const i in closure.instnaces) {
@@ -37,7 +37,7 @@ module.exports = {
 
                 closure.instances.push(instance);
 
-                const impl2 = builder(root, instance, closure.impl1);
+                const impl2 = builder(instance, closure.impl1);
 
                 // type checking
                 if (impl2.type !== 'void') {

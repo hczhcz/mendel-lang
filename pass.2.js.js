@@ -9,7 +9,7 @@ module.exports = () => {
             pass.buffer.back().push(line + ';\n');
         },
 
-        literal: (root, instance, ast, target) => {
+        literal: (ast, target) => {
             switch (ast.type) {
                 case 'void': {
                     pass.write(target('undefined'));
@@ -44,17 +44,17 @@ module.exports = () => {
             }
         },
 
-        self: (root, instance, ast, target) => {
+        self: (ast, target) => {
             pass.write(target('self'));
         },
 
-        root: (root, instance, ast, target) => {
+        root: (ast, target) => {
             pass.write(target('root'));
         },
 
-        pathOut: (root, instance, ast, target) => {
+        pathOut: (ast, target) => {
             pass.visitOut(
-                root, instance, ast.upper,
+                ast.upper,
                 (value) => {
                     return 'upper = ' + value;
                 }
@@ -63,9 +63,9 @@ module.exports = () => {
             pass.write(target('upper.get(' + JSON.stringify(ast.name) + ')'));
         },
 
-        pathIn: (root, instance, ast, value) => {
+        pathIn: (ast, value) => {
             pass.visitOut(
-                root, instance, ast.upper,
+                ast.upper,
                 (value) => {
                     return 'upper = ' + value;
                 }
@@ -74,9 +74,9 @@ module.exports = () => {
             pass.write('upper.set(' + JSON.stringify(ast.name) + ', ' + value + ')');
         },
 
-        call: (root, instance, ast, before, after, builder) => {
+        call: (ast, before, after, builder) => {
             pass.visitOut(
-                root, instance, ast.callee,
+                ast.callee,
                 (value) => {
                     return 'callee = ' + value;
                 }
@@ -96,7 +96,7 @@ module.exports = () => {
 
             for (const i in ast.outArgs) {
                 pass.visitOut(
-                    root, instance, ast.callee,
+                    ast.callee,
                     (value) => {
                         return 'callee.set(' + JSON.stringify(i) + ', ' + value + ')';
                     }
@@ -120,7 +120,7 @@ module.exports = () => {
 
             for (const i in ast.inArgs) {
                 pass.visitIn(
-                    root, instance, ast.callee,
+                    ast.callee,
                     'callee.get(' + JSON.stringify(i) + ')'
                 );
             }
@@ -131,18 +131,18 @@ module.exports = () => {
             pass.write('callee = inner.get(\'__outer\')');
         },
 
-        callOut: (root, instance, ast, target) => {
+        callOut: (ast, target) => {
             pass.call(
-                root, instance, ast,
+                ast,
                 () => {
                     // nothing
                 },
                 () => {
                     pass.write(target('callee.get(\'__result\')'));
                 },
-                (child, ast) => {
+                (ast) => {
                     pass.visitOut(
-                        root, child, ast,
+                        ast,
                         (value) => {
                             return 'self.set(\'__result\', ' + value + ')';
                         }
@@ -151,36 +151,36 @@ module.exports = () => {
             );
         },
 
-        callIn: (root, instance, ast, value) => {
+        callIn: (ast, value) => {
             pass.call(
-                root, instance, ast,
+                ast,
                 () => {
                     pass.write('callee.set(\'__input\', ' + value + ')');
                 },
                 () => {
                     // nothing
                 },
-                (child, ast) => {
+                (ast) => {
                     pass.visitIn(
-                        root, child, ast,
+                        ast,
                         'self.get(\'__input\')'
                     );
                 }
             );
         },
 
-        visitOut: (root, instance, ast, target) => {
+        visitOut: (ast, target) => {
             // TODO: check ast.__type
             pass[ast.__type](
-                root, instance, ast,
+                ast,
                 target
             );
         },
 
-        visitIn: (root, instance, ast, value) => {
+        visitIn: (ast, value) => {
             // TODO: check ast.__type
             pass[ast.__type](
-                root, instance, ast,
+                ast,
                 value
             );
         },
@@ -194,7 +194,7 @@ module.exports = () => {
 
             pass.write('const ' + id + ' = () => {');
 
-            builder(instance, instance.impl2);
+            builder(instance.impl2);
 
             pass.write('}');
             pass.write('');
