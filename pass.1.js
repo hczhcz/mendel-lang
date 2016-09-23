@@ -6,7 +6,10 @@ const ast2 = require('./ast.2');
 module.exports = () => {
     const pass = {
         literalOut: (root, instance, ast) => {
-            return ast2.literal(ast.value, ast.type);
+            return ast2.literal(
+                ast.value,
+                ast.type
+            );
         },
 
         literalIn: (root, instance, ast, type) => {
@@ -18,7 +21,10 @@ module.exports = () => {
                 ast.name, ast.mode
             );
 
-            return ast2.literal(undefined, 'void');
+            return ast2.literal(
+                undefined,
+                'void'
+            );
         },
 
         symbolIn: (root, instance, ast, type) => {
@@ -38,6 +44,8 @@ module.exports = () => {
 
         lookup: (root, instance, ast) => {
             let upper;
+
+            // TODO: allow access to __self and __root?
 
             switch (ast.mode) {
                 case 'global': {
