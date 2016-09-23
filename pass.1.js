@@ -257,10 +257,10 @@ module.exports = () => {
         },
 
         codeOut: (root, instance, ast) => {
-            return typeinfo.closure(
+            return ast2.self(typeinfo.closure(
                 instance, ast.paramNames, ast.paramModes,
                 ast.impl1
-            );
+            ));
         },
 
         codeIn: (root, instance, ast, type) => {
