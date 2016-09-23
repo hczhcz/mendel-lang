@@ -250,7 +250,8 @@ module.exports = () => {
 
         codeOut: (root, instance, ast) => {
             return typeinfo.closure(
-                instance, ast.paramNames, ast.paramModes, ast.impl1
+                instance, ast.paramNames, ast.paramModes,
+                ast.impl1
             );
         },
 
