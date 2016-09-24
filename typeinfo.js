@@ -58,9 +58,10 @@ module.exports = {
         return closure;
     },
 
-    instance: () => {
+    instance: (id) => {
         const instance = {
             __type: 'instance',
+            id: id,
             inits: [],
             modes: {},
             types: {}, // private

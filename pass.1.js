@@ -6,6 +6,8 @@ const ast2 = require('./ast.2');
 module.exports = (root) => {
     const pass = {
         root: root,
+        instances: [root],
+
         literalOut: (instance, ast) => {
             return ast2.literal(
                 ast.value,
@@ -150,7 +152,8 @@ module.exports = (root) => {
                 throw 1;
             }
 
-            let child = typeinfo.instance();
+            // notice: .length change only when a new instance is built
+            let child = typeinfo.instance(pass.instances.length);
 
             child.addInit(
                 '__parent', 'var',
@@ -216,6 +219,8 @@ module.exports = (root) => {
                     type = child.accessOut('__result');
                 },
                 (child, ast) => {
+                    pass.instances.push(child);
+
                     return pass.visitOut(
                         child, ast
                     );
@@ -243,6 +248,8 @@ module.exports = (root) => {
                     // nothing
                 },
                 (child, ast) => {
+                    pass.instances.push(child);
+
                     return pass.visitIn(
                         child, ast,
                         type

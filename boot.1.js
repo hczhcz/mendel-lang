@@ -5,7 +5,7 @@ const ast1 = require('./ast.1');
 const pass1 = require('./pass.1');
 
 module.exports = () => {
-    const root = typeinfo.instance();
+    const root = typeinfo.instance(0);
 
     // TODO: add required root members
     // root.addInit(
@@ -19,6 +19,8 @@ module.exports = () => {
     const pass = pass1(root);
 
     const boot = {
+        instances: pass.instances,
+
         module: (root, ast) => {
             // TODO: arguments? type checking?
 
