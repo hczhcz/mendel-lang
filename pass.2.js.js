@@ -5,8 +5,12 @@ module.exports = () => {
         code: [],
         buffer: [],
 
+        writeRaw: (line) => {
+            pass.buffer.back().push(line);
+        },
+
         write: (line) => {
-            pass.buffer.back().push(line + ';\n');
+            pass.writeRaw('    ' + line + ';\n');
         },
 
         literal: (ast, target) => {
@@ -126,9 +130,9 @@ module.exports = () => {
             pass.write('callee.set(\'__func\', ' + returnId + ')');
             pass.write('func()');
 
-            pass.write('}');
-            pass.write('');
-            pass.write('const ' + returnId + ' = () => {');
+            pass.writeRaw('}');
+            pass.writeRaw('');
+            pass.writeRaw('const ' + returnId + ' = () => {');
 
             pass.write('callee = self');
             pass.write('self = callee.get(\'__caller\')');
@@ -209,14 +213,14 @@ module.exports = () => {
 
             pass.buffer.push([]);
 
-            pass.write('const ' + id + ' = () => {');
+            pass.writeRaw('const ' + id + ' = () => {');
 
             builder(instance.impl2);
 
-            pass.write('}');
-            pass.write('');
+            pass.writeRaw('}');
+            pass.writeRaw('');
 
-            pass.code[instance.id] = pass.buffer.pop();
+            pass.code[instance.id] = pass.buffer.pop().join('');
         },
     };
 
