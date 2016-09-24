@@ -14,14 +14,19 @@ module.exports = {
                 // find exist instance
 
                 for (const i in closure.instnaces) {
-                    if (closure.instances[i].inits.length === instance.inits.length) {
+                    if (
+                        closure.instances[i].inits.length
+                        === instance.inits.length
+                    ) {
                         let ok = true;
 
                         for (const name of closure.instances[i].inits) {
                             // type checking
                             if (
-                                closure.instances[i].modes[name] !== instance.modes[name]
-                                || closure.instances[i].types[name] !== instance.types[name]
+                                closure.instances[i].modes[name]
+                                !== instance.modes[name]
+                                || closure.instances[i].types[name]
+                                !== instance.types[name]
                             ) {
                                 ok = false;
                             }
@@ -59,7 +64,7 @@ module.exports = {
             inits: [],
             modes: {},
             types: {}, // private
-            impl2: undefined, // set by closure
+            impl2: null, // set by closure
 
             addInit: (name, mode, type) => {
                 instance.inits.push(name);

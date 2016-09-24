@@ -22,7 +22,7 @@ module.exports = (root) => {
             );
 
             return ast2.literal(
-                undefined,
+                null,
                 'void'
             );
         },

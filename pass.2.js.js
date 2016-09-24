@@ -12,7 +12,7 @@ module.exports = () => {
         literal: (ast, target) => {
             switch (ast.type) {
                 case 'void': {
-                    pass.write(target('undefined'));
+                    pass.write(target('null'));
 
                     break;
                 }
@@ -60,7 +60,11 @@ module.exports = () => {
                 }
             );
 
-            pass.write(target('upper.get(' + JSON.stringify(ast.name) + ')'));
+            pass.write(target(
+                'upper.get('
+                + JSON.stringify(ast.name)
+                + ')'
+            ));
         },
 
         pathIn: (ast, value) => {
@@ -71,7 +75,11 @@ module.exports = () => {
                 }
             );
 
-            pass.write('upper.set(' + JSON.stringify(ast.name) + ', ' + value + ')');
+            pass.write(
+                'upper.set('
+                + JSON.stringify(ast.name) + ', ' + value
+                + ')'
+            );
         },
 
         call: (ast, before, after, builder) => {
@@ -98,7 +106,9 @@ module.exports = () => {
                 pass.visitOut(
                     ast.callee,
                     (value) => {
-                        return 'callee.set(' + JSON.stringify(i) + ', ' + value + ')';
+                        return 'callee.set('
+                            + JSON.stringify(i) + ', ' + value
+                            + ')';
                     }
                 );
             }
@@ -121,7 +131,9 @@ module.exports = () => {
             for (const i in ast.inArgs) {
                 pass.visitIn(
                     ast.callee,
-                    'callee.get(' + JSON.stringify(i) + ')'
+                    'callee.get('
+                    + JSON.stringify(i)
+                    + ')'
                 );
             }
 
