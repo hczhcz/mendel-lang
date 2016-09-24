@@ -5,6 +5,7 @@ const ast2 = require('./ast.2');
 
 module.exports = (root) => {
     const pass = {
+        root: root,
         literalOut: (instance, ast) => {
             return ast2.literal(
                 ast.value,
@@ -49,7 +50,7 @@ module.exports = (root) => {
 
             switch (ast.mode) {
                 case 'global': {
-                    upper = ast2.root(root);
+                    upper = ast2.root(pass.root);
 
                     break;
                 }

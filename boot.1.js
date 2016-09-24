@@ -18,12 +18,12 @@ module.exports = () => {
 
     const pass = pass1(root);
 
-    return {
+    const boot = {
         module: (root, ast) => {
             // TODO: arguments? type checking?
 
             return pass.visitOut(
-                root, root, ast1.call(
+                pass.root, pass.root, ast1.call(
                     ast1.code(
                         [], [],
                         ast
@@ -33,4 +33,6 @@ module.exports = () => {
             );
         },
     };
+
+    return boot;
 };
