@@ -139,7 +139,7 @@ module.exports = (root) => {
             );
         },
 
-        call: (instance, ast, before, after, builder, constructor) => {
+        call: (instance, ast, before, builder, after, constructor) => {
             const callee = pass.visitOut(
                 instance, ast.callee
             );
@@ -206,7 +206,7 @@ module.exports = (root) => {
         },
 
         callOut: (instance, ast) => {
-            let type;
+            let result;
 
             return pass.call(
                 instance, ast,
@@ -215,21 +215,26 @@ module.exports = (root) => {
                         '__result', 'out'
                     );
                 },
-                (child) => {
-                    type = child.accessOut('__result');
-                },
                 (child, ast) => {
                     pass.instances.push(child);
 
-                    return pass.visitOut(
+                    result = pass.visitOut(
                         child, ast
+                    );
+
+                    return result;
+                },
+                (child) => {
+                    child.addType(
+                        '__result',
+                        result.type
                     );
                 },
                 (callee, child, outArgs, inArgs) => {
                     return ast2.callOut(
                         callee, child,
                         outArgs, inArgs,
-                        type
+                        result.type
                     );
                 }
             );
@@ -244,9 +249,6 @@ module.exports = (root) => {
                         type
                     );
                 },
-                (child) => {
-                    // nothing
-                },
                 (child, ast) => {
                     pass.instances.push(child);
 
@@ -254,6 +256,9 @@ module.exports = (root) => {
                         child, ast,
                         type
                     );
+                },
+                (child) => {
+                    // nothing
                 },
                 (callee, child, outArgs, inArgs) => {
                     return ast2.callIn(
