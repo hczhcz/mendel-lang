@@ -82,7 +82,7 @@ module.exports = () => {
             );
         },
 
-        call: (ast, before, after, builder) => {
+        call: (ast, before, builder, after) => {
             pass.visitOut(
                 ast.callee,
                 (value) => {
@@ -90,7 +90,7 @@ module.exports = () => {
                 }
             );
 
-            const calleeId = pass.build(ast.instance, builder);
+            const calleeId = 'func_' + ast.instance.id;
 
             pass.write('inner = new Map()');
             pass.write('inner.set(\'__func\', ' + calleeId + ')');
@@ -115,6 +115,11 @@ module.exports = () => {
 
             pass.write('callee.set(\'__caller\', self)');
             pass.write('self = callee');
+
+            // lazy codegen
+            if (!pass.code[ast.instance.id]) {
+                pass.build(ast.instance, builder);
+            }
 
             // call
             pass.write('func = callee.get(\'__func\')');
@@ -149,9 +154,6 @@ module.exports = () => {
                 () => {
                     // nothing
                 },
-                () => {
-                    pass.write(target('callee.get(\'__result\')'));
-                },
                 (ast) => {
                     pass.visitOut(
                         ast,
@@ -159,6 +161,9 @@ module.exports = () => {
                             return 'self.set(\'__result\', ' + value + ')';
                         }
                     );
+                },
+                () => {
+                    pass.write(target('callee.get(\'__result\')'));
                 }
             );
         },
@@ -169,14 +174,14 @@ module.exports = () => {
                 () => {
                     pass.write('callee.set(\'__input\', ' + value + ')');
                 },
-                () => {
-                    // nothing
-                },
                 (ast) => {
                     pass.visitIn(
                         ast,
                         'self.get(\'__input\')'
                     );
+                },
+                () => {
+                    // nothing
                 }
             );
         },
@@ -200,7 +205,7 @@ module.exports = () => {
         build: (instance, builder) => {
             // TODO: remove duplicated
 
-            const id = 'func_' + pass.code.length;
+            const id = 'func_' + instance.id;
 
             pass.buffer.push([]);
 
@@ -211,9 +216,7 @@ module.exports = () => {
             pass.write('}');
             pass.write('');
 
-            pass.code.push(pass.buffer.pop());
-
-            return id;
+            pass.code[instance.id] = pass.buffer.pop();
         },
     };
 
