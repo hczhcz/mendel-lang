@@ -97,11 +97,11 @@ module.exports = () => {
             const calleeId = 'func_' + ast.instance.id;
 
             pass.write('__inner = new Map()');
-            pass.write('__inner.set(\'__func\', ' + calleeId + ')');
+            pass.write('__inner.__func = ' + calleeId);
 
             const returnId = calleeId + '_' + pass.buffer.length;
 
-            pass.write('__inner.set(\'__outer\', __callee)');
+            pass.write('__inner.__outer = __callee');
             pass.write('__callee = __inner');
 
             before();
@@ -117,7 +117,7 @@ module.exports = () => {
                 );
             }
 
-            pass.write('__callee.set(\'__caller\', __self)');
+            pass.write('__callee.__caller = __self');
             pass.write('__self = __callee');
 
             // lazy codegen
@@ -126,8 +126,8 @@ module.exports = () => {
             }
 
             // call
-            pass.write('__func = __callee.get(\'__func\')');
-            pass.write('__callee.set(\'__func\', ' + returnId + ')');
+            pass.write('__func = __callee.__func');
+            pass.write('__callee.__func = ' + returnId);
             pass.write('__func()');
 
             pass.writeRaw('};');
@@ -135,7 +135,7 @@ module.exports = () => {
             pass.writeRaw('const ' + returnId + ' = () => {');
 
             pass.write('__callee = __self');
-            pass.write('__self = __callee.get(\'__caller\')');
+            pass.write('__self = __callee.__caller');
 
             for (const i in ast.inArgs) {
                 pass.visitIn(
@@ -149,7 +149,7 @@ module.exports = () => {
             after();
 
             pass.write('__inner = __callee');
-            pass.write('__callee = __inner.get(\'__outer\')');
+            pass.write('__callee = __inner.__outer');
         },
 
         callOut: (ast, target) => {

@@ -226,7 +226,7 @@ module.exports = (root) => {
                 instance, ast,
                 (child) => {
                     child.addInit(
-                        '__input', 'in',
+                        '__input', 'const',
                         type
                     );
                 },
