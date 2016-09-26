@@ -48,12 +48,12 @@ module.exports = () => {
             }
         },
 
-        self: (ast, target) => {
-            pass.write(target('self'));
+        reservedOut: (ast, target) => {
+            pass.write(target(ast.name));
         },
 
-        root: (ast, target) => {
-            pass.write(target('root'));
+        reservedIn: (ast, value) => {
+            pass.write(ast.name + ' = ' + value);
         },
 
         pathOut: (ast, target) => {

@@ -40,7 +40,7 @@ module.exports = (root) => {
             );
 
             return ast2.pathIn(
-                ast2.self(instance),
+                ast2.reservedOut('__self', instance),
                 ast.name
             );
         },
@@ -270,7 +270,7 @@ module.exports = (root) => {
         },
 
         codeOut: (instance, ast) => {
-            return ast2.self(typeinfo.closure(
+            return ast2.reservedOut('__self', typeinfo.closure(
                 instance, ast.paramNames, ast.paramModes,
                 ast.impl1
             ));

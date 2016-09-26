@@ -22,8 +22,8 @@ types:
         code
     pass-2 ast node types (compile time):
         literal // duplicated
-        self
-        root
+        reservedOut
+        reservedIn
         pathOut
         pathIn
         callOut

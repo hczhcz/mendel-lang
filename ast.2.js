@@ -5,10 +5,18 @@ const ast1 = require('./ast.1');
 module.exports = {
     literal: ast1.literal,
 
-    self: (type) => {
+    reservedOut: (name, type) => {
         return {
-            __type: 'self',
+            __type: 'reservedOut',
+            name: name,
             type: type,
+        };
+    },
+
+    reservedIn: (name) => {
+        return {
+            __type: 'reservedIn',
+            name: name,
         };
     },
 
