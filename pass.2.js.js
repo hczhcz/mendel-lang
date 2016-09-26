@@ -126,9 +126,8 @@ module.exports = () => {
             }
 
             // call
-            pass.write('__func = __callee.__func');
-            pass.write('__callee.__func = ' + returnId);
-            pass.write('__func()');
+            pass.write('__self.__func = ' + returnId);
+            pass.write('__callee.__func()');
 
             pass.writeRaw('};');
             pass.writeRaw('');
@@ -191,7 +190,6 @@ module.exports = () => {
         },
 
         visitOut: (ast, target) => {
-            // TODO: check ast.__type
             pass[ast.__type](
                 ast,
                 target
@@ -199,7 +197,6 @@ module.exports = () => {
         },
 
         visitIn: (ast, value) => {
-            // TODO: check ast.__type
             pass[ast.__type](
                 ast,
                 value
@@ -207,8 +204,6 @@ module.exports = () => {
         },
 
         build: (instance, builder) => {
-            // TODO: remove duplicated
-
             const id = 'func_' + instance.id;
 
             pass.buffer.push([]);
@@ -216,6 +211,10 @@ module.exports = () => {
             pass.writeRaw('const ' + id + ' = () => {');
 
             builder(instance.impl2);
+
+            // return
+            pass.write('__self.__func = undefined');
+            pass.write('__self.__caller.__func()');
 
             pass.writeRaw('};');
             pass.writeRaw('');
