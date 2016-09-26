@@ -30,4 +30,4 @@ types:
         callIn
 
 symbol modes:
-    const, out, var
+    const, out, var, special

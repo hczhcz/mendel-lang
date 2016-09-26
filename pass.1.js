@@ -137,6 +137,14 @@ module.exports = (root) => {
             let child = typeinfo.instance(pass.instances.length);
 
             child.addInit(
+                '__root', 'special',
+                pass.root
+            );
+            child.addInit(
+                '__self', 'special',
+                child
+            );
+            child.addInit(
                 '__parent', 'var',
                 instance
             ); // TODO: mode?
