@@ -46,16 +46,24 @@ module.exports = (root) => {
         },
 
         lookup: (instance, ast, makePath, makeReserved) => {
-            let upper = ast2.reservedOut('__self', instance);
+            switch (ast.name) {
+                case '__root':
+                case '__self': {
+                    return makeReserved(ast.name);
+                }
+                default: {
+                    let upper = ast2.reservedOut('__self', instance);
 
-            while (!upper.type.modes[ast.name]) {
-                upper = ast2.pathOut(
-                    upper, '__parent',
-                    upper.type.accessOut('__parent')
-                );
+                    while (!upper.type.modes[ast.name]) {
+                        upper = ast2.pathOut(
+                            upper, '__parent',
+                            upper.type.accessOut('__parent')
+                        );
+                    }
+
+                    return makePath(upper);
+                }
             }
-
-            return makePath(upper);
         },
 
         lookupOut: (instance, ast) => {
@@ -68,7 +76,7 @@ module.exports = (root) => {
                     );
                 },
                 (name) => {
-                    // TODO
+                    return ast2.reservedOut(name, instance);
                 }
             );
         },
@@ -88,7 +96,7 @@ module.exports = (root) => {
                     );
                 },
                 (name) => {
-                    // TODO
+                    return ast2.reservedIn(name);
                 }
             );
         },
