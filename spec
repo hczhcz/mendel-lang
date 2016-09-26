@@ -31,6 +31,3 @@ types:
 
 symbol modes:
     const, out, var
-
-lookup modes:
-    global, mixed, local

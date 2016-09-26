@@ -17,11 +17,10 @@ module.exports = {
         };
     },
 
-    lookup: (name, mode) => {
+    lookup: (name) => {
         return {
             __type: 'lookup',
             name: name,
-            mode: mode,
         };
     },
 

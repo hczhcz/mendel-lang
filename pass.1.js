@@ -45,70 +45,51 @@ module.exports = (root) => {
             );
         },
 
-        lookup: (instance, ast) => {
-            let upper;
+        lookup: (instance, ast, makePath, makeReserved) => {
+            let upper = ast2.reservedOut('__self', instance);
 
-            // TODO: allow access to __self and __root?
-
-            switch (ast.mode) {
-                case 'global': {
-                    upper = ast2.root(pass.root);
-
-                    break;
-                }
-                case 'mixed': {
-                    upper = ast2.self(instance);
-
-                    while (!upper.type.modes[ast.name]) {
-                        upper = ast2.pathOut(
-                            upper, '__parent',
-                            upper.type.accessOut('__parent')
-                        );
-                    }
-
-                    break;
-                }
-                case 'local': {
-                    upper = ast2.self(instance);
-
-                    break;
-                }
-                default: {
-                    throw 1; // never reach
-                }
+            while (!upper.type.modes[ast.name]) {
+                upper = ast2.pathOut(
+                    upper, '__parent',
+                    upper.type.accessOut('__parent')
+                );
             }
 
-            if (!upper.type.modes[ast.name]) {
-                throw 1;
-            }
-
-            return upper;
+            return makePath(upper);
         },
 
         lookupOut: (instance, ast) => {
-            const upper = pass.lookup(
-                instance, ast
-            );
-
-            return ast2.pathOut(
-                upper, ast.name,
-                upper.type.accessOut(ast.name)
+            return pass.lookup(
+                instance, ast,
+                (upper) => {
+                    return ast2.pathOut(
+                        upper, ast.name,
+                        upper.type.accessOut(ast.name)
+                    );
+                },
+                (name) => {
+                    // TODO
+                }
             );
         },
 
         lookupIn: (instance, ast, type) => {
-            const upper = pass.lookup(
-                instance, ast
-            );
+            return pass.lookup(
+                instance, ast,
+                (upper) => {
+                    upper.type.accessIn(
+                        ast.name,
+                        type
+                    );
 
-            upper.type.accessIn(
-                ast.name,
-                type
-            );
-
-            return ast2.pathIn(
-                upper,
-                ast.name
+                    return ast2.pathIn(
+                        upper,
+                        ast.name
+                    );
+                },
+                (name) => {
+                    // TODO
+                }
             );
         },
 
