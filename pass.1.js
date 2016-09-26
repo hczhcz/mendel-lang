@@ -139,7 +139,7 @@ module.exports = (root) => {
             );
         },
 
-        call: (instance, ast, before, builder, after, constructor) => {
+        call: (instance, ast, before, builder, after, makeCall) => {
             const callee = pass.visitOut(
                 instance, ast.callee
             );
@@ -202,7 +202,7 @@ module.exports = (root) => {
 
             after(child);
 
-            return constructor(callee, child, outArgs, inArgs);
+            return makeCall(callee, child, outArgs, inArgs);
         },
 
         callOut: (instance, ast) => {

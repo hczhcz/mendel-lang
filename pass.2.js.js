@@ -60,12 +60,12 @@ module.exports = () => {
             pass.visitOut(
                 ast.upper,
                 (value) => {
-                    return 'upper = ' + value;
+                    return '__upper = ' + value;
                 }
             );
 
             pass.write(target(
-                'upper.get('
+                '__upper.get('
                 + JSON.stringify(ast.name)
                 + ')'
             ));
@@ -75,12 +75,12 @@ module.exports = () => {
             pass.visitOut(
                 ast.upper,
                 (value) => {
-                    return 'upper = ' + value;
+                    return '__upper = ' + value;
                 }
             );
 
             pass.write(
-                'upper.set('
+                '__upper.set('
                 + JSON.stringify(ast.name) + ', ' + value
                 + ')'
             );
@@ -90,19 +90,19 @@ module.exports = () => {
             pass.visitOut(
                 ast.callee,
                 (value) => {
-                    return 'callee = ' + value;
+                    return '__callee = ' + value;
                 }
             );
 
             const calleeId = 'func_' + ast.instance.id;
 
-            pass.write('inner = new Map()');
-            pass.write('inner.set(\'__func\', ' + calleeId + ')');
+            pass.write('__inner = new Map()');
+            pass.write('__inner.set(\'__func\', ' + calleeId + ')');
 
             const returnId = calleeId + '_' + pass.buffer.length;
 
-            pass.write('inner.set(\'__outer\', callee)');
-            pass.write('callee = inner');
+            pass.write('__inner.set(\'__outer\', __callee)');
+            pass.write('__callee = __inner');
 
             before();
 
@@ -110,15 +110,15 @@ module.exports = () => {
                 pass.visitOut(
                     ast.callee,
                     (value) => {
-                        return 'callee.set('
+                        return '__callee.set('
                             + JSON.stringify(i) + ', ' + value
                             + ')';
                     }
                 );
             }
 
-            pass.write('callee.set(\'__caller\', self)');
-            pass.write('self = callee');
+            pass.write('__callee.set(\'__caller\', __self)');
+            pass.write('__self = __callee');
 
             // lazy codegen
             if (!pass.code[ast.instance.id]) {
@@ -126,21 +126,21 @@ module.exports = () => {
             }
 
             // call
-            pass.write('func = callee.get(\'__func\')');
-            pass.write('callee.set(\'__func\', ' + returnId + ')');
-            pass.write('func()');
+            pass.write('__func = __callee.get(\'__func\')');
+            pass.write('__callee.set(\'__func\', ' + returnId + ')');
+            pass.write('__func()');
 
-            pass.writeRaw('}');
+            pass.writeRaw('};');
             pass.writeRaw('');
             pass.writeRaw('const ' + returnId + ' = () => {');
 
-            pass.write('callee = self');
-            pass.write('self = callee.get(\'__caller\')');
+            pass.write('__callee = __self');
+            pass.write('__self = __callee.get(\'__caller\')');
 
             for (const i in ast.inArgs) {
                 pass.visitIn(
                     ast.callee,
-                    'callee.get('
+                    '__callee.get('
                     + JSON.stringify(i)
                     + ')'
                 );
@@ -148,8 +148,8 @@ module.exports = () => {
 
             after();
 
-            pass.write('inner = callee');
-            pass.write('callee = inner.get(\'__outer\')');
+            pass.write('__inner = __callee');
+            pass.write('__callee = __inner.get(\'__outer\')');
         },
 
         callOut: (ast, target) => {
@@ -162,12 +162,12 @@ module.exports = () => {
                     pass.visitOut(
                         ast,
                         (value) => {
-                            return 'self.set(\'__result\', ' + value + ')';
+                            return '__self.set(\'__result\', ' + value + ')';
                         }
                     );
                 },
                 () => {
-                    pass.write(target('callee.get(\'__result\')'));
+                    pass.write(target('__callee.get(\'__result\')'));
                 }
             );
         },
@@ -176,12 +176,12 @@ module.exports = () => {
             pass.call(
                 ast,
                 () => {
-                    pass.write('callee.set(\'__input\', ' + value + ')');
+                    pass.write('__callee.set(\'__input\', ' + value + ')');
                 },
                 (ast) => {
                     pass.visitIn(
                         ast,
-                        'self.get(\'__input\')'
+                        '__self.get(\'__input\')'
                     );
                 },
                 () => {
@@ -217,7 +217,7 @@ module.exports = () => {
 
             builder(instance.impl2);
 
-            pass.writeRaw('}');
+            pass.writeRaw('};');
             pass.writeRaw('');
 
             pass.code[instance.id] = pass.buffer.pop().join('');
