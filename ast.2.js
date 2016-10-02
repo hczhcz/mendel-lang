@@ -20,13 +20,6 @@ module.exports = {
         };
     },
 
-    root: (type) => {
-        return {
-            __type: 'root',
-            type: type,
-        };
-    },
-
     pathOut: (upper, name, type) => {
         return {
             __type: 'pathOut',
