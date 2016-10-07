@@ -136,7 +136,7 @@ module.exports = (root) => {
 
             if (
                 closure.__type !== 'closure'
-                || ast.args.length !== closure.params.length
+                || ast.args.length !== closure.paramNames.length
             ) {
                 throw 1;
             }

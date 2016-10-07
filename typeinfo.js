@@ -8,7 +8,7 @@ module.exports = {
             paramNames: paramNames,
             paramModes: paramModes,
             impl1: impl1, // private
-            instances: {},
+            instances: [],
 
             add: (instance, builder) => {
                 // find exist instance

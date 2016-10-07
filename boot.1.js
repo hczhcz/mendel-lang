@@ -22,7 +22,7 @@ module.exports = () => {
             // TODO: arguments? type checking?
 
             return pass.visitOut(
-                pass.root, pass.root, ast1.call(
+                pass.root, ast1.call(
                     ast1.code(
                         [], [],
                         ast
