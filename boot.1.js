@@ -7,16 +7,17 @@ const pass1 = require('./pass.1');
 module.exports = () => {
     const pass = pass1(typeinfo.instance(0));
 
-    return {
-        // namedModule: (name, ast) =>
-        // TODO: init the standard library
-        // pass.root.addInit(
-        //     '__assign', 'const',
-        //     typeinfo.closure(
-        //         pass.root, ['l', 'r'], ['out', 'const'],
-        //         // ???
-        //     )
-        // );
+    const boot = {
+        namedModule: (name, mode, ast) => {
+            const code = boot.module(ast);
+
+            pass.root.addInit(
+                name, mode,
+                code.type
+            );
+
+            return code;
+        },
 
         module: (ast) => {
             // TODO: arguments? type checking?
@@ -32,4 +33,6 @@ module.exports = () => {
             );
         },
     };
+
+    return boot;
 };
