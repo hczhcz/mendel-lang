@@ -40,10 +40,10 @@ module.exports = () => {
                 }
                 case 'i64':
                 case 'u64': {
-                    throw 1;
+                    throw Error();
                 }
                 default: {
-                    throw 1; // never reach
+                    throw Error(); // never reach
                 }
             }
         },

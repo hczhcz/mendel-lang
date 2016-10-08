@@ -16,7 +16,7 @@ module.exports = (root) => {
         },
 
         literalIn: (instance, ast, type) => {
-            throw 1;
+            throw Error();
         },
 
         symbolOut: (instance, ast) => {
@@ -138,7 +138,7 @@ module.exports = (root) => {
                 closure.__type !== 'closure'
                 || ast.args.length !== closure.paramNames.length
             ) {
-                throw 1;
+                throw Error();
             }
 
             // notice: .length change only when a new instance is built
@@ -274,7 +274,7 @@ module.exports = (root) => {
         },
 
         codeIn: (instance, ast, type) => {
-            throw 1;
+            throw Error();
         },
 
         visitOut: (instance, ast) => {

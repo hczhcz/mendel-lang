@@ -46,7 +46,7 @@ module.exports = {
 
                 // type checking
                 if (impl2.type !== 'void') {
-                    throw 1;
+                    throw Error();
                 }
 
                 instance.impl2 = impl2;
@@ -75,7 +75,7 @@ module.exports = {
 
             add: (name, mode) => {
                 if (instance.modes[name]) {
-                    throw 1;
+                    throw Error();
                 }
 
                 instance.modes[name] = mode;
@@ -83,11 +83,11 @@ module.exports = {
 
             addType: (name, type) => {
                 if (!instance.modes[name]) {
-                    throw 1;
+                    throw Error();
                 }
 
                 if (instance.types[name]) {
-                    throw 1;
+                    throw Error();
                 }
 
                 instance.types[name] = type;
@@ -98,11 +98,11 @@ module.exports = {
                     instance.modes[name] !== 'const'
                     && instance.modes[name] !== 'var'
                 ) {
-                    throw 1;
+                    throw Error();
                 }
 
                 if (!instance.types[name]) {
-                    throw 1;
+                    throw Error();
                 }
 
                 return instance.types[name];
@@ -113,13 +113,13 @@ module.exports = {
                     instance.modes[name] !== 'out'
                     && instance.modes[name] !== 'var'
                 ) {
-                    throw 1;
+                    throw Error();
                 }
 
                 if (instance.types[name]) {
                     // type checking
                     if (instance.types[name] !== type) {
-                        throw 1;
+                        throw Error();
                     }
                 } else {
                     instance.types[name] = type;
