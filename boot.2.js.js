@@ -10,10 +10,14 @@ module.exports = () => {
 
         // TODO: collect pass.code?
 
+        render: () => {
+            return pass.code.join('');
+        },
+
         module: (ast) => {
             pass.buffer.push([]);
 
-            pass.writeRaw('(() => {');
+            pass.writeRaw('const __module = () => {');
 
             pass.visitOut(
                 ast,
@@ -22,8 +26,9 @@ module.exports = () => {
                 }
             );
 
-            pass.writeRaw('})();');
+            pass.writeRaw('}');
             pass.writeRaw('');
+            pass.writeRaw('__module();');
 
             return pass.buffer.pop().join('');
         },

@@ -42,7 +42,9 @@ b1.namedModule(
 try {
     const a2 = b1.module(a1);
 
-    console.log(b2.module(a2));
+    const m2 = b2.module(a2);
+
+    console.log(b2.render() + m2);
 } catch (e) {
     console.log(e.stack);
 }
