@@ -1,13 +1,13 @@
 'use strict';
 
 module.exports = {
-    closure: (parent, paramNames, paramModes, impl1) => {
+    closure: (parent, paramNames, paramModes, impl) => {
         const closure = {
             __type: 'closure',
             parent: parent,
             paramNames: paramNames,
             paramModes: paramModes,
-            impl1: impl1, // private
+            impl: impl, // ast1, private
             instances: [],
 
             add: (instance, builder) => {
@@ -42,7 +42,7 @@ module.exports = {
 
                 closure.instances.push(instance);
 
-                instance.impl2 = builder(instance, closure.impl1);
+                instance.impl = builder(instance, closure.impl);
 
                 return instance;
             },
@@ -58,7 +58,7 @@ module.exports = {
             inits: [],
             modes: {},
             types: {}, // private
-            impl2: null, // set by closure
+            impl: null, // ast2, set by closure
 
             addInit: (name, mode, type) => {
                 instance.inits.push(name);

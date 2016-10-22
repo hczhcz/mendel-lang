@@ -210,7 +210,7 @@ module.exports = () => {
 
             pass.writeRaw('const ' + id + ' = () => {');
 
-            builder(instance.impl2);
+            builder(instance.impl);
 
             // return
             pass.write('__self.__func = undefined');

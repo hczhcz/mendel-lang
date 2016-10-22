@@ -269,7 +269,7 @@ module.exports = (root) => {
         codeOut: (instance, ast) => {
             return ast2.reservedOut('__self', typeinfo.closure(
                 instance, ast.paramNames, ast.paramModes,
-                ast.impl1
+                ast.impl
             ));
         },
 
