@@ -40,8 +40,10 @@ module.exports = (root) => {
             );
 
             return ast2.pathIn(
-                ast2.reservedOut('__self', instance),
-                ast.name
+                ast2.reservedOut(
+                    '__self',
+                    instance
+                ), ast.name
             );
         },
 
@@ -52,7 +54,10 @@ module.exports = (root) => {
                     return makeReserved(ast.name);
                 }
                 default: {
-                    let upper = ast2.reservedOut('__self', instance);
+                    let upper = ast2.reservedOut(
+                        '__self',
+                        instance
+                    );
 
                     while (!upper.type.modes[ast.name]) {
                         upper = ast2.pathOut(
@@ -76,7 +81,10 @@ module.exports = (root) => {
                     );
                 },
                 (name) => {
-                    return ast2.reservedOut(name, instance);
+                    return ast2.reservedOut(
+                        name,
+                        instance
+                    );
                 }
             );
         },
@@ -91,8 +99,7 @@ module.exports = (root) => {
                     );
 
                     return ast2.pathIn(
-                        upper,
-                        ast.name
+                        upper, ast.name
                     );
                 },
                 (name) => {
@@ -123,8 +130,7 @@ module.exports = (root) => {
             );
 
             return ast2.pathIn(
-                upper,
-                ast.name
+                upper, ast.name
             );
         },
 
@@ -181,7 +187,10 @@ module.exports = (root) => {
                 }
             }
 
-            child = closure.add(child, builder);
+            child = closure.add(
+                child,
+                builder
+            );
 
             const inArgs = {};
 
@@ -267,10 +276,13 @@ module.exports = (root) => {
         },
 
         codeOut: (instance, ast) => {
-            return ast2.reservedOut('__self', typeinfo.closure(
-                instance, ast.paramNames, ast.paramModes,
-                ast.impl
-            ));
+            return ast2.reservedOut(
+                '__self',
+                typeinfo.closure(
+                    instance, ast.paramNames, ast.paramModes,
+                    ast.impl
+                )
+            );
         },
 
         codeIn: (instance, ast, type) => {

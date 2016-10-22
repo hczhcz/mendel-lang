@@ -62,8 +62,13 @@ module.exports = {
 
             addInit: (name, mode, type) => {
                 instance.inits.push(name);
-                instance.add(name, mode);
-                instance.addType(name, type);
+                instance.add(
+                    name, mode
+                );
+                instance.addType(
+                    name,
+                    type
+                );
             },
 
             add: (name, mode) => {
