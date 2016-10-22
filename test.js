@@ -5,10 +5,10 @@ const boot1 = require('./boot.1');
 const boot2 = require('./boot.2.js');
 
 const a1 = ast1.call(ast1.lookup('__do'), [
-    // var a = 1;
+    // var a = 'hello';
     ast1.call(ast1.lookup('__assign'), [
         ast1.symbol('a', 'var'),
-        ast1.literal(1, 'i32'),
+        ast1.literal('hello', 'string'),
     ]),
     // const b = (x) => {a = x}
     ast1.call(ast1.lookup('__assign'), [
@@ -21,9 +21,13 @@ const a1 = ast1.call(ast1.lookup('__do'), [
             ])
         ),
     ]),
-    // b(2)
+    // b('hello, world')
     ast1.call(ast1.lookup('b'), [
-        ast1.literal(2, 'i32'),
+        ast1.literal('hello, world', 'string'),
+    ]),
+    // write(a)
+    ast1.call(ast1.lookup('__write'), [
+        ast1.lookup('a'),
     ]),
 ]);
 
@@ -32,7 +36,7 @@ const b2 = boot2();
 
 b1.namedModule(
     '__do', 'const', ast1.code(
-        ['a', 'b', 'c'], ['const', 'const', 'const'],
+        ['a', 'b', 'c', 'd'], ['const', 'const', 'const', 'const'],
         ast1.literal(null, 'void')
     )
 );
@@ -58,6 +62,32 @@ b1.namedModule(
                 js: {
                     out: (pass, target) => {
                         pass.write('__self.set(\'a\', __self.get(\'b\'))');
+                    },
+                    in: (pass, value) => {
+                        throw Error(); // never reach
+                    },
+                },
+            }
+        )
+    )
+);
+
+b1.namedModule(
+    '__write', 'const', ast1.code(
+        ['a'], ['const'],
+        ast1.native(
+            {
+                out: (pass, instance) => {
+                    return 'void';
+                },
+                in: (pass, instance) => {
+                    throw Error();
+                },
+            },
+            {
+                js: {
+                    out: (pass, target) => {
+                        pass.write('console.log(__self.get(\'a\'))');
                     },
                     in: (pass, value) => {
                         throw Error(); // never reach
