@@ -60,7 +60,7 @@ module.exports = {
 
     nativeOut: (impls, type) => {
         return {
-            __type: 'native',
+            __type: 'nativeOut',
             impls: impls,
             type: type,
         };
@@ -68,7 +68,7 @@ module.exports = {
 
     nativeIn: (impls) => {
         return {
-            __type: 'native',
+            __type: 'nativeIn',
             impls: impls,
         };
     },

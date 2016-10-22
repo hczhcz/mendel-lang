@@ -172,13 +172,13 @@ module.exports = (root) => {
                     closure.paramModes[i] === 'const'
                     || closure.paramModes[i] === 'var'
                 ) {
-                    outArgs[i] = pass.visitOut(
+                    outArgs[closure.paramNames[i]] = pass.visitOut(
                         instance, ast.args[i]
                     );
 
                     child.addInit(
                         closure.paramNames[i], closure.paramModes[i],
-                        outArgs[i].type
+                        outArgs[closure.paramNames[i]].type
                     );
                 } else {
                     child.add(
@@ -199,7 +199,7 @@ module.exports = (root) => {
                     closure.paramModes[i] === 'out'
                     || closure.paramModes[i] === 'var'
                 ) {
-                    inArgs[i] = pass.visitIn(
+                    inArgs[closure.paramNames[i]] = pass.visitIn(
                         instance, ast.args[i],
                         child.doOut(closure.paramNames[i])
                     );

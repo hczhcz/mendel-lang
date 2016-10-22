@@ -67,7 +67,7 @@ module.exports = () => {
 
             pass.write(target(
                 '__upper.get('
-                + JSON.stringify(ast.name)
+                + '\'' + ast.name + '\''
                 + ')'
             ));
         },
@@ -82,7 +82,7 @@ module.exports = () => {
 
             pass.write(
                 '__upper.set('
-                + JSON.stringify(ast.name) + ', ' + value
+                + '\'' + ast.name + '\', ' + value
                 + ')'
             );
         },
@@ -110,10 +110,10 @@ module.exports = () => {
 
             for (const i in ast.outArgs) {
                 pass.visitOut(
-                    ast.callee,
+                    ast.outArgs[i],
                     (value) => {
                         return '__callee.set('
-                            + JSON.stringify(i) + ', ' + value
+                            + '\'' + i + '\', ' + value
                             + ')';
                     }
                 );
@@ -140,9 +140,9 @@ module.exports = () => {
 
             for (const i in ast.inArgs) {
                 pass.visitIn(
-                    ast.callee,
+                    ast.inArgs[i],
                     '__callee.get('
-                    + JSON.stringify(i)
+                    + '\'' + i + '\''
                     + ')'
                 );
             }
