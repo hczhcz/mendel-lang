@@ -6,11 +6,11 @@ module.exports = () => {
         buffer: [],
 
         writeRaw: (line) => {
-            pass.buffer.back().push(line);
+            pass.buffer[pass.buffer.length - 1].push(line + '\n');
         },
 
         write: (line) => {
-            pass.writeRaw('    ' + line + ';\n');
+            pass.writeRaw('    ' + line + ';');
         },
 
         literal: (ast, target) => {
@@ -191,7 +191,7 @@ module.exports = () => {
 
         nativeOut: (ast, target) => {
             if (ast.impls.js) {
-                ast.impls.js.out(target);
+                ast.impls.js.out(pass, target);
             } else {
                 throw Error();
             }
@@ -199,7 +199,7 @@ module.exports = () => {
 
         nativeIn: (ast, value) => {
             if (ast.impls.js) {
-                ast.impls.js.in(value);
+                ast.impls.js.in(pass, value);
             } else {
                 throw Error();
             }

@@ -303,7 +303,7 @@ module.exports = (root) => {
         },
 
         nativeIn: (instance, ast, type) => {
-            const virtual = pass.visitIn(
+            pass.visitIn(
                 instance, ast.virtual, type
             );
 
