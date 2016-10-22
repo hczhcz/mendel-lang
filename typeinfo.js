@@ -42,14 +42,7 @@ module.exports = {
 
                 closure.instances.push(instance);
 
-                const impl2 = builder(instance, closure.impl1);
-
-                // type checking
-                if (impl2.type !== 'void') {
-                    throw Error();
-                }
-
-                instance.impl2 = impl2;
+                instance.impl2 = builder(instance, closure.impl1);
 
                 return instance;
             },

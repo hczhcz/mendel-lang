@@ -203,7 +203,7 @@ module.exports = (root) => {
         },
 
         callOut: (instance, ast) => {
-            let result;
+            let result = null;
 
             return pass.call(
                 instance, ast,
