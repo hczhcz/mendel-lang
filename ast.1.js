@@ -48,4 +48,12 @@ module.exports = {
             impl: impl,
         };
     },
+
+    native: (virtual, impls) => {
+        return {
+            __type: 'native',
+            virtual: virtual,
+            impls: impls,
+        };
+    },
 };

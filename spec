@@ -20,6 +20,7 @@ types:
         path
         call
         code
+        native
     pass-2 ast node types (compile time):
         literal // duplicated
         reservedOut
@@ -28,6 +29,8 @@ types:
         pathIn
         callOut
         callIn
+        nativeOut
+        nativeIn
 
 symbol modes:
     const, out, var, special
