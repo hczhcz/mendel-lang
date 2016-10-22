@@ -15,6 +15,8 @@ module.exports = () => {
         },
 
         module: (ast) => {
+            pass.id.push('__module');
+
             pass.buffer.push([]);
 
             pass.writeRaw('const __module = () => {');
@@ -28,7 +30,10 @@ module.exports = () => {
 
             pass.writeRaw('}');
             pass.writeRaw('');
+
             pass.writeRaw('__module();');
+
+            pass.id.pop();
 
             return pass.buffer.pop().join('');
         },

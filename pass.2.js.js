@@ -3,6 +3,7 @@
 module.exports = () => {
     const pass = {
         code: [],
+        id: [],
         buffer: [],
 
         writeRaw: (line) => {
@@ -96,10 +97,11 @@ module.exports = () => {
 
             const calleeId = 'func_' + ast.instance.id;
 
+            const returnId = pass.id[pass.id.length - 1]
+                + '_' + pass.buffer[pass.buffer.length - 1].length;
+
             pass.write('__inner = new Map()');
             pass.write('__inner.__func = ' + calleeId);
-
-            const returnId = calleeId + '_' + pass.buffer.length;
 
             pass.write('__inner.__outer = __callee');
             pass.write('__callee = __inner');
@@ -222,6 +224,8 @@ module.exports = () => {
         build: (instance, builder) => {
             const id = 'func_' + instance.id;
 
+            pass.id.push(id);
+
             pass.buffer.push([]);
 
             pass.writeRaw('const ' + id + ' = () => {');
@@ -229,11 +233,13 @@ module.exports = () => {
             builder(instance.impl);
 
             // return
-            pass.write('__self.__func = undefined');
+            pass.write('__self.__func = null');
             pass.write('__self.__caller.__func()');
 
             pass.writeRaw('};');
             pass.writeRaw('');
+
+            pass.id.pop();
 
             pass.code[instance.id] = pass.buffer.pop().join('');
         },
