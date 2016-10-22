@@ -91,6 +91,14 @@ module.exports = {
                 instance.types[name] = type;
             },
 
+            doOut: (name) => {
+                if (!instance.types[name]) {
+                    throw Error();
+                }
+
+                return instance.types[name];
+            },
+
             accessOut: (name) => {
                 if (
                     instance.modes[name] !== 'const'

@@ -201,7 +201,7 @@ module.exports = (root) => {
                 ) {
                     inArgs[i] = pass.visitIn(
                         instance, ast.args[i],
-                        child.accessOut(closure.paramNames[i])
+                        child.doOut(closure.paramNames[i])
                     );
                 }
             }
