@@ -103,7 +103,9 @@ module.exports = (root) => {
                     );
                 },
                 (name) => {
-                    return ast2.reservedIn(name);
+                    return ast2.reservedIn(
+                        name
+                    );
                 }
             );
         },
@@ -295,7 +297,7 @@ module.exports = (root) => {
             );
 
             return ast2.nativeOut(
-                virtual, ast.impls,
+                ast.impls,
                 virtual.type
             );
         },
@@ -306,7 +308,7 @@ module.exports = (root) => {
             );
 
             return ast2.nativeIn(
-                virtual, ast.impls
+                ast.impls
             );
         },
 

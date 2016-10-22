@@ -58,19 +58,17 @@ module.exports = {
         };
     },
 
-    nativeOut: (virtual, impls, type) => {
+    nativeOut: (impls, type) => {
         return {
             __type: 'native',
-            virtual: virtual,
             impls: impls,
             type: type,
         };
     },
 
-    nativeIn: (virtual, impls) => {
+    nativeIn: (impls) => {
         return {
             __type: 'native',
-            virtual: virtual,
             impls: impls,
         };
     },
