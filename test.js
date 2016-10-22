@@ -9,14 +9,14 @@ const a1 = ast1.call(ast1.lookup('__do'), [
     // var a = 1;
     ast1.call(ast1.lookup('__assign'), [
         ast1.symbol('a', 'var'),
-        ast1.literal(1, 'int'),
+        ast1.literal(1, 'i32'),
     ]),
     // const b = (x) => {a = x}
     ast1.call(ast1.lookup('__assign'), [
         ast1.symbol('b', 'const'),
         ast1.code(
             ['x'], ['const'],
-            ast1.call('__assign', [
+            ast1.call(ast1.lookup('__assign'), [
                 ast1.lookup('a'),
                 ast1.lookup('x'),
             ])
@@ -24,7 +24,7 @@ const a1 = ast1.call(ast1.lookup('__do'), [
     ]),
     // b(2)
     ast1.call(ast1.lookup('b'), [
-        ast1.literal(2, 'int'),
+        ast1.literal(2, 'i32'),
     ]),
 ]);
 
@@ -32,11 +32,41 @@ const b1 = boot1();
 const b2 = boot2();
 
 b1.namedModule(
-    '__do', 'const', ast1.literal(null, 'void')
+    '__do', 'const', ast1.code(
+        ['a', 'b', 'c'], ['const', 'const', 'const'],
+        ast1.literal(null, 'void')
+    )
 );
 
 b1.namedModule(
-    '__assign', 'const', ast1.literal(null, 'void')
+    '__assign', 'const', ast1.code(
+        ['a', 'b'], ['out', 'const'],
+        ast1.native(
+            {
+                out: (pass, instance) => {
+                    instance.addType(
+                        'a',
+                        instance.accessOut('b')
+                    );
+
+                    return 'void';
+                },
+                in: (pass, instance) => {
+                    throw Error();
+                },
+            },
+            {
+                js: {
+                    out: (pass, target) => {
+                        pass.write('__self.set(\'a\', __self.get(\'b\'))');
+                    },
+                    in: (pass, value) => {
+                        throw Error(); // never reach
+                    },
+                },
+            }
+        )
+    )
 );
 
 try {
