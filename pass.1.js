@@ -289,6 +289,27 @@ module.exports = (root) => {
             throw Error();
         },
 
+        nativeOut: (instance, ast) => {
+            const virtual = pass.visitOut(
+                instance, ast.virtual
+            );
+
+            return ast2.nativeOut(
+                virtual, ast.impls,
+                virtual.type
+            );
+        },
+
+        nativeIn: (instance, ast, type) => {
+            const virtual = pass.visitIn(
+                instance, ast.virtual, type
+            );
+
+            return ast2.nativeIn(
+                virtual, ast.impls
+            );
+        },
+
         visitOut: (instance, ast) => {
             return pass[ast.__type + 'Out'](
                 instance, ast

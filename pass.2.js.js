@@ -189,6 +189,22 @@ module.exports = () => {
             );
         },
 
+        nativeOut: (ast, target) => {
+            if (ast.impls.js) {
+                ast.impls.js.out(target);
+            } else {
+                throw Error();
+            }
+        },
+
+        nativeIn: (ast, value) => {
+            if (ast.impls.js) {
+                ast.impls.js.in(value);
+            } else {
+                throw Error();
+            }
+        },
+
         visitOut: (ast, target) => {
             pass[ast.__type](
                 ast,
