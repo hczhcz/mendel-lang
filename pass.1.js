@@ -103,9 +103,7 @@ module.exports = (root) => {
                     );
                 },
                 (name) => {
-                    return ast2.reservedIn(
-                        name
-                    );
+                    return ast2.reservedIn(name);
                 }
             );
         },
@@ -292,24 +290,18 @@ module.exports = (root) => {
         },
 
         nativeOut: (instance, ast) => {
-            const virtual = pass.visitOut(
-                instance, ast.virtual
-            );
+            const type = ast.typing.out(pass, instance);
 
             return ast2.nativeOut(
                 ast.impls,
-                virtual.type
+                type
             );
         },
 
         nativeIn: (instance, ast, type) => {
-            pass.visitIn(
-                instance, ast.virtual, type
-            );
+            ast.typing.in(pass, instance);
 
-            return ast2.nativeIn(
-                ast.impls
-            );
+            return ast2.nativeIn(ast.impls);
         },
 
         visitOut: (instance, ast) => {

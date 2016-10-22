@@ -49,10 +49,10 @@ module.exports = {
         };
     },
 
-    native: (virtual, impls) => {
+    native: (typing, impls) => {
         return {
             __type: 'native',
-            virtual: virtual,
+            typing: typing,
             impls: impls,
         };
     },
