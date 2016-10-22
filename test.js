@@ -1,6 +1,5 @@
 'use strict';
 
-const typeinfo = require('./typeinfo');
 const ast1 = require('./ast.1');
 const boot1 = require('./boot.1');
 const boot2 = require('./boot.2.js');
@@ -75,6 +74,6 @@ try {
     const m2 = b2.module(a2);
 
     console.log(b2.render() + m2);
-} catch (e) {
-    console.log(e.stack);
+} catch (err) {
+    console.log(err.stack);
 }
