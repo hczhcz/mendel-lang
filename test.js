@@ -69,11 +69,22 @@ b1.namedModule(
 );
 
 try {
+    const head = '\'use strict\';\n'
+        + '\n'
+        + 'let __inner, __upper, __callee;\n'
+        + 'let __root = new Map();\n'
+        + 'let __self = __root;\n'
+        + '\n'
+        + '__root.set(\'__do\', __root);\n'
+        + '__root.set(\'__assign\', __root);\n'
+        + '__root.set(\'__write\', __root);\n'
+        + '\n';
+
     const a2 = b1.module(a1);
 
     const m2 = b2.module(a2);
 
-    console.log(b2.render() + m2);
+    console.log(head + b2.render() + m2);
 } catch (err) {
     console.log(err.stack);
 }
