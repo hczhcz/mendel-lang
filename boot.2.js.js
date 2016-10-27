@@ -15,11 +15,11 @@ module.exports = () => {
         },
 
         module: (ast) => {
-            pass.id.push('__module');
+            pass.id.push('main');
 
             pass.buffer.push([]);
 
-            pass.writeRaw('const __module = () => {');
+            pass.writeRaw('const main = () => {');
 
             pass.visitOut(
                 ast,
@@ -31,7 +31,7 @@ module.exports = () => {
             pass.writeRaw('}');
             pass.writeRaw('');
 
-            pass.writeRaw('__module();');
+            pass.writeRaw('main();');
 
             pass.id.pop();
 
