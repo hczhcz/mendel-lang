@@ -3,7 +3,13 @@
 const ast1 = require('./ast.1');
 
 module.exports = {
-    literal: ast1.literal,
+    literalOut: (value, type) => {
+        return {
+            __type: 'literalOut',
+            value: value,
+            type: type,
+        };
+    },
 
     reservedOut: (name, type) => {
         return {

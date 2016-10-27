@@ -22,7 +22,7 @@ types:
         code
         native
     pass-2 ast node types (compile time):
-        literal // duplicated
+        literalOut
         reservedOut
         reservedIn
         pathOut

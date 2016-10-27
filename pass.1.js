@@ -9,7 +9,7 @@ module.exports = (root) => {
         instances: [root],
 
         literalOut: (instance, ast) => {
-            return ast2.literal(
+            return ast2.literalOut(
                 ast.value,
                 ast.type
             );
@@ -24,7 +24,7 @@ module.exports = (root) => {
                 ast.name, ast.mode
             );
 
-            return ast2.literal(
+            return ast2.literalOut(
                 null,
                 'void'
             );
