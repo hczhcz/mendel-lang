@@ -142,7 +142,7 @@ module.exports = (root) => {
 
             if (
                 closure.__type !== 'closure'
-                || ast.args.length !== closure.paramNames.length
+                || ast.args.length !== closure.code.paramNames.length
             ) {
                 throw Error();
             }
@@ -167,22 +167,22 @@ module.exports = (root) => {
 
             const outArgs = {};
 
-            for (const i in closure.paramNames) {
+            for (const i in closure.code.paramNames) {
                 if (
-                    closure.paramModes[i] === 'const'
-                    || closure.paramModes[i] === 'var'
+                    closure.code.paramModes[i] === 'const'
+                    || closure.code.paramModes[i] === 'var'
                 ) {
-                    outArgs[closure.paramNames[i]] = pass.visitOut(
+                    outArgs[closure.code.paramNames[i]] = pass.visitOut(
                         instance, ast.args[i]
                     );
 
                     child.addInit(
-                        closure.paramNames[i], closure.paramModes[i],
-                        outArgs[closure.paramNames[i]].type
+                        closure.code.paramNames[i], closure.code.paramModes[i],
+                        outArgs[closure.code.paramNames[i]].type
                     );
                 } else {
                     child.add(
-                        closure.paramNames[i], closure.paramModes[i]
+                        closure.code.paramNames[i], closure.code.paramModes[i]
                     );
                 }
             }
@@ -194,14 +194,14 @@ module.exports = (root) => {
 
             const inArgs = {};
 
-            for (const i in closure.paramNames) {
+            for (const i in closure.code.paramNames) {
                 if (
-                    closure.paramModes[i] === 'out'
-                    || closure.paramModes[i] === 'var'
+                    closure.code.paramModes[i] === 'out'
+                    || closure.code.paramModes[i] === 'var'
                 ) {
-                    inArgs[closure.paramNames[i]] = pass.visitIn(
+                    inArgs[closure.code.paramNames[i]] = pass.visitIn(
                         instance, ast.args[i],
-                        child.doOut(closure.paramNames[i])
+                        child.doOut(closure.code.paramNames[i])
                     );
                 }
             }
@@ -279,8 +279,7 @@ module.exports = (root) => {
             return ast2.reservedOut(
                 '__self',
                 typeinfo.closure(
-                    instance, ast.paramNames, ast.paramModes,
-                    ast.impl
+                    instance, ast
                 )
             );
         },

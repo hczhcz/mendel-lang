@@ -14,9 +14,7 @@ types:
             (in literal types)
         closure
             parent -> instance
-            paramNames -> array of string
-            paramModes -> array of string (in symbol modes)
-            private impl -> pass-1 ast node
+            code -> code
             private instances -> array of instance
             add -> function
         instance
