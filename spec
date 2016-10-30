@@ -49,6 +49,7 @@ types:
         code
             paramNames -> array of string
             paramModes -> array of string (in symbol modes)
+            vaMode -> string (in symbol modes or '')
             impl -> pass-1 ast node
         native
             typing -> object
@@ -112,6 +113,7 @@ reserved names:
     members:
         __parent
         __return
+        __argument_#
 
 standard library:
     builtin:

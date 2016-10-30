@@ -140,9 +140,16 @@ module.exports = (root) => {
             );
             const closure = callee.type;
 
+            if (closure.__type !== 'closure') {
+                throw Error();
+            }
+
             if (
-                closure.__type !== 'closure'
-                || ast.args.length !== closure.code.paramNames.length
+                ast.args.length < closure.code.paramModes.length
+                || (
+                    closure.code.vaMode === ''
+                    && ast.args.length > closure.code.paramModes.length
+                )
             ) {
                 throw Error();
             }
@@ -167,22 +174,24 @@ module.exports = (root) => {
 
             const outArgs = {};
 
-            for (const i in closure.code.paramNames) {
-                if (
-                    closure.code.paramModes[i] === 'const'
-                    || closure.code.paramModes[i] === 'var'
-                ) {
-                    outArgs[closure.code.paramNames[i]] = pass.visitOut(
+            for (const i in ast.args) {
+                const name = closure.code.paramNames[i]
+                    || '__argument_' + i;
+                const mode = closure.code.paramModes[i]
+                    || closure.code.vaMode;
+
+                if (mode === 'const' || mode === 'var') {
+                    outArgs[name] = pass.visitOut(
                         instance, ast.args[i]
                     );
 
                     child.addInit(
-                        closure.code.paramNames[i], closure.code.paramModes[i],
-                        outArgs[closure.code.paramNames[i]].type
+                        name, mode,
+                        outArgs[name].type
                     );
                 } else {
                     child.add(
-                        closure.code.paramNames[i], closure.code.paramModes[i]
+                        name, mode
                     );
                 }
             }
@@ -194,14 +203,16 @@ module.exports = (root) => {
 
             const inArgs = {};
 
-            for (const i in closure.code.paramNames) {
-                if (
-                    closure.code.paramModes[i] === 'out'
-                    || closure.code.paramModes[i] === 'var'
-                ) {
-                    inArgs[closure.code.paramNames[i]] = pass.visitIn(
+            for (const i in ast.args) {
+                const name = closure.code.paramNames[i]
+                    || '__argument_' + i;
+                const mode = closure.code.paramModes[i]
+                    || closure.code.vaMode;
+
+                if (mode === 'out' || mode === 'var') {
+                    inArgs[name] = pass.visitIn(
                         instance, ast.args[i],
-                        child.doOut(closure.code.paramNames[i])
+                        child.doOut(name)
                     );
                 }
             }

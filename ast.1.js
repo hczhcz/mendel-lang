@@ -40,11 +40,12 @@ module.exports = {
         };
     },
 
-    code: (paramNames, paramModes, impl) => {
+    code: (paramNames, paramModes, vaMode, impl) => {
         return {
             __type: 'code',
             paramNames: paramNames,
             paramModes: paramModes,
+            vaMode: vaMode,
             impl: impl,
         };
     },

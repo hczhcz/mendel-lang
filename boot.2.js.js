@@ -8,8 +8,6 @@ module.exports = () => {
     return {
         // TODO: init the standard library
 
-        // TODO: collect pass.code?
-
         render: () => {
             return pass.code.join('');
         },

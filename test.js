@@ -14,7 +14,7 @@ const a1 = ast1.call(ast1.lookup('__do'), [
     ast1.call(ast1.lookup('__assign'), [
         ast1.symbol('b', 'const'),
         ast1.code(
-            ['x'], ['const'],
+            ['x'], ['const'], '',
             ast1.call(ast1.lookup('__assign'), [
                 ast1.lookup('a'),
                 ast1.lookup('x'),
@@ -36,14 +36,14 @@ const b2 = boot2();
 
 b1.namedModule(
     '__do', 'const', ast1.code(
-        ['a', 'b', 'c', 'd'], ['const', 'const', 'const', 'const'],
+        [], [], 'const',
         ast1.literal(null, 'void')
     )
 );
 
 b1.namedModule(
     '__assign', 'const', ast1.code(
-        ['a', 'b'], ['out', 'const'],
+        ['a', 'b'], ['out', 'const'], '',
         ast1.native(
             {
                 out: (pass, instance) => {
@@ -74,7 +74,7 @@ b1.namedModule(
 
 b1.namedModule(
     '__write', 'const', ast1.code(
-        ['a'], ['const'],
+        ['a'], ['const'], '',
         ast1.native(
             {
                 out: (pass, instance) => {

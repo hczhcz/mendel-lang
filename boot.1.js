@@ -20,12 +20,12 @@ module.exports = () => {
         },
 
         module: (ast) => {
-            // TODO: arguments? type checking?
+            // TODO: env info as arguments?
 
             return pass.visitOut(
                 pass.root, ast1.call(
                     ast1.code(
-                        [], [],
+                        [], [], '',
                         ast
                     ),
                     []
