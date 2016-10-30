@@ -164,12 +164,12 @@ module.exports = () => {
                     pass.visitOut(
                         ast,
                         (value) => {
-                            return '__self.set(\'__result\', ' + value + ')';
+                            return '__self.set(\'__return\', ' + value + ')';
                         }
                     );
                 },
                 () => {
-                    pass.write(target('__callee.get(\'__result\')'));
+                    pass.write(target('__callee.get(\'__return\')'));
                 }
             );
         },
@@ -178,12 +178,12 @@ module.exports = () => {
             pass.call(
                 ast,
                 () => {
-                    pass.write('__callee.set(\'__input\', ' + value + ')');
+                    pass.write('__callee.set(\'__return\', ' + value + ')');
                 },
                 (ast) => {
                     pass.visitIn(
                         ast,
-                        '__self.get(\'__input\')'
+                        '__self.get(\'__return\')'
                     );
                 },
                 () => {

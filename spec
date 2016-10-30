@@ -111,8 +111,7 @@ reserved names:
         __self
     members:
         __parent
-        __input
-        __result
+        __return
 
 standard library:
     builtin:

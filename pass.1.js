@@ -218,7 +218,7 @@ module.exports = (root) => {
                 instance, ast,
                 (child) => {
                     child.add(
-                        '__result', 'out'
+                        '__return', 'out'
                     );
                 },
                 (child, ast) => {
@@ -232,7 +232,7 @@ module.exports = (root) => {
                 },
                 (child) => {
                     child.addType(
-                        '__result',
+                        '__return',
                         result.type
                     );
                 },
@@ -251,7 +251,7 @@ module.exports = (root) => {
                 instance, ast,
                 (child) => {
                     child.addInit(
-                        '__input', 'const',
+                        '__return', 'const',
                         type
                     );
                 },
