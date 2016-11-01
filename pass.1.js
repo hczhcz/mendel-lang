@@ -5,6 +5,7 @@ const ast2 = require('./ast.2');
 
 module.exports = (root) => {
     const pass = {
+        id: 0,
         root: root,
         instances: [root],
 
@@ -155,7 +156,8 @@ module.exports = (root) => {
             }
 
             // notice: .length change only when a new instance is built
-            let child = typeinfo.instance(pass.instances.length);
+            let child = typeinfo.instance(pass.id);
+            pass.id += 1;
 
             child.addInit(
                 '__root', 'special',
