@@ -1,6 +1,6 @@
 'use strict';
 
-const typeinfo = require('./typeinfo');
+const typeinfo = require('./type.info');
 const ast1 = require('./ast.1');
 const pass1 = require('./pass.1');
 

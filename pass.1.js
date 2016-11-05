@@ -1,6 +1,6 @@
 'use strict';
 
-const typeinfo = require('./typeinfo');
+const typeinfo = require('./type.info');
 const ast2 = require('./ast.2');
 
 module.exports = (root) => {
