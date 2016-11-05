@@ -15,7 +15,7 @@ module.exports = () => {
         },
 
         literalOut: (ast, target) => {
-            switch (ast.type) {
+            switch (ast.type.type) {
                 case 'void': {
                     pass.write(target('null'));
 
