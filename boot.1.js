@@ -11,7 +11,7 @@ module.exports = () => {
         namedModule: (name, mode, ast) => {
             const code = boot.module(ast);
 
-            pass.root.addInit(
+            pass.instances[0].addInit(
                 name, mode,
                 code.type
             );
@@ -23,7 +23,7 @@ module.exports = () => {
             // TODO: env info as arguments?
 
             return pass.visitOut(
-                pass.root, ast1.call(
+                pass.instances[0], ast1.call(
                     ast1.code(
                         [], [], '',
                         ast

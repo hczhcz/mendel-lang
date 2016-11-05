@@ -5,8 +5,7 @@ const ast2 = require('./ast.2');
 
 module.exports = (root) => {
     const pass = {
-        id: 0,
-        root: root,
+        id: 1,
         instances: [root],
 
         literalOut: (instance, ast) => {
@@ -145,23 +144,27 @@ module.exports = (root) => {
                 throw Error();
             }
 
+            if (ast.args.length < closure.code.paramModes.length) {
+                throw Error();
+            }
+
             if (
-                ast.args.length < closure.code.paramModes.length
-                || (
-                    closure.code.vaMode === ''
-                    && ast.args.length > closure.code.paramModes.length
-                )
+                closure.code.vaMode === ''
+                && ast.args.length > closure.code.paramModes.length
             ) {
                 throw Error();
             }
 
             // notice: .length change only when a new instance is built
             let child = typeinfo.instance(pass.id);
-            pass.id += 1;
+
+            if (child.id === pass.id) {
+                pass.id += 1;
+            }
 
             child.addInit(
                 '__root', 'special',
-                pass.root
+                pass.instances[0]
             );
             child.addInit(
                 '__self', 'special',
@@ -235,7 +238,7 @@ module.exports = (root) => {
                     );
                 },
                 (child, ast) => {
-                    pass.instances.push(child);
+                    pass.instances[child.id] = child;
 
                     result = pass.visitOut(
                         child, ast
@@ -269,7 +272,7 @@ module.exports = (root) => {
                     );
                 },
                 (child, ast) => {
-                    pass.instances.push(child);
+                    pass.instances[child.id] = child;
 
                     return pass.visitIn(
                         child, ast,
