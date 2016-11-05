@@ -1,5 +1,7 @@
 'use strict';
 
+const typecheck = require('./type.check');
+
 module.exports = {
     basic: (type) => {
         return {
@@ -26,12 +28,13 @@ module.exports = {
                         let ok = true;
 
                         for (const name of closure.instances[i].inits) {
-                            // type checking
                             if (
                                 closure.instances[i].modes[name]
                                 !== instance.modes[name]
-                                || closure.instances[i].types[name]
-                                !== instance.types[name]
+                                || !typecheck.visit(
+                                    closure.instances[i].types[name],
+                                    instance.types[name]
+                                )
                             ) {
                                 ok = false;
                             }
@@ -128,8 +131,12 @@ module.exports = {
                 }
 
                 if (instance.types[name]) {
-                    // type checking
-                    if (instance.types[name] !== type) {
+                    if (
+                        !typecheck.visit(
+                            instance.types[name],
+                            type
+                        )
+                    ) {
                         throw Error();
                     }
                 } else {
