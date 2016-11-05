@@ -1,7 +1,5 @@
 'use strict';
 
-const ast1 = require('./ast.1');
-
 module.exports = {
     literalOut: (value, type) => {
         return {

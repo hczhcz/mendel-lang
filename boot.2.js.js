@@ -26,7 +26,7 @@ module.exports = () => {
                 }
             );
 
-            pass.writeRaw('}');
+            pass.writeRaw('};');
             pass.writeRaw('');
 
             pass.writeRaw('main();');
