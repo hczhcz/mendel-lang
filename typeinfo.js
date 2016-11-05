@@ -1,6 +1,13 @@
 'use strict';
 
 module.exports = {
+    basic: (type) => {
+        return {
+            __type: 'basic',
+            type: type,
+        };
+    },
+
     closure: (parent, code) => {
         const closure = {
             __type: 'closure',

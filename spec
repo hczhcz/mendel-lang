@@ -10,8 +10,8 @@ types:
         <closure #>
         <instance #>
     type info types (compile time, hidden to user):
-        string // duplicated
-            (in literal types)
+        basic
+            type -> string (in literal types)
         closure
             parent -> instance
             code -> code
@@ -34,7 +34,7 @@ types:
     pass-1 ast node types (compile time):
         literal
             value -> literal
-            type -> type info
+            type -> string (in literal types)
         symbol
             name -> string
             mode -> string (in symbol modes)

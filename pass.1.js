@@ -12,7 +12,7 @@ module.exports = (root) => {
         literalOut: (instance, ast) => {
             return ast2.literalOut(
                 ast.value,
-                ast.type
+                typeinfo.basic(ast.type)
             );
         },
 
@@ -27,7 +27,7 @@ module.exports = (root) => {
 
             return ast2.literalOut(
                 null,
-                'void'
+                typeinfo.basic('void')
             );
         },
 
