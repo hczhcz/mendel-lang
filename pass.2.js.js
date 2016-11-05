@@ -22,12 +22,15 @@ module.exports = () => {
                     break;
                 }
                 case 'boolean':
+                case 'int':
                 case 'i8':
                 case 'i16':
                 case 'i32':
+                case 'unsigned':
                 case 'u8':
                 case 'u16':
                 case 'u32':
+                case 'float':
                 case 'f32':
                 case 'f64': {
                     pass.write(target(ast.value.toString()));
