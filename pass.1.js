@@ -26,7 +26,7 @@ module.exports = (root) => {
 
             return ast2.literalOut(
                 null,
-                typeinfo.basic('void')
+                typeinfo.basic('null')
             );
         },
 

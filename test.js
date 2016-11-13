@@ -37,7 +37,7 @@ const b2 = boot2();
 b1.namedModule(
     '__do', 'const', ast1.code(
         [], [], 'const',
-        ast1.literal(null, 'void')
+        ast1.literal(null, 'null')
     )
 );
 
@@ -52,7 +52,7 @@ b1.namedModule(
                         instance.accessOut('b')
                     );
 
-                    return 'void';
+                    return 'null';
                 },
                 in: (pass, instance) => {
                     throw Error();
@@ -78,7 +78,7 @@ b1.namedModule(
         ast1.native(
             {
                 out: (pass, instance) => {
-                    return 'void';
+                    return 'null';
                 },
                 in: (pass, instance) => {
                     throw Error();
