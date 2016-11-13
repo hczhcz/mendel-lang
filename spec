@@ -5,7 +5,7 @@ types:
         int i8 i16 i32 i64
         unsigned u8 u16 u32 u64
         float f32 f64
-        string
+        string // TODO: string -> array of u8?
     user defined types:
         <closure #>
         <instance #>

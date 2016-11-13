@@ -21,6 +21,7 @@ module.exports = () => {
 
         module: (ast) => {
             // TODO: env info as arguments?
+            // TODO: return value as export (module.exports = __return)
 
             return pass.visitOut(
                 pass.instances[0], ast1.call(
