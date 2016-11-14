@@ -10,6 +10,13 @@ module.exports = {
         };
     },
 
+    array: (type) => {
+        return {
+            __type: 'array',
+            type: type,
+        };
+    },
+
     closure: (parent, code) => {
         const closure = {
             __type: 'closure',

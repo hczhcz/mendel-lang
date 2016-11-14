@@ -7,11 +7,14 @@ types:
         float f32 f64
         string // TODO: string -> array of u8?
     user defined types:
+        <array #>
         <closure #>
         <instance #>
     type info types (compile time, hidden to user):
         basic
             type -> string (in literal types)
+        array
+            type -> type info
         closure
             parent -> instance
             code -> code

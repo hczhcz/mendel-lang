@@ -5,6 +5,10 @@ module.exports = {
         return type1.type === type2.type;
     },
 
+    array: (type1, type2) => {
+        return module.exports.visit(type1.type, type2.type);
+    },
+
     closure: (type1, type2) => {
         return type1 === type2;
     },
