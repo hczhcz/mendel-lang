@@ -3,8 +3,8 @@
 module.exports = () => {
     const pass = {
         code: [],
-        id: [],
-        buffer: [],
+        id: [], // stack
+        buffer: [], // stack
 
         writeRaw: (line) => {
             pass.buffer[pass.buffer.length - 1].push(line + '\n');

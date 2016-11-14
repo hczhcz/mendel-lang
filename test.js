@@ -52,7 +52,7 @@ b1.namedModule(
                         instance.accessOut('b')
                     );
 
-                    return 'null';
+                    return typeinfo.basic('null');
                 },
                 in: (pass, instance, type) => {
                     throw Error();
@@ -78,7 +78,7 @@ b1.namedModule(
         ast1.native(
             {
                 out: (pass, instance) => {
-                    return 'null';
+                    return typeinfo.basic('null');
                 },
                 in: (pass, instance, type) => {
                     throw Error();
