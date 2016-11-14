@@ -54,7 +54,7 @@ b1.namedModule(
 
                     return 'null';
                 },
-                in: (pass, instance) => {
+                in: (pass, instance, type) => {
                     throw Error();
                 },
             },
@@ -80,7 +80,7 @@ b1.namedModule(
                 out: (pass, instance) => {
                     return 'null';
                 },
-                in: (pass, instance) => {
+                in: (pass, instance, type) => {
                     throw Error();
                 },
             },

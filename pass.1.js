@@ -311,7 +311,7 @@ module.exports = (root) => {
         },
 
         nativeIn: (instance, ast, type) => {
-            ast.typing.in(pass, instance);
+            ast.typing.in(pass, instance, type);
 
             return ast2.nativeIn(ast.impls);
         },
