@@ -5,7 +5,6 @@ const ast2 = require('./ast.2');
 
 module.exports = (root) => {
     const pass = {
-        id: 1,
         instances: [root],
 
         literalOut: (instance, ast) => {
@@ -156,11 +155,7 @@ module.exports = (root) => {
             }
 
             // notice: .length change only when a new instance is built
-            let child = typeinfo.instance(pass.id);
-
-            if (child.id === pass.id) {
-                pass.id += 1;
-            }
+            let child = typeinfo.instance();
 
             child.addInit(
                 '__root', 'special',
@@ -228,7 +223,7 @@ module.exports = (root) => {
         },
 
         callOut: (instance, ast) => {
-            let result = null;
+            let resultType = null;
 
             return pass.call(
                 instance, ast,
@@ -238,25 +233,26 @@ module.exports = (root) => {
                     );
                 },
                 (child, ast) => {
-                    pass.instances[child.id] = child;
+                    child.id = pass.instances.length;
+                    pass.instances.push(child);
 
-                    result = pass.visitOut(
+                    child.impl = pass.visitOut(
                         child, ast
                     );
 
-                    return result;
+                    resultType = child.impl.type;
                 },
                 (child) => {
                     child.addType(
                         '__return',
-                        result.type
+                        resultType
                     );
                 },
                 (callee, child, outArgs, inArgs) => {
                     return ast2.callOut(
                         callee, child,
                         outArgs, inArgs,
-                        result.type
+                        resultType
                     );
                 }
             );
@@ -272,9 +268,10 @@ module.exports = (root) => {
                     );
                 },
                 (child, ast) => {
-                    pass.instances[child.id] = child;
+                    child.id = pass.instances.length;
+                    pass.instances.push(child);
 
-                    return pass.visitIn(
+                    child.impl = pass.visitIn(
                         child, ast,
                         type
                     );

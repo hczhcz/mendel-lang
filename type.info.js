@@ -57,7 +57,7 @@ module.exports = {
 
                 closure.instances.push(instance);
 
-                instance.impl = builder(instance, closure.code.impl);
+                builder(instance, closure.code.impl);
 
                 return instance;
             },
@@ -66,14 +66,14 @@ module.exports = {
         return closure;
     },
 
-    instance: (id) => {
+    instance: () => {
         const instance = {
             __type: 'instance',
-            id: id,
             inits: [],
             modes: {},
             types: {}, // private
-            impl: null, // ast2, set by closure
+            id: null, // int, set by pass 1
+            impl: null, // ast2, set by pass 1
 
             addInit: (name, mode, type) => {
                 instance.inits.push(name);
