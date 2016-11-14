@@ -16,11 +16,6 @@ module.exports = () => {
 
         literalOut: (ast, target) => {
             switch (ast.type.type) {
-                case 'null': {
-                    pass.write(target('null'));
-
-                    break;
-                }
                 case 'boolean':
                 case 'int':
                 case 'i8':

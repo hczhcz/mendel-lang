@@ -1,18 +1,20 @@
 types:
     literal types:
-        null
         boolean
         int i8 i16 i32 i64
         unsigned u8 u16 u32 u64
         float f32 f64
         string // TODO: string -> array of u8?
+    builtin types:
+        null
+        variant
     user defined types:
         <array #>
         <closure #>
         <instance #>
     type info types (compile time, hidden to user):
         basic
-            type -> string (in literal types)
+            type -> string (in literal types or builtin types)
         array
             type -> type info
         closure

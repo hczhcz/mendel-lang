@@ -1,5 +1,6 @@
 'use strict';
 
+const typeinfo = require('./type.info');
 const ast1 = require('./ast.1');
 const boot1 = require('./boot.1');
 const boot2 = require('./boot.2.js');
@@ -37,7 +38,26 @@ const b2 = boot2();
 b1.namedModule(
     '__do', 'const', ast1.code(
         [], [], 'const',
-        ast1.literal(null, 'null')
+        ast1.native(
+            {
+                out: (pass, instance) => {
+                    return typeinfo.basic('null');
+                },
+                in: (pass, instance, type) => {
+                    throw Error();
+                },
+            },
+            {
+                js: {
+                    out: (pass, target) => {
+                        // nothing
+                    },
+                    in: (pass, value) => {
+                        throw Error(); // never reach
+                    },
+                },
+            }
+        )
     )
 );
 
