@@ -22,7 +22,7 @@ module.exports = () => {
             pass.visitOut(
                 ast,
                 (value) => {
-                    return '(' + value + ')'; // TODO
+                    return value; // TODO: discard?
                 }
             );
 

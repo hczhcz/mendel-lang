@@ -107,7 +107,9 @@ b1.namedModule(
 try {
     const head = '\'use strict\';\n'
         + '\n'
-        + 'let __inner, __upper, __callee;\n'
+        + 'let __inner = null;\n'
+        + 'let __upper = null;\n'
+        + 'let __callee = null;\n'
         + 'let __root = new Map();\n'
         + 'let __self = __root;\n'
         + '\n'
