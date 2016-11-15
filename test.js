@@ -2,6 +2,7 @@
 
 const typeinfo = require('./type.info');
 const ast1 = require('./ast.1');
+const ast2 = require('./ast.2');
 const boot1 = require('./boot.1');
 const boot2 = require('./boot.2.js');
 

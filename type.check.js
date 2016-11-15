@@ -10,21 +10,21 @@ module.exports = {
     },
 
     closure: (type1, type2) => {
-        return type1 === type2;
+        return type1 === type2; // TODO: use id to compare?
     },
 
     instance: (type1, type2) => {
-        return type1 === type2;
+        return type1.id === type2.id;
     },
 
     visit: (type1, type2) => {
-        if (type1.__type === type2.__type) {
-            return module.exports[type1.__type](
-                type1,
-                type2
-            );
-        } else {
+        if (type1.__type !== type2.__type) {
             return false;
         }
+
+        return module.exports[type1.__type](
+            type1,
+            type2
+        );
     },
 };
