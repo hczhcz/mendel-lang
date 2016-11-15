@@ -93,15 +93,11 @@ types:
                 (i64) -> pass-2 ast node
         nativeOut
             impls -> object
-                (string) -> object
-                    out -> function
-                    in -> function
+                (string) -> function
             type -> type info
         nativeIn
             impls -> object
-                (string) -> object
-                    out -> function
-                    in -> function
+                (string) -> function
 
 symbol modes:
     const, out, var, special

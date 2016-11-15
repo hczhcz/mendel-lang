@@ -43,10 +43,8 @@ b1.namedModule(
             (pass, instance) => {
                 return ast2.nativeOut(
                     {
-                        js: {
-                            out: (pass, target) => {
-                                // nothing
-                            },
+                        js: (pass, target) => {
+                            // nothing
                         },
                     },
                     typeinfo.basic('null')
@@ -71,10 +69,8 @@ b1.namedModule(
 
                 return ast2.nativeOut(
                     {
-                        js: {
-                            out: (pass, target) => {
-                                pass.write('__self.set(\'a\', __self.get(\'b\'))');
-                            },
+                        js: (pass, target) => {
+                            pass.write('__self.set(\'a\', __self.get(\'b\'))');
                         },
                     },
                     typeinfo.basic('null')
@@ -94,10 +90,8 @@ b1.namedModule(
             (pass, instance) => {
                 return ast2.nativeOut(
                     {
-                        js: {
-                            out: (pass, target) => {
-                                pass.write('console.log(__self.get(\'a\'))');
-                            },
+                        js: (pass, target) => {
+                            pass.write('console.log(__self.get(\'a\'))');
                         },
                     },
                     typeinfo.basic('null')

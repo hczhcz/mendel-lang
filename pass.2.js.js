@@ -192,7 +192,7 @@ module.exports = () => {
 
         nativeOut: (ast, target) => {
             if (ast.impls.js) {
-                ast.impls.js.out(pass, target);
+                ast.impls.js(pass, target);
             } else {
                 throw Error();
             }
@@ -200,7 +200,7 @@ module.exports = () => {
 
         nativeIn: (ast, value) => {
             if (ast.impls.js) {
-                ast.impls.js.in(pass, value);
+                ast.impls.js(pass, value);
             } else {
                 throw Error();
             }
