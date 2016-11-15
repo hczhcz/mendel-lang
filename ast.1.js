@@ -50,11 +50,11 @@ module.exports = {
         };
     },
 
-    native: (typing, impls) => {
+    meta: (outGen, inGen) => {
         return {
-            __type: 'native',
-            typing: typing,
-            impls: impls,
+            __type: 'meta',
+            outGen: outGen,
+            inGen: inGen,
         };
     },
 };

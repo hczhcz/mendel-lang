@@ -301,19 +301,12 @@ module.exports = (root) => {
             throw Error();
         },
 
-        nativeOut: (instance, ast) => {
-            const type = ast.typing.out(pass, instance);
-
-            return ast2.nativeOut(
-                ast.impls,
-                type
-            );
+        metaOut: (instance, ast) => {
+            return ast.outGen(pass, instance);
         },
 
-        nativeIn: (instance, ast, type) => {
-            ast.typing.in(pass, instance, type);
-
-            return ast2.nativeIn(ast.impls);
+        metaIn: (instance, ast, type) => {
+            return ast.inGen(pass, instance, type);
         },
 
         visitOut: (instance, ast) => {

@@ -56,14 +56,9 @@ types:
             paramModes -> array of string (in symbol modes)
             vaMode -> string (in symbol modes or '')
             impl -> pass-1 ast node
-        native
-            typing -> object
-                out -> function
-                in -> function
-            impls -> object
-                (string) -> object
-                    out -> function
-                    in -> function
+        meta
+            outGen -> function
+            inGen -> function
 
     pass-2 ast node types (compile time):
         literalOut

@@ -39,24 +39,21 @@ const b2 = boot2();
 b1.namedModule(
     '__do', 'const', ast1.code(
         [], [], 'const',
-        ast1.native(
-            {
-                out: (pass, instance) => {
-                    return typeinfo.basic('null');
-                },
-                in: (pass, instance, type) => {
-                    throw Error();
-                },
+        ast1.meta(
+            (pass, instance) => {
+                return ast2.nativeOut(
+                    {
+                        js: {
+                            out: (pass, target) => {
+                                // nothing
+                            },
+                        },
+                    },
+                    typeinfo.basic('null')
+                );
             },
-            {
-                js: {
-                    out: (pass, target) => {
-                        // nothing
-                    },
-                    in: (pass, value) => {
-                        throw Error(); // never reach
-                    },
-                },
+            (pass, instance, type) => {
+                throw Error();
             }
         )
     )
@@ -65,29 +62,26 @@ b1.namedModule(
 b1.namedModule(
     '__assign', 'const', ast1.code(
         ['a', 'b'], ['out', 'const'], '',
-        ast1.native(
-            {
-                out: (pass, instance) => {
-                    instance.addType(
-                        'a',
-                        instance.accessOut('b')
-                    );
+        ast1.meta(
+            (pass, instance) => {
+                instance.addType(
+                    'a',
+                    instance.accessOut('b')
+                );
 
-                    return typeinfo.basic('null');
-                },
-                in: (pass, instance, type) => {
-                    throw Error();
-                },
+                return ast2.nativeOut(
+                    {
+                        js: {
+                            out: (pass, target) => {
+                                pass.write('__self.set(\'a\', __self.get(\'b\'))');
+                            },
+                        },
+                    },
+                    typeinfo.basic('null')
+                );
             },
-            {
-                js: {
-                    out: (pass, target) => {
-                        pass.write('__self.set(\'a\', __self.get(\'b\'))');
-                    },
-                    in: (pass, value) => {
-                        throw Error(); // never reach
-                    },
-                },
+            (pass, instance, type) => {
+                throw Error();
             }
         )
     )
@@ -96,24 +90,21 @@ b1.namedModule(
 b1.namedModule(
     '__write', 'const', ast1.code(
         ['a'], ['const'], '',
-        ast1.native(
-            {
-                out: (pass, instance) => {
-                    return typeinfo.basic('null');
-                },
-                in: (pass, instance, type) => {
-                    throw Error();
-                },
+        ast1.meta(
+            (pass, instance) => {
+                return ast2.nativeOut(
+                    {
+                        js: {
+                            out: (pass, target) => {
+                                pass.write('console.log(__self.get(\'a\'))');
+                            },
+                        },
+                    },
+                    typeinfo.basic('null')
+                );
             },
-            {
-                js: {
-                    out: (pass, target) => {
-                        pass.write('console.log(__self.get(\'a\'))');
-                    },
-                    in: (pass, value) => {
-                        throw Error(); // never reach
-                    },
-                },
+            (pass, instance, type) => {
+                throw Error();
             }
         )
     )
