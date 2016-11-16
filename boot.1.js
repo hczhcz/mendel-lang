@@ -8,17 +8,6 @@ module.exports = () => {
     const pass = pass1(typeinfo.instance());
 
     const boot = {
-        namedModule: (name, mode, ast) => {
-            const code = boot.module(ast);
-
-            pass.instances[0].addInit(
-                name, mode,
-                code.type
-            );
-
-            return code;
-        },
-
         module: (ast) => {
             // TODO: env info as arguments?
             // TODO: return value as export (module.exports = __return)
@@ -32,6 +21,17 @@ module.exports = () => {
                     []
                 )
             );
+        },
+
+        namedModule: (name, mode, ast) => {
+            const code = boot.module(ast);
+
+            pass.instances[0].addInit(
+                name, mode,
+                code.type
+            );
+
+            return code;
         },
     };
 
