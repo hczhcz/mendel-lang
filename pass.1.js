@@ -52,9 +52,7 @@ module.exports = (root) => {
             switch (ast.name) {
                 case '__root':
                 case '__self': {
-                    // TODO: type checking?
-
-                    return makeReserved(ast.name);
+                    return makeReserved();
                 }
                 default: {
                     let upper = ast2.reservedOut(
@@ -83,10 +81,10 @@ module.exports = (root) => {
                         upper.type.accessOut(ast.name)
                     );
                 },
-                (name) => {
+                () => {
                     return ast2.reservedOut(
-                        name,
-                        instance // TODO
+                        ast.name,
+                        upper.type.accessOut(ast.name)
                     );
                 }
             );
@@ -106,9 +104,14 @@ module.exports = (root) => {
                         type
                     );
                 },
-                (name) => {
+                () => {
+                    instance.accessIn(
+                        ast.name,
+                        type
+                    );
+
                     return ast2.reservedIn(
-                        name,
+                        ast.name,
                         type
                     );
                 }
@@ -166,18 +169,19 @@ module.exports = (root) => {
             // notice: .length change only when a new instance is built
             let child = typeinfo.instance();
 
+            // notice: __root and __self are not actual members
             child.addInit(
-                '__root', 'special',
+                '__root', 'const',
                 pass.instances[0]
             );
             child.addInit(
-                '__self', 'special',
+                '__self', 'var',
                 child
             );
             child.addInit(
                 '__parent', 'var',
                 instance
-            ); // TODO: mode?
+            );
 
             before(child);
 
