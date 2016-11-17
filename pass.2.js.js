@@ -89,7 +89,7 @@ module.exports = () => {
             pass.visitOut(
                 ast.callee,
                 (value) => {
-                    return '__callee = ' + value;
+                    return '__parent = ' + value;
                 }
             );
 
@@ -100,7 +100,7 @@ module.exports = () => {
 
             pass.write('__inner = new Map()');
             pass.write('__inner.__func = ' + calleeId);
-            pass.write('__inner.set(\'__parent\', __callee)');
+            pass.write('__inner.set(\'__parent\', __parent)');
 
             pass.write('__inner.__outer = __callee');
             pass.write('__callee = __inner');

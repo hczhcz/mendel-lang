@@ -110,6 +110,7 @@ try {
         + 'let __inner = null;\n'
         + 'let __upper = null;\n'
         + 'let __callee = null;\n'
+        + 'let __parent = null;\n'
         + 'let __root = new Map();\n'
         + 'let __self = __root;\n'
         + '\n'
