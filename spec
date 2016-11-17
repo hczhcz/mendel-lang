@@ -69,6 +69,7 @@ types:
             type -> type info
         reservedIn
             name -> string
+            type -> type info
         pathOut
             upper -> pass-2 ast node
             name -> string
@@ -76,6 +77,7 @@ types:
         pathIn
             upper -> pass-2 ast node
             name -> string
+            type -> type info
         callOut
             callee -> pass-2 ast node
             instance -> instance
@@ -91,6 +93,7 @@ types:
                 (i64) -> pass-2 ast node
             inArgs -> object
                 (i64) -> pass-2 ast node
+            type -> type info
         nativeOut
             impls -> object
                 (string) -> function
@@ -98,6 +101,7 @@ types:
         nativeIn
             impls -> object
                 (string) -> function
+            type -> type info
 
 symbol modes:
     const, out, var, special

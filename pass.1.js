@@ -42,7 +42,9 @@ module.exports = (root) => {
                 ast2.reservedOut(
                     '__self',
                     instance
-                ), ast.name
+                ),
+                ast.name,
+                type
             );
         },
 
@@ -50,6 +52,8 @@ module.exports = (root) => {
             switch (ast.name) {
                 case '__root':
                 case '__self': {
+                    // TODO: type checking?
+
                     return makeReserved(ast.name);
                 }
                 default: {
@@ -82,7 +86,7 @@ module.exports = (root) => {
                 (name) => {
                     return ast2.reservedOut(
                         name,
-                        instance
+                        instance // TODO
                     );
                 }
             );
@@ -98,11 +102,15 @@ module.exports = (root) => {
                     );
 
                     return ast2.pathIn(
-                        upper, ast.name
+                        upper, ast.name,
+                        type
                     );
                 },
                 (name) => {
-                    return ast2.reservedIn(name);
+                    return ast2.reservedIn(
+                        name,
+                        type
+                    );
                 }
             );
         },
@@ -129,7 +137,8 @@ module.exports = (root) => {
             );
 
             return ast2.pathIn(
-                upper, ast.name
+                upper, ast.name,
+                type
             );
         },
 
@@ -282,7 +291,8 @@ module.exports = (root) => {
                 (callee, child, outArgs, inArgs) => {
                     return ast2.callIn(
                         callee, child,
-                        outArgs, inArgs
+                        outArgs, inArgs,
+                        type
                     );
                 }
             );

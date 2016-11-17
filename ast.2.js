@@ -17,10 +17,11 @@ module.exports = {
         };
     },
 
-    reservedIn: (name) => {
+    reservedIn: (name, type) => {
         return {
             __type: 'reservedIn',
             name: name,
+            type: type,
         };
     },
 
@@ -33,11 +34,12 @@ module.exports = {
         };
     },
 
-    pathIn: (upper, name) => {
+    pathIn: (upper, name, type) => {
         return {
             __type: 'pathIn',
             upper: upper,
             name: name,
+            type: type,
         };
     },
 
@@ -52,13 +54,14 @@ module.exports = {
         };
     },
 
-    callIn: (callee, instance, outArgs, inArgs) => {
+    callIn: (callee, instance, outArgs, inArgs, type) => {
         return {
             __type: 'callIn',
             callee: callee,
             instance: instance,
             outArgs: outArgs,
             inArgs: inArgs,
+            type: type,
         };
     },
 
@@ -70,10 +73,11 @@ module.exports = {
         };
     },
 
-    nativeIn: (impls) => {
+    nativeIn: (impls, type) => {
         return {
             __type: 'nativeIn',
             impls: impls,
+            type: type,
         };
     },
 };
