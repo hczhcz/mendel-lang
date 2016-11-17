@@ -2,14 +2,15 @@
 
 module.exports = {
     /*
-      Given a literal value, return its ast.
-      eg:
-      in: 'hello' // value = 'hello', type = 'string'
-      return: {
-          __type: 'literal',
-          value: 'hello',
-          type: 'string'
-        }
+        AST of a literal value
+        Code:
+            'hello'
+        AST:
+            {
+                __type: 'literal',
+                value: 'hello',
+                type: 'string',
+            }
     */
     literal: (value, type) => {
         return {
@@ -20,14 +21,15 @@ module.exports = {
     },
 
     /*
-      Given a declaration of a variable, return its ast
-      eg:
-      in: 'var a' // name = 'a', mode = 'var'
-      out: {
-        __type: 'symbol',
-        name: 'a',
-        mode: 'var'
-      }
+        AST of a declaration of a symbol (constant, variable, etc.)
+        Code:
+            var foo
+        AST:
+            {
+                __type: 'symbol',
+                name: 'foo',
+                mode: 'var',
+            }
     */
     symbol: (name, mode) => {
         return {
@@ -38,13 +40,14 @@ module.exports = {
     },
 
     /*
-      Given a name, return the ast of lookup process
-      eg:
-      in: 'a' // name = 'a'
-      out: {
-        __type: 'lookup',
-        name: 'a'
-      }
+        AST of a lookup process of a symbol
+        Code:
+            foo
+        AST:
+            {
+                __type: 'lookup',
+                name: 'foo',
+            }
     */
     lookup: (name) => {
         return {
@@ -54,14 +57,18 @@ module.exports = {
     },
 
     /*
-      Given a path, return its ast
-      eg:
-      in: 'Java.util' // upper = 'Java', name = 'util'
-      out: {
-        __type: 'path',
-        upper: 'Java',
-        name: 'util'
-      }
+        AST of a lookup process of a member of an object
+        Code:
+            foo.bar
+        AST:
+            {
+                __type: 'path',
+                upper: {
+                    __type: 'lookup',
+                    name: 'foo',
+                },
+                name: 'bar',
+            }
     */
     path: (upper, name) => {
         return {
@@ -72,14 +79,28 @@ module.exports = {
     },
 
     /*
-      Given a call statements, return its ast.
-      eg:
-      in: 'a = b' // callee = '=', args = ['a', 'b']
-      out: {
-        __type: 'call',
-        callee: '=',
-        args: ['a', 'b']
-      }
+        AST of a call or an operation (assignment, etc.)
+        Code:
+            foo = bar
+        AST:
+            {
+                __type: 'call',
+                callee: {
+                    __type: 'lookup',
+                    name: '__assign',
+                },
+                args: [
+                    {
+                        __type: 'lookup',
+                        name: 'foo',
+                    },
+                    {
+                        __type: 'lookup',
+                        name: 'bar',
+                    },
+                ],
+            }
+
     */
     call: (callee, args) => {
         return {
@@ -90,22 +111,21 @@ module.exports = {
     },
 
     /*
-      Given a code block(eg. function), return its ast.
-      eg:
-      in: '(x) => {a = x}'
-      // paramNames = ['x'], paramModes = ['const'], vaMode = ''
-      // impl = ast1.call(ast1.lookup('='), [ast1.lookup('a'), ast1.lookup('x')])
-      out: {
-        __type: 'code',
-        paramNames: ['x'],
-        paramModes: ['const'],
-        vaMode: '',
-        impl: {
-          __type: 'call',
-          args: [{__type: 'lookup', name: 'a'},
-                {__type: 'lookup', name: 'x'}]
-        }
-      }   
+        AST of a code block (eg. function)
+        Code:
+            func (out foo, const bar) {
+                foo = bar
+            }
+        AST:
+            {
+                __type: 'code',
+                paramNames: ['foo', 'bar'],
+                paramModes: ['out', 'const'],
+                vaMode: '', // no variable argument in this function
+                impl: {
+                    ... // code of '__do(__assign(foo, bar))'
+                },
+            }
     */
     code: (paramNames, paramModes, vaMode, impl) => {
         return {
@@ -117,6 +137,10 @@ module.exports = {
         };
     },
 
+    /*
+        AST of a compile-time function
+        **Warning: the interface of ast1.meta may change in the future**
+    */
     meta: (outGen, inGen) => {
         return {
             __type: 'meta',
