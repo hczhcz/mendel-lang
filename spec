@@ -104,7 +104,7 @@ types:
             type -> type info
 
 symbol modes:
-    const, out, var, special
+    const, out, var
 
 reserved names:
     internal names:

@@ -62,7 +62,7 @@ b1.namedModule(
         ['a', 'b'], ['out', 'const'], '',
         ast1.meta(
             (pass, instance) => {
-                instance.addType(
+                instance.accessIn(
                     'a',
                     instance.accessOut('b')
                 );
