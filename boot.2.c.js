@@ -1,9 +1,9 @@
 'use strict';
 
-const pass2 = require('./pass.2.c');
+const pass2c = require('./pass.2.c');
 
 module.exports = () => {
-    const pass = pass2();
+    const pass = pass2c();
 
     return {
         // TODO: init the standard library

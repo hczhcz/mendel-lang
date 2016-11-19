@@ -1,5 +1,7 @@
 'use strict';
 
+const type2c = require('./type.2.c');
+
 module.exports = () => {
     const pass = {
         code: [],
