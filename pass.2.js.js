@@ -102,10 +102,10 @@ module.exports = () => {
             pass.write('__inner.__func = ' + calleeId);
             pass.write('__inner.set(\'__parent\', __upper)');
 
+            before();
+
             pass.write('__inner.__outer = __callee');
             pass.write('__callee = __inner');
-
-            before();
 
             for (const i in ast.outArgs) {
                 pass.visitOut(
@@ -146,10 +146,10 @@ module.exports = () => {
                 );
             }
 
-            after();
-
             pass.write('__inner = __callee');
             pass.write('__callee = __inner.__outer');
+
+            after();
         },
 
         callOut: (ast, target) => {
@@ -167,7 +167,7 @@ module.exports = () => {
                     );
                 },
                 () => {
-                    pass.write(target('__callee.get(\'__return\')'));
+                    pass.write(target('__inner.get(\'__return\')'));
                 }
             );
         },
@@ -176,7 +176,7 @@ module.exports = () => {
             pass.call(
                 ast,
                 () => {
-                    pass.write('__callee.set(\'__return\', ' + value + ')');
+                    pass.write('__inner.set(\'__return\', ' + value + ')');
                 },
                 (ast) => {
                     pass.visitIn(
