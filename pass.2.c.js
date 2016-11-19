@@ -110,9 +110,6 @@ module.exports = () => {
             const calleeId = 'func_' + ast.instance.id;
             const structId = 'struct struct_' + ast.instance.id;
 
-            const returnId = pass.id[pass.id.length - 1]
-                + '_' + pass.bufferBody[pass.bufferBody.length - 1].length;
-
             pass.write(
                 '__inner = (struct struct_head *)'
                 + 'malloc(sizeof(' + structId + '))'
@@ -143,15 +140,16 @@ module.exports = () => {
             }
 
             // call
-            pass.write('__callee->__caller->__func = ' + returnId);
-            pass.write('__callee->__func()');
-
-            pass.writeRaw('}');
-            pass.writeRaw('');
-            pass.writeRaw('void ' + returnId + '() {');
-
-            pass.write('__callee = __self');
-            pass.write('__self = __callee->__caller');
+            pass.continuation(
+                (returnId) => {
+                    pass.write('__callee->__caller->__func = ' + returnId);
+                    pass.write('__callee->__func()');
+                },
+                (returnId) => {
+                    pass.write('__callee = __self');
+                    pass.write('__self = __callee->__caller');
+                }
+            );
 
             for (const i in ast.inArgs) {
                 pass.visitIn(
@@ -232,6 +230,20 @@ module.exports = () => {
                 ast,
                 value
             );
+        },
+
+        continuation: (before, after) => {
+            const returnId = pass.id[pass.id.length - 1]
+                + '_' + pass.bufferBody[pass.bufferBody.length - 1].length;
+
+            before(returnId);
+
+            pass.writeRaw('};');
+            pass.writeRaw('');
+            pass.writeHeadRaw('void ' + returnId + '();');
+            pass.writeRaw('const ' + returnId + ' = () => {');
+
+            after(returnId);
         },
 
         build: (instance, builder) => {

@@ -95,9 +95,6 @@ module.exports = () => {
 
             const calleeId = 'func_' + ast.instance.id;
 
-            const returnId = pass.id[pass.id.length - 1]
-                + '_' + pass.buffer[pass.buffer.length - 1].length;
-
             pass.write('__inner = new Map()');
             pass.write('__inner.__func = ' + calleeId);
             pass.write('__inner.set(\'__parent\', __upper)');
@@ -127,15 +124,16 @@ module.exports = () => {
             }
 
             // call
-            pass.write('__callee.__caller.__func = ' + returnId);
-            pass.write('__callee.__func()');
-
-            pass.writeRaw('};');
-            pass.writeRaw('');
-            pass.writeRaw('const ' + returnId + ' = () => {');
-
-            pass.write('__callee = __self');
-            pass.write('__self = __callee.__caller');
+            pass.continuation(
+                (returnId) => {
+                    pass.write('__callee.__caller.__func = ' + returnId);
+                    pass.write('__callee.__func()');
+                },
+                (returnId) => {
+                    pass.write('__callee = __self');
+                    pass.write('__self = __callee.__caller');
+                }
+            );
 
             for (const i in ast.inArgs) {
                 pass.visitIn(
@@ -218,6 +216,19 @@ module.exports = () => {
                 ast,
                 value
             );
+        },
+
+        continuation: (before, after) => {
+            const returnId = pass.id[pass.id.length - 1]
+                + '_' + pass.buffer[pass.buffer.length - 1].length;
+
+            before(returnId);
+
+            pass.writeRaw('};');
+            pass.writeRaw('');
+            pass.writeRaw('const ' + returnId + ' = () => {');
+
+            after(returnId);
         },
 
         build: (instance, builder) => {
