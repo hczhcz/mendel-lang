@@ -142,30 +142,42 @@ try {
         }
     );
 
-    const headc = '#include <iostream>\n'
+    const headc1 = '#include <stdbool.h>\n'
+        + '#include <stdint.h>\n'
+        + '#include <stdio.h>\n'
         + '\n'
-        + 'struct struct_head {\n'
-        + '    void (*__func)();\n'
-        + '    struct struct_head *__caller;\n'
-        + '    struct struct_head *__outer;\n'
+        + 'typedef char null_t[0];\n'
+        + 'typedef char variant_t[8];\n'
+        + '\n'
+        + 'typedef struct array *parray;\n'
+        + 'typedef struct head *phead;\n'
+        + '\n'
+        + 'struct array {\n'
+        + '    size_t size;\n'
+        + '    null_t data;\n'
         + '};\n'
         + '\n'
-        // TODO: structs here
-        + '\n'
-        + 'struct struct_head *__upper;\n'
-        + 'struct struct_head *__inner;\n'
-        + 'struct struct_head *__callee;\n'
-        + 'struct struct_0 __root_struct;\n'
-        + 'struct struct_head *__root ='
-            + '(struct struct_head *) &__root_struct;\n'
-        + 'struct struct_head *__self = __root;\n'
+        + 'struct head {\n'
+        + '    void (*__func)();\n'
+        + '    phead __caller;\n'
+        + '    phead __outer;\n'
+        + '};\n'
         + '\n';
-        // TODO: init members of __root_struct
+
+    const headc2 =
+        'phead __upper;\n'
+        + 'phead __inner;\n'
+        + 'phead __callee;\n'
+        + 'struct frame_0 __root_frame;\n'
+        + 'phead __root = &__root_frame.head;\n'
+        + 'phead __self = __root;\n'
+        + '\n';
+        // TODO: init members of __root_frame
 
     const m2c = b2c.module(a2);
     fs.writeFile(
         'test_gen.c',
-        headc + b2c.render() + m2c,
+        headc1 + b2c.renderHead() + m2c.head + headc2 + b2c.renderBody() + m2c.body,
         (err) => {
             //
         }

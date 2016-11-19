@@ -8,14 +8,19 @@ module.exports = () => {
     return {
         // TODO: init the standard library
 
-        render: () => {
-            return pass.code.join('');
+        renderHead: () => {
+            return pass.codeHead.join('');
+        },
+
+        renderBody: () => {
+            return pass.codeBody.join('');
         },
 
         module: (ast) => {
             pass.id.push('func_main');
 
-            pass.buffer.push([]);
+            pass.bufferHead.push([]);
+            pass.bufferBody.push([]);
 
             pass.writeRaw('void func_main() {');
 
@@ -35,7 +40,10 @@ module.exports = () => {
 
             pass.id.pop();
 
-            return pass.buffer.pop().join('');
+            return {
+                head: pass.bufferHead.pop().join(''),
+                body: pass.bufferBody.pop().join(''),
+            };
         },
     };
 };

@@ -4,12 +4,22 @@ const type2c = require('./type.2.c');
 
 module.exports = () => {
     const pass = {
-        code: [],
+        codeHead: [],
+        codeBody: [],
         id: [], // stack
-        buffer: [], // stack
+        bufferHead: [], // stack
+        bufferBody: [], // stack
+
+        writeHeadRaw: (line) => {
+            pass.bufferHead[pass.bufferHead.length - 1].push(line + '\n');
+        },
+
+        writeHead: (line) => {
+            pass.writeHeadRaw('    ' + line + ';');
+        },
 
         writeRaw: (line) => {
-            pass.buffer[pass.buffer.length - 1].push(line + '\n');
+            pass.bufferBody[pass.bufferBody.length - 1].push(line + '\n');
         },
 
         write: (line) => {
@@ -101,7 +111,7 @@ module.exports = () => {
             const structId = 'struct struct_' + ast.instance.id;
 
             const returnId = pass.id[pass.id.length - 1]
-                + '_' + pass.buffer[pass.buffer.length - 1].length;
+                + '_' + pass.bufferBody[pass.bufferBody.length - 1].length;
 
             pass.write(
                 '__inner = (struct struct_head *)'
@@ -128,7 +138,7 @@ module.exports = () => {
             pass.write('__self = __callee');
 
             // lazy codegen
-            if (!pass.code[ast.instance.id]) {
+            if (!pass.codeBody[ast.instance.id]) { // TODO: ?
                 pass.build(ast.instance, builder);
             }
 
@@ -229,7 +239,8 @@ module.exports = () => {
 
             pass.id.push(id);
 
-            pass.buffer.push([]);
+            pass.bufferHead.push([]);
+            pass.bufferBody.push([]);
 
             pass.writeRaw('void ' + id + '() {');
 
@@ -244,7 +255,8 @@ module.exports = () => {
 
             pass.id.pop();
 
-            pass.code[instance.id] = pass.buffer.pop().join('');
+            pass.codeHead[instance.id] = pass.bufferHead.pop().join('');
+            pass.codeBody[instance.id] = pass.bufferBody.pop().join('');
         },
     };
 
