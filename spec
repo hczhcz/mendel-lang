@@ -20,14 +20,14 @@ types:
         closure
             parent -> instance
             code -> code
-            private instances -> array of instance
+            instances -> array of instance
             add -> function
         instance
             inits -> array of string
             mainMode -> string (symbol modes 'const' or 'out')
             modes -> object
                 (string) -> string (symbol modes 'const', 'out', or 'var')
-            private types -> object
+            types -> object
                 (string) -> type info
             id -> i64
             impl -> pass-2 ast node

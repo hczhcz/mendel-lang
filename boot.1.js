@@ -7,6 +7,8 @@ const pass1 = require('./pass.1');
 module.exports = () => {
     const pass = pass1(typeinfo.instance('out'));
 
+    pass.instances[0].id = 0;
+
     const boot = {
         module: (ast) => {
             // TODO: env info as arguments?

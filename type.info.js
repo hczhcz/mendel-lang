@@ -22,7 +22,7 @@ module.exports = {
             __type: 'closure',
             parent: parent,
             code: code,
-            instances: [], // private
+            instances: [],
 
             add: (instance, builder) => {
                 // find exist instance
@@ -72,7 +72,7 @@ module.exports = {
             inits: [],
             mainMode: mainMode,
             modes: {},
-            types: {}, // private
+            types: {}, // edit by member functions
             id: null, // int, set by pass 1
             impl: null, // ast2, set by pass 1
 
