@@ -66,10 +66,11 @@ module.exports = {
         return closure;
     },
 
-    instance: () => {
+    instance: (mainMode) => {
         const instance = {
             __type: 'instance',
             inits: [],
+            mainMode: mainMode,
             modes: {},
             types: {}, // private
             id: null, // int, set by pass 1

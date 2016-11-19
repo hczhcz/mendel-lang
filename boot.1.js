@@ -5,7 +5,7 @@ const ast1 = require('./ast.1');
 const pass1 = require('./pass.1');
 
 module.exports = () => {
-    const pass = pass1(typeinfo.instance());
+    const pass = pass1(typeinfo.instance('out'));
 
     const boot = {
         module: (ast) => {

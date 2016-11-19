@@ -23,12 +23,13 @@ types:
             private instances -> array of instance
             add -> function
         instance
-            id -> i64
             inits -> array of string
+            mainMode -> string (in symbol modes except 'dep')
             modes -> object
                 (string) -> string (in symbol modes)
             private types -> object
                 (string) -> type info
+            id -> i64
             impl -> pass-2 ast node
             addInit -> function
             add -> function

@@ -145,7 +145,7 @@ module.exports = (root) => {
             );
         },
 
-        call: (instance, ast, before, builder, after, makeCall) => {
+        call: (instance, ast, mode, before, builder, after, makeCall) => {
             const callee = pass.visitOut(
                 instance, ast.callee
             );
@@ -167,7 +167,7 @@ module.exports = (root) => {
             }
 
             // notice: .length change only when a new instance is built
-            let child = typeinfo.instance();
+            let child = typeinfo.instance(mode);
 
             // notice: __root and __self are not actual members
             child.addInit(
@@ -239,7 +239,7 @@ module.exports = (root) => {
             let resultType = null;
 
             return pass.call(
-                instance, ast,
+                instance, ast, 'out',
                 (child) => {
                     child.add(
                         '__return', 'out'
@@ -273,7 +273,7 @@ module.exports = (root) => {
 
         callIn: (instance, ast, type) => {
             return pass.call(
-                instance, ast,
+                instance, ast, 'const',
                 (child) => {
                     child.addInit(
                         '__return', 'const',
