@@ -232,13 +232,13 @@ module.exports = () => {
         },
 
         build: (instance, builder) => {
-            const id = 'func_' + instance.id;
+            const funcId = 'func_' + instance.id;
 
-            pass.id.push(id);
+            pass.id.push(funcId);
 
             pass.buffer.push([]);
 
-            pass.writeRaw('const ' + id + ' = () => {');
+            pass.writeRaw('const ' + funcId + ' = () => {');
 
             builder(instance.impl);
 
