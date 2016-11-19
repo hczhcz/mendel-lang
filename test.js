@@ -1,10 +1,12 @@
 'use strict';
 
+const fs = require('fs');
+
 const typeinfo = require('./type.info');
 const ast1 = require('./ast.1');
 const ast2 = require('./ast.2');
 const boot1 = require('./boot.1');
-const boot2 = require('./boot.2.js');
+const boot2js = require('./boot.2.js');
 
 const a1 = ast1.call(ast1.lookup('__do'), [
     // var a = 'hello';
@@ -34,7 +36,7 @@ const a1 = ast1.call(ast1.lookup('__do'), [
 ]);
 
 const b1 = boot1();
-const b2 = boot2();
+const b2js = boot2js();
 
 b1.namedModule(
     '__do', 'const', ast1.code(
@@ -105,7 +107,9 @@ b1.namedModule(
 );
 
 try {
-    const head = '\'use strict\';\n'
+    const a2 = b1.module(a1);
+
+    const headjs = '\'use strict\';\n'
         + '\n'
         + 'let __upper = null;\n'
         + 'let __inner = null;\n'
@@ -118,11 +122,14 @@ try {
         + '__root.set(\'__write\', __root);\n'
         + '\n';
 
-    const a2 = b1.module(a1);
-
-    const m2 = b2.module(a2);
-
-    console.log(head + b2.render() + m2);
+    const m2js = b2js.module(a2);
+    fs.writeFile(
+        'test_gen.js',
+        headjs + b2js.render() + m2js,
+        (err) => {
+            //
+        }
+    );
 } catch (err) {
     console.log(err.stack);
 }
