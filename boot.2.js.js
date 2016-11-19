@@ -13,11 +13,11 @@ module.exports = () => {
         },
 
         module: (ast) => {
-            pass.id.push('main');
+            pass.id.push('func_main');
 
             pass.buffer.push([]);
 
-            pass.writeRaw('const main = () => {');
+            pass.writeRaw('const func_main = () => {');
 
             pass.visitOut(
                 ast,
@@ -29,7 +29,7 @@ module.exports = () => {
             pass.writeRaw('};');
             pass.writeRaw('');
 
-            pass.writeRaw('main();');
+            pass.writeRaw('func_main();');
 
             pass.id.pop();
 
