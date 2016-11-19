@@ -145,7 +145,7 @@ module.exports = (root) => {
             );
         },
 
-        call: (instance, ast, mode, before, builder, after, makeCall) => {
+        call: (instance, ast, mainMode, before, builder, after, makeCall) => {
             const callee = pass.visitOut(
                 instance, ast.callee
             );
@@ -167,7 +167,7 @@ module.exports = (root) => {
             }
 
             // notice: .length change only when a new instance is built
-            let child = typeinfo.instance(mode);
+            let child = typeinfo.instance(mainMode);
 
             // notice: __root and __self are not actual members
             child.addInit(
@@ -192,6 +192,17 @@ module.exports = (root) => {
                     || '__argument_' + i;
                 const mode = closure.code.paramModes[i]
                     || closure.code.vaMode;
+
+                if (mode === 'dep') {
+                    if (child.mainMode === 'const') {
+                        mode = 'out';
+                    } else {
+                        // mainMode === 'out'
+                        mode = 'const';
+                    }
+                } else if (mode === 'ret') {
+                    mode = child.mainMode;
+                }
 
                 if (mode === 'const' || mode === 'var') {
                     outArgs[name] = pass.visitOut(

@@ -92,6 +92,17 @@ module.exports = {
                     throw Error();
                 }
 
+                if (mode === 'dep') {
+                    if (instance.mainMode === 'const') {
+                        mode = 'out';
+                    } else {
+                        // mainMode === 'out'
+                        mode = 'const';
+                    }
+                } else if (mode === 'ret') {
+                    mode = instance.mainMode;
+                }
+
                 instance.modes[name] = mode;
             },
 

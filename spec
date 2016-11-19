@@ -24,9 +24,9 @@ types:
             add -> function
         instance
             inits -> array of string
-            mainMode -> string (in symbol modes except 'dep')
+            mainMode -> string (symbol modes 'const' or 'out')
             modes -> object
-                (string) -> string (in symbol modes)
+                (string) -> string (symbol modes 'const', 'out', or 'var')
             private types -> object
                 (string) -> type info
             id -> i64
@@ -55,7 +55,7 @@ types:
         code
             paramNames -> array of string
             paramModes -> array of string (in symbol modes)
-            vaMode -> string (in symbol modes or '')
+            vaMode -> string (in symbol modes, or '')
             impl -> pass-1 ast node
         meta
             outGen -> function
@@ -105,7 +105,7 @@ types:
             type -> type info
 
 symbol modes:
-    const, out, var
+    const, out, var, dep, ret
 
 reserved names:
     internal names:
