@@ -96,8 +96,8 @@ Block = "{" _ s:Statement* _ "}" {
 // If
 If = "if" __ e:Expr _ b1:Block el:(_ "else" (__ i:If {return i}/ _ b:Block {return b}) )? {
     return ast1.call(ast1.lookup("__if"),[
-        ast1.code([],[],'',e),
-        ast1.code([],[],'',b1),
+        ast1.code(ast1.lookup("__self"),[],[],'',e),
+        ast1.code(ast1.lookup("__self"),[],[],'',b1),
         //ast1.el,
     ]);
 }
@@ -117,7 +117,7 @@ FuncDecl = "func" __ name:Ident _ func_in:paramlist _ func_out:resultList? _ b:B
     }
     return ast1.call(ast1.lookup('__assign'), [
         ast1.symbol(name, "const"),
-        ast1.code(
+        ast1.code(ast1.lookup("__self"),
             inName, inMode, "", b
         ),
     ]);
@@ -276,7 +276,7 @@ FuncLiteral = "func" _ func_in:paramlist _ func_out:resultList? _ b:Block {
             inMode.push(p["mode"]);
         });
     }
-    return ast1.code(inName, inMode, "", b);
+    return ast1.code(ast1.lookup("__self"),inName, inMode, "", b);
 }
 
 CompLiteral = t:CompLiteralType _ v:CompLiteralValue {
