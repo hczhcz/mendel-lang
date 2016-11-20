@@ -41,7 +41,7 @@ const b1 = boot1();
 const b2js = boot2js();
 const b2c = boot2c();
 
-b1.namedModule(
+b1.exportModule(
     '__do', 'const', ast1.code(
         [], [], 'const',
         ast1.meta(
@@ -65,7 +65,7 @@ b1.namedModule(
     )
 );
 
-b1.namedModule(
+b1.exportModule(
     '__assign', 'const', ast1.code(
         ['a', 'b'], ['out', 'const'], '',
         ast1.meta(
@@ -98,7 +98,7 @@ b1.namedModule(
     )
 );
 
-b1.namedModule(
+b1.exportModule(
     '__write', 'const', ast1.code(
         ['a'], ['const'], '',
         ast1.meta(
@@ -125,7 +125,7 @@ b1.namedModule(
     )
 );
 
-const m1 = b1.module(ast);
+const m1 = b1.execModule(ast);
 
 const m2js = b2js.module(m1);
 fs.writeFile(
