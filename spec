@@ -33,8 +33,8 @@ types:
             impl -> pass-2 ast node
             addInit -> function
             add -> function
-            addType -> function
             doOut -> function
+            doIn -> function
             accessOut -> function
             accessIn -> function
     pass-1 ast node types (compile time):

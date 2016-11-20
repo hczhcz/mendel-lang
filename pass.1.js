@@ -33,7 +33,7 @@ module.exports = (root) => {
             instance.add(
                 ast.name, ast.mode
             );
-            instance.addType(
+            instance.doIn(
                 ast.name,
                 type
             );
@@ -267,7 +267,7 @@ module.exports = (root) => {
                     resultType = child.impl.type;
                 },
                 (child) => {
-                    child.addType(
+                    child.doIn(
                         '__return',
                         resultType
                     );
