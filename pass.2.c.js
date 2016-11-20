@@ -70,18 +70,21 @@ module.exports = () => {
         },
 
         reservedOut: (ast, target) => {
-            pass.write(target(ast.name));
+            pass.write(target(
+                '((' + type2c.visit(ast.type)
+                + ') ' + ast.name + ')'
+            ));
         },
 
         reservedIn: (ast, value) => {
-            pass.write(ast.name + ' = ' + value);
+            pass.write(ast.name + ' = ' + value + '->head');
         },
 
         pathOut: (ast, target) => {
             pass.visitOut(
                 ast.upper,
                 (value) => {
-                    return '__upper = ' + value;
+                    return '__upper = &' + value + '->head';
                 }
             );
 
@@ -95,7 +98,7 @@ module.exports = () => {
             pass.visitOut(
                 ast.upper,
                 (value) => {
-                    return '__upper = ' + value;
+                    return '__upper = &' + value + '->head';
                 }
             );
 
@@ -109,7 +112,7 @@ module.exports = () => {
             pass.visitOut(
                 ast.callee,
                 (value) => {
-                    return '__upper = ' + value;
+                    return '__upper = &' + value + '->head';
                 }
             );
 
@@ -122,7 +125,9 @@ module.exports = () => {
             pass.write('__inner->__func = ' + calleeId);
             pass.write(
                 '((' + type2c.visit(ast.instance)
-                + ') __inner)->data.__parent = __upper'
+                + ') __inner)->data.__parent'
+                + ' = ((' + type2c.visit(ast.callee.type)
+                + ') __upper)'
             );
 
             before();

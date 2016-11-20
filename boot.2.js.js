@@ -30,7 +30,7 @@ module.exports = () => {
                                 + '\'' + exports[i].name + '\', ' + value
                                 + ')';
                         } else {
-                            return value; // notice: discard
+                            return 'void ' + value; // notice: discard
                         }
                     }
                 );

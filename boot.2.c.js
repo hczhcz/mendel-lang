@@ -52,7 +52,7 @@ module.exports = () => {
                             return '__root_frame.data.' + exports[i].name
                                 + ' = ' + value;
                         } else {
-                            return value; // notice: discard
+                            return '(void) ' + value; // notice: discard
                         }
                     }
                 );
