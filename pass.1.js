@@ -180,7 +180,7 @@ module.exports = (root) => {
             );
             child.addInit(
                 '__parent', 'var',
-                instance
+                closure.parent
             );
 
             before(child);

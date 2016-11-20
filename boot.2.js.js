@@ -1,39 +1,44 @@
 'use strict';
 
-const pass2 = require('./pass.2.js');
+const pass2js = require('./pass.2.js');
 
 module.exports = () => {
-    const pass = pass2();
+    const pass = pass2js();
 
     return {
         // TODO: init the standard library
 
         render: () => {
-            return pass.code.join('');
+            return '\'use strict\';\n'
+                + '\n'
+                + 'let __upper = null;\n'
+                + 'let __inner = null;\n'
+                + 'let __callee = null;\n'
+                + 'let __root = new Map();\n'
+                + 'let __self = __root;\n'
+                + '\n'
+                + '__root.set(\'__do\', __root);\n'
+                + '__root.set(\'__assign\', __root);\n'
+                + '__root.set(\'__write\', __root);\n'
+                + '\n'
+                + pass.code.join('');
         },
 
-        module: (ast) => {
-            pass.id.push('main');
+        module: (instance) => {
+            pass.build(instance, (ast) => {
+                pass.visitOut(
+                    ast,
+                    (value) => {
+                        return value; // TODO: return value as export
+                    }
+                );
+            });
 
-            pass.buffer.push([]);
+            const result = pass.code[0] + 'func_0();\n';
 
-            pass.writeRaw('const main = () => {');
+            delete pass.code[0];
 
-            pass.visitOut(
-                ast,
-                (value) => {
-                    return value; // TODO: discard?
-                }
-            );
-
-            pass.writeRaw('};');
-            pass.writeRaw('');
-
-            pass.writeRaw('main();');
-
-            pass.id.pop();
-
-            return pass.buffer.pop().join('');
+            return result;
         },
     };
 };
