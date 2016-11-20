@@ -267,7 +267,7 @@ module.exports = (root) => {
                     resultType = child.impl.type;
                 },
                 (child) => {
-                    child.doIn(
+                    child.accessIn(
                         '__return',
                         resultType
                     );

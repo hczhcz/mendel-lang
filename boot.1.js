@@ -11,7 +11,7 @@ module.exports = () => {
         '__return', 'out'
     );
     pass.instances[0].id = 0;
-    pass.instances[0].doIn(
+    pass.instances[0].accessIn(
         '__return',
         typeinfo.basic('null')
     );
