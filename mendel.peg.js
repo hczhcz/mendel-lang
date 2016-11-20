@@ -4260,7 +4260,7 @@ function peg$parse(input, options) {
 
 
 
-  const ast1 = require("../libpepper/ast.1");
+  const ast1 = require("./ast.1");
 
   var getBiOpFunc = (op) => {
       let funcName;
