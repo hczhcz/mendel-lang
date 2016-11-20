@@ -296,7 +296,9 @@ module.exports = () => {
 
             // return
             pass.write('__self->__func = NULL');
-            pass.write('__self->__caller->__func()');
+            if (instance.id !== 0) {
+                pass.write('__self->__caller->__func()');
+            }
 
             pass.writeRaw('}');
             pass.writeRaw('');

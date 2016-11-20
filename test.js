@@ -10,7 +10,7 @@ const boot1 = require('./boot.1');
 const boot2js = require('./boot.2.js');
 const boot2c = require('./boot.2.c');
 
-const a1 = ast1.call(ast1.lookup('__do'), [
+const ast = ast1.call(ast1.lookup('__do'), [
     // var a = 'hello';
     ast1.call(ast1.lookup('__assign'), [
         ast1.symbol('a', 'var'),
@@ -125,68 +125,22 @@ b1.namedModule(
     )
 );
 
-try {
-    const a2 = b1.module(a1);
+const instance = b1.module(ast);
 
-    const headjs = '\'use strict\';\n'
-        + '\n'
-        + 'let __upper = null;\n'
-        + 'let __inner = null;\n'
-        + 'let __callee = null;\n'
-        + 'let __root = new Map();\n'
-        + 'let __self = __root;\n'
-        + '\n'
-        + '__root.set(\'__do\', __root);\n'
-        + '__root.set(\'__assign\', __root);\n'
-        + '__root.set(\'__write\', __root);\n'
-        + '\n';
+const m2js = b2js.module(instance);
+fs.writeFile(
+    'test_gen.js',
+    b2js.render() + m2js,
+    (err) => {
+        //
+    }
+);
 
-    const m2js = b2js.module(a2);
-    fs.writeFile(
-        'test_gen.js',
-        headjs + b2js.render() + m2js,
-        (err) => {
-            //
-        }
-    );
-
-    const headc1 = '#include <stdbool.h>\n'
-        + '#include <stdint.h>\n'
-        + '#include <stdio.h>\n'
-        + '\n'
-        + 'typedef struct {} null_t;\n'
-        + 'typedef struct {uint64_t placeholder;} variant_t;\n'
-        + '\n'
-        + 'struct array {\n'
-        + '    size_t size;\n'
-        + '    null_t data;\n'
-        + '};\n'
-        + '\n'
-        + 'struct head {\n'
-        + '    void (*__func)();\n'
-        + '    struct head *__caller;\n'
-        + '    struct head *__outer;\n'
-        + '};\n'
-        + '\n';
-
-    const headc2 =
-        'struct head *__upper;\n'
-        + 'struct head *__inner;\n'
-        + 'struct head *__callee;\n'
-        + 'struct frame_0 __root_frame;\n'
-        + 'struct head *__root = &__root_frame.head;\n'
-        + 'struct head *__self = &__root_frame.head;\n'
-        + '\n';
-        // TODO: init members of __root_frame
-
-    const m2c = b2c.module(a2);
-    fs.writeFile(
-        'test_gen.c',
-        headc1 + b2c.renderHead() + m2c.head + headc2 + b2c.renderBody() + m2c.body,
-        (err) => {
-            //
-        }
-    );
-} catch (err) {
-    console.log(err.stack);
-}
+const m2c = b2c.module(instance);
+fs.writeFile(
+    'test_gen.c',
+    b2c.renderHead() + m2c.head + b2c.renderBody() + m2c.body,
+    (err) => {
+        //
+    }
+);
