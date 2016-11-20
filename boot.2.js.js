@@ -12,28 +12,21 @@ module.exports = () => {
             return pass.code.join('');
         },
 
-        module: (ast) => {
-            pass.id.push('func_main');
+        module: (instance) => {
+            pass.build(instance, (ast) => {
+                pass.visitOut(
+                    ast,
+                    (value) => {
+                        return value; // TODO: return value as export
+                    }
+                );
+            });
 
-            pass.buffer.push([]);
+            const result = pass.code[0] + 'func_0();\n';
 
-            pass.writeRaw('const func_main = () => {');
+            delete pass.code[0];
 
-            pass.visitOut(
-                ast,
-                (value) => {
-                    return value; // TODO: discard?
-                }
-            );
-
-            pass.writeRaw('};');
-            pass.writeRaw('');
-
-            pass.writeRaw('func_main();');
-
-            pass.id.pop();
-
-            return pass.buffer.pop().join('');
+            return result;
         },
     };
 };

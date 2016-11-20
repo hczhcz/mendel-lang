@@ -16,37 +16,30 @@ module.exports = () => {
             return pass.codeBody.join('');
         },
 
-        module: (ast) => {
-            pass.id.push('func_main');
+        module: (instance) => {
+            pass.build(instance, (ast) => {
+                pass.visitOut(
+                    ast,
+                    (value) => {
+                        return value; // TODO: return value as export
+                    }
+                );
+            });
 
-            pass.bufferHead.push([]);
-            pass.bufferBody.push([]);
-
-            pass.writeHeadRaw('void func_main();');
-            pass.writeRaw('void func_main() {');
-
-            pass.visitOut(
-                ast,
-                (value) => {
-                    return value; // TODO: discard?
-                }
-            );
-
-            pass.writeHeadRaw('');
-
-            pass.writeRaw('}');
-            pass.writeRaw('');
-
-            pass.writeRaw('int main(int argc, char *argv[]) {');
-            pass.write('func_main()');
-            pass.writeRaw('}');
-
-            pass.id.pop();
-
-            return {
-                head: pass.bufferHead.pop().join(''),
-                body: pass.bufferBody.pop().join(''),
+            const result = {
+                head: pass.codeHead[0],
+                body: pass.codeBody[0],
+                main: 'int main(int argc, char *argv[]) {\n'
+                    + '    func_0();\n'
+                    + '\n'
+                    + '    return 0;\n'
+                    + '}'
             };
+
+            delete pass.codeHead[0];
+            delete pass.codeBody[0];
+
+            return result;
         },
     };
 };
