@@ -143,11 +143,13 @@ function peg$parse(input, options) {
 
       peg$c0 = function(s) {
           let l = [];
-          s.forEach((s) => {
-              if (s) {
-                  l = l.concat(s);
-              }
-          });
+          if (s) {
+              s.forEach((s) => {
+                  if (s) {
+                      l = l.concat(s);
+                  }
+              });
+          }
           return ast1.call(ast1.lookup("__do"), l);
       },
       peg$c1 = function() {return null},
@@ -179,10 +181,12 @@ function peg$parse(input, options) {
       peg$c21 = function(name, func_in, func_out, b) {
           let inName = [];
           let inMode = [];
-          func_in.forEach((p) => {
-              inName.push(p["name"]);
-              inMode.push(p["mode"]);
-          });
+          if (func_in) {
+              func_in.forEach((p) => {
+                  inName.push(p["name"]);
+                  inMode.push(p["mode"]);
+              });
+          }
           return ast1.call(ast1.lookup('__assign'), [
               ast1.symbol(name, "const"),
               ast1.code(
@@ -319,18 +323,20 @@ function peg$parse(input, options) {
       peg$c96 = function(e1, en) {
           if (!en) return e1;
           let pe = e1;
-          en.forEach((e) => {
-              switch (e[0]) {
-                  case "index":
-                      pe = ast1.call(ast1.lookup("__index"), [pe, e[1]]);
-                      break;
-                  case "arg":
-                      pe = ast1.call(pe, e[1]);
-                      break;
-                  default:
-                      throw e[0]+" unknown";
-              }
-          });
+          if (en) {
+              en.forEach((e) => {
+                  switch (e[0]) {
+                      case "index":
+                          pe = ast1.call(ast1.lookup("__index"), [pe, e[1]]);
+                          break;
+                      case "arg":
+                          pe = ast1.call(pe, e[1]);
+                          break;
+                      default:
+                          throw e[0]+" unknown";
+                  }
+              });
+          }
           return pe;
       },
       peg$c97 = function(id) {return ast1.lookup(id)},
@@ -347,10 +353,12 @@ function peg$parse(input, options) {
       peg$c108 = function(func_in, func_out, b) {
           let inName = [];
           let inMode = [];
-          func_in.forEach((p) => {
-              inName.push(p["name"]);
-              inMode.push(p["mode"]);
-          });
+          if (func_in) {
+              func_in.forEach((p) => {
+                  inName.push(p["name"]);
+                  inMode.push(p["mode"]);
+              });
+          }
           return ast1.code(inName, inMode, "", b);
       },
       peg$c109 = function(t, v) {
