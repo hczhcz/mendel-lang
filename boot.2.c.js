@@ -9,11 +9,36 @@ module.exports = () => {
         // TODO: init the standard library
 
         renderHead: () => {
-            return pass.codeHead.join('');
+            return '#include <stdbool.h>\n'
+                + '#include <stdint.h>\n'
+                + '#include <stdio.h>\n'
+                + '\n'
+                + 'typedef struct {} null_t;\n'
+                + 'typedef struct {uint64_t placeholder;} variant_t;\n'
+                + '\n'
+                + 'struct array {\n'
+                + '    size_t size;\n'
+                + '    null_t data;\n'
+                + '};\n'
+                + '\n'
+                + 'struct head {\n'
+                + '    void (*__func)();\n'
+                + '    struct head *__caller;\n'
+                + '    struct head *__outer;\n'
+                + '};\n'
+                + '\n'
+                + pass.codeHead.join('');
         },
 
         renderBody: () => {
-            return pass.codeBody.join('');
+            return 'struct head *__upper;\n'
+                + 'struct head *__inner;\n'
+                + 'struct head *__callee;\n'
+                + 'struct frame_0 __root_frame;\n'
+                + 'struct head *__root = &__root_frame.head;\n'
+                + 'struct head *__self = &__root_frame.head;\n'
+                + '\n'
+                + pass.codeBody.join('');
         },
 
         module: (instance) => {

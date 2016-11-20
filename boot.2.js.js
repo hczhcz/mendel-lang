@@ -9,7 +9,19 @@ module.exports = () => {
         // TODO: init the standard library
 
         render: () => {
-            return pass.code.join('');
+            return '\'use strict\';\n'
+                + '\n'
+                + 'let __upper = null;\n'
+                + 'let __inner = null;\n'
+                + 'let __callee = null;\n'
+                + 'let __root = new Map();\n'
+                + 'let __self = __root;\n'
+                + '\n'
+                + '__root.set(\'__do\', __root);\n'
+                + '__root.set(\'__assign\', __root);\n'
+                + '__root.set(\'__write\', __root);\n'
+                + '\n'
+                + pass.code.join('');
         },
 
         module: (instance) => {
