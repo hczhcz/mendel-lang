@@ -59,8 +59,8 @@ Output:
 func add(a, b) {
     return a + b;
 }
-write( add(1+2) );
-write( add(1.2+2.3) );
+write(add(1, 2));
+write(add(1.2, 2.3));
 ```
 
 Output:
