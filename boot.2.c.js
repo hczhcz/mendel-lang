@@ -13,6 +13,7 @@ module.exports = () => {
             return '#include <stdbool.h>\n'
                 + '#include <stdint.h>\n'
                 + '#include <stdio.h>\n'
+                + '#include <gc.h>\n'
                 + '\n'
                 + 'typedef struct {} null_t;\n'
                 + 'typedef struct {uint64_t placeholder;} variant_t;\n'
@@ -88,6 +89,7 @@ module.exports = () => {
                 head: pass.codeHead[0],
                 body: pass.codeBody[0],
                 main: 'int main(int argc, char *argv[]) {\n'
+                    + '    GC_init();\n'
                     + '    func_0();\n'
                     + '\n'
                     + '    return 0;\n'

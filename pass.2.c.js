@@ -117,7 +117,7 @@ module.exports = () => {
             const frameId = 'struct frame_' + ast.instance.id;
 
             pass.write(
-                '__inner = (struct head *) malloc(sizeof(' + frameId + '))'
+                '__inner = (struct head *) GC_malloc(sizeof(' + frameId + '))'
             );
             pass.write('__inner->__func = ' + calleeId);
             pass.write(
