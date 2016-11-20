@@ -63,11 +63,13 @@ var evalUExpr = (e) => {
 
 Grammar = _ s:Statement* _ {
     let l = [];
-    s.forEach((s) => {
-        if (s) {
-            l = l.concat(s);
-        }
-    });
+    if (s) {
+        s.forEach((s) => {
+            if (s) {
+                l = l.concat(s);
+            }
+        });
+    }
     return ast1.call(ast1.lookup("__do"), l);
 }
 
@@ -81,11 +83,13 @@ SimpleStatement = Assignment / ShortVarDecl / Expr
 // Block
 Block = "{" _ s:Statement* _ "}" {
     let l = [];
-    s.forEach((s) => {
-        if (s) {
-            l = l.concat(s);
-        }
-    });
+    if (s) {
+        s.forEach((s) => {
+            if (s) {
+                l = l.concat(s);
+            }
+        });
+    }
     return ast1.call(ast1.lookup("__do"), l);
 }
 
@@ -105,10 +109,12 @@ While = "while" __ e:Expr _ b:Block {return {"while": {"cond":e, "block":b}}}
 FuncDecl = "func" __ name:Ident _ func_in:paramlist _ func_out:resultList? _ b:Block {
     let inName = [];
     let inMode = [];
-    func_in.forEach((p) => {
-        inName.push(p["name"]);
-        inMode.push(p["mode"]);
-    });
+    if (func_in) {
+        func_in.forEach((p) => {
+            inName.push(p["name"]);
+            inMode.push(p["mode"]);
+        });
+    }
     return ast1.call(ast1.lookup('__assign'), [
         ast1.symbol(name, "const"),
         ast1.code(
@@ -221,18 +227,20 @@ unary_op = "+" / "-" / "!"
 PrimaryExpr = e1:Operand en:(_ e:PrimaryExprTail {return e})* {
     if (!en) return e1;
     let pe = e1;
-    en.forEach((e) => {
-        switch (e[0]) {
-            case "index":
-                pe = ast1.call(ast1.lookup("__index"), [pe, e[1]]);
-                break;
-            case "arg":
-                pe = ast1.call(pe, e[1]);
-                break;
-            default:
-                throw e[0]+" unknown";
-        }
-    });
+    if (en) {
+        en.forEach((e) => {
+            switch (e[0]) {
+                case "index":
+                    pe = ast1.call(ast1.lookup("__index"), [pe, e[1]]);
+                    break;
+                case "arg":
+                    pe = ast1.call(pe, e[1]);
+                    break;
+                default:
+                    throw e[0]+" unknown";
+            }
+        });
+    }
     return pe;
 }
 Operand = Literal / id:Ident {return ast1.lookup(id)} / "(" _ e:Expr _ ")" {return e}
@@ -262,10 +270,12 @@ BasicLiteral = Float / Int / String / Char
 FuncLiteral = "func" _ func_in:paramlist _ func_out:resultList? _ b:Block {
     let inName = [];
     let inMode = [];
-    func_in.forEach((p) => {
-        inName.push(p["name"]);
-        inMode.push(p["mode"]);
-    });
+    if (func_in) {
+        func_in.forEach((p) => {
+            inName.push(p["name"]);
+            inMode.push(p["mode"]);
+        });
+    }
     return ast1.code(inName, inMode, "", b);
 }
 
