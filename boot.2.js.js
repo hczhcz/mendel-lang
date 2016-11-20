@@ -5,7 +5,7 @@ const pass2js = require('./pass.2.js');
 module.exports = () => {
     const pass = pass2js();
 
-    return {
+    const boot = {
         // TODO: init the standard library
 
         render: () => {
@@ -20,15 +20,44 @@ module.exports = () => {
                 + pass.code.join('');
         },
 
-        module: (instance) => {
-            pass.build(instance, (ast) => {
+        collectRoot: (exports) => {
+            for (const i in exports) {
                 pass.visitOut(
-                    ast,
+                    exports[i].impl,
                     (value) => {
-                        return value; // TODO: return value as export
+                        if (exports[i].name !== '') {
+                            return '__root.set('
+                                + '\'' + exports[i].name + '\', ' + value
+                                + ')';
+                        } else {
+                            return value; // notice: discard
+                        }
                     }
                 );
-            });
+            }
+        },
+
+        collect: (instances, exports) => {
+            for (const i in instances) {
+                pass.build(instances[i], () => {
+                    if (i === '0') {
+                        boot.collectRoot(exports);
+                    } else if (instances[i].mainMode === 'out') {
+                        pass.visitOut(
+                            instances[i].impl,
+                            (value) => {
+                                return '__self.set(\'__return\', ' + value + ')';
+                            }
+                        );
+                    } else {
+                        // mainMode === 'const'
+                        pass.visitIn(
+                            instances[i].impl,
+                            '__self.get(\'__return\')'
+                        );
+                    }
+                });
+            }
 
             const result = pass.code[0] + 'func_0();\n';
 
@@ -37,4 +66,6 @@ module.exports = () => {
             return result;
         },
     };
+
+    return boot;
 };

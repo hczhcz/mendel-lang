@@ -105,7 +105,7 @@ module.exports = () => {
             );
         },
 
-        call: (ast, before, builder, after) => {
+        call: (ast, before, after) => {
             pass.visitOut(
                 ast.callee,
                 (value) => {
@@ -143,11 +143,6 @@ module.exports = () => {
             pass.write('__callee->__caller = __self');
             pass.write('__self = __callee');
 
-            // lazy codegen
-            if (!pass.codeBody[ast.instance.id]) { // TODO: ?
-                pass.build(ast.instance, builder);
-            }
-
             // call
             pass.continuation(
                 (returnId) => {
@@ -180,15 +175,6 @@ module.exports = () => {
                 () => {
                     // nothing
                 },
-                (ast) => {
-                    pass.visitOut(
-                        ast,
-                        (value) => {
-                            return '((' + type2c.visit(ast.instance)
-                                + ') __self)->data.__return = ' + value;
-                        }
-                    );
-                },
                 () => {
                     pass.write(target(
                         '((' + type2c.visit(ast.instance)
@@ -205,13 +191,6 @@ module.exports = () => {
                     pass.write(
                         '((' + type2c.visit(ast.instance)
                         + ') __inner)->data.__return = ' + value
-                    );
-                },
-                (ast) => {
-                    pass.visitIn(
-                        ast,
-                        '((' + type2c.visit(ast.instance)
-                        + ') __self)->data.__return'
                     );
                 },
                 () => {
@@ -290,7 +269,7 @@ module.exports = () => {
             pass.writeHeadRaw('void ' + funcId + '();');
             pass.writeRaw('void ' + funcId + '() {');
 
-            builder(instance.impl);
+            builder();
 
             pass.writeHeadRaw('');
 

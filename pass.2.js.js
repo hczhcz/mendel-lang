@@ -85,7 +85,7 @@ module.exports = () => {
             );
         },
 
-        call: (ast, before, builder, after) => {
+        call: (ast, before, after) => {
             pass.visitOut(
                 ast.callee,
                 (value) => {
@@ -117,11 +117,6 @@ module.exports = () => {
 
             pass.write('__callee.__caller = __self');
             pass.write('__self = __callee');
-
-            // lazy codegen
-            if (!pass.code[ast.instance.id]) {
-                pass.build(ast.instance, builder);
-            }
 
             // call
             pass.continuation(
@@ -156,14 +151,6 @@ module.exports = () => {
                 () => {
                     // nothing
                 },
-                (ast) => {
-                    pass.visitOut(
-                        ast,
-                        (value) => {
-                            return '__self.set(\'__return\', ' + value + ')';
-                        }
-                    );
-                },
                 () => {
                     pass.write(target('__inner.get(\'__return\')'));
                 }
@@ -175,12 +162,6 @@ module.exports = () => {
                 ast,
                 () => {
                     pass.write('__inner.set(\'__return\', ' + value + ')');
-                },
-                (ast) => {
-                    pass.visitIn(
-                        ast,
-                        '__self.get(\'__return\')'
-                    );
                 },
                 () => {
                     // nothing
@@ -240,7 +221,7 @@ module.exports = () => {
 
             pass.writeRaw('const ' + funcId + ' = () => {');
 
-            builder(instance.impl);
+            builder();
 
             // return
             pass.write('__self.__func = null');

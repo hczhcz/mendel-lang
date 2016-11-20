@@ -127,7 +127,7 @@ b1.exportModule(
 
 const m1 = b1.execModule(ast);
 
-const m2js = b2js.module(m1);
+const m2js = b2js.collect(m1, b1.exports);
 fs.writeFile(
     'test_gen.js',
     b2js.render() + m2js,
@@ -136,7 +136,7 @@ fs.writeFile(
     }
 );
 
-const m2c = b2c.module(m1);
+const m2c = b2c.collect(m1, b1.exports);
 fs.writeFile(
     'test_gen.c',
     b2c.renderHead() + m2c.head + b2c.renderBody() + m2c.body + m2c.main,
