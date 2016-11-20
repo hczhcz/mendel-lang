@@ -1,17 +1,19 @@
 'use strict';
 
+const type2c = require('./type.2.c');
 const pass2c = require('./pass.2.c');
 
 module.exports = () => {
     const pass = pass2c();
 
-    return {
+    const boot = {
         // TODO: init the standard library
 
         renderHead: () => {
             return '#include <stdbool.h>\n'
                 + '#include <stdint.h>\n'
                 + '#include <stdio.h>\n'
+                + '#include <gc.h>\n'
                 + '\n'
                 + 'typedef struct {} null_t;\n'
                 + 'typedef struct {uint64_t placeholder;} variant_t;\n'
@@ -41,24 +43,57 @@ module.exports = () => {
                 + pass.codeBody.join('');
         },
 
-        module: (instance) => {
-            pass.build(instance, (ast) => {
+        collectRoot: (exports) => {
+            for (const i in exports) {
                 pass.visitOut(
-                    ast,
+                    exports[i].impl,
                     (value) => {
-                        return value; // TODO: return value as export
+                        if (exports[i].name !== '') {
+                            return '__root_frame.data.' + exports[i].name
+                                + ' = ' + value;
+                        } else {
+                            return '(void) ' + value; // notice: discard
+                        }
                     }
                 );
-            });
+            }
+        },
+
+        collect: (instances, exports) => {
+            for (const i in instances) {
+                pass.build(instances[i], () => {
+                    if (i === '0') {
+                        boot.collectRoot(exports);
+                    } else if (instances[i].mainMode === 'out') {
+                        pass.visitOut(
+                            instances[i].impl,
+                            (value) => {
+                                return '((' + type2c.visit(instances[i])
+                                    + ') __self)->data.__return = ' + value;
+                            }
+                        );
+                    } else {
+                        // mainMode === 'const'
+                        pass.visitIn(
+                            instances[i].impl,
+                            '((' + type2c.visit(instances[i])
+                            + ') __self)->data.__return'
+                        );
+                    }
+                });
+            }
+
+            let main = 'int main(int argc, char *argv[]) {\n';
 
             const result = {
                 head: pass.codeHead[0],
                 body: pass.codeBody[0],
                 main: 'int main(int argc, char *argv[]) {\n'
+                    + '    GC_init();\n'
                     + '    func_0();\n'
                     + '\n'
                     + '    return 0;\n'
-                    + '}'
+                    + '}',
             };
 
             delete pass.codeHead[0];
@@ -67,4 +102,6 @@ module.exports = () => {
             return result;
         },
     };
+
+    return boot;
 };

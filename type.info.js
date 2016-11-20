@@ -81,7 +81,7 @@ module.exports = {
                 instance.add(
                     name, mode
                 );
-                instance.addType(
+                instance.doIn(
                     name,
                     type
                 );
@@ -106,18 +106,6 @@ module.exports = {
                 instance.modes[name] = mode;
             },
 
-            addType: (name, type) => {
-                if (!instance.modes[name]) {
-                    throw Error();
-                }
-
-                if (instance.types[name]) {
-                    throw Error();
-                }
-
-                instance.types[name] = type;
-            },
-
             doOut: (name) => {
                 if (!instance.types[name]) {
                     throw Error();
@@ -126,26 +114,8 @@ module.exports = {
                 return instance.types[name];
             },
 
-            accessOut: (name) => {
-                if (
-                    instance.modes[name] !== 'const'
-                    && instance.modes[name] !== 'var'
-                ) {
-                    throw Error();
-                }
-
-                if (!instance.types[name]) {
-                    throw Error();
-                }
-
-                return instance.types[name];
-            },
-
-            accessIn: (name, type) => {
-                if (
-                    instance.modes[name] !== 'out'
-                    && instance.modes[name] !== 'var'
-                ) {
+            doIn: (name, type) => {
+                if (!instance.modes[name]) {
                     throw Error();
                 }
 
@@ -161,6 +131,28 @@ module.exports = {
                 } else {
                     instance.types[name] = type;
                 }
+            },
+
+            accessOut: (name) => {
+                if (
+                    instance.modes[name] !== 'const'
+                    && instance.modes[name] !== 'var'
+                ) {
+                    throw Error();
+                }
+
+                return instance.doOut(name);
+            },
+
+            accessIn: (name, type) => {
+                if (
+                    instance.modes[name] !== 'out'
+                    && instance.modes[name] !== 'var'
+                ) {
+                    throw Error();
+                }
+
+                instance.doIn(name, type);
             },
         };
 

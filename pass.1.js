@@ -33,7 +33,7 @@ module.exports = (root) => {
             instance.add(
                 ast.name, ast.mode
             );
-            instance.addType(
+            instance.doIn(
                 ast.name,
                 type
             );
@@ -84,7 +84,7 @@ module.exports = (root) => {
                 () => {
                     return ast2.reservedOut(
                         ast.name,
-                        upper.type.accessOut(ast.name)
+                        instance.accessOut(ast.name)
                     );
                 }
             );
@@ -194,11 +194,11 @@ module.exports = (root) => {
                     || closure.code.vaMode;
 
                 if (mode === 'dep') {
-                    if (child.mainMode === 'const') {
-                        mode = 'out';
-                    } else {
-                        // mainMode === 'out'
+                    if (child.mainMode === 'out') {
                         mode = 'const';
+                    } else {
+                        // mainMode === 'const'
+                        mode = 'out';
                     }
                 } else if (mode === 'ret') {
                     mode = child.mainMode;
@@ -267,7 +267,7 @@ module.exports = (root) => {
                     resultType = child.impl.type;
                 },
                 (child) => {
-                    child.addType(
+                    child.accessIn(
                         '__return',
                         resultType
                     );
@@ -314,12 +314,13 @@ module.exports = (root) => {
         },
 
         codeOut: (instance, ast) => {
-            return ast2.reservedOut(
-                '__self',
-                typeinfo.closure(
-                    instance, ast
-                )
+            const extend = pass.visitOut(
+                instance, ast.extend
             );
+
+            extend.type = typeinfo.closure(extend.type, ast);
+
+            return extend;
         },
 
         codeIn: (instance, ast, type) => {

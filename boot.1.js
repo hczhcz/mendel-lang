@@ -7,35 +7,66 @@ const pass1 = require('./pass.1');
 module.exports = () => {
     const pass = pass1(typeinfo.instance('out'));
 
+    pass.instances[0].addInit(
+        '__root', 'const',
+        pass.instances[0]
+    );
+    pass.instances[0].addInit(
+        '__self', 'var',
+        pass.instances[0]
+    );
+    pass.instances[0].add(
+        '__return', 'out'
+    );
     pass.instances[0].id = 0;
+    pass.instances[0].accessIn(
+        '__return',
+        typeinfo.basic('null')
+    );
 
     const boot = {
+        exports: [],
+
         module: (ast) => {
-            // TODO: env info as arguments?
             // TODO: return value as export (module.exports = __return)
 
-            pass.instances[0].impl = pass.visitOut(
+            return pass.visitOut(
                 pass.instances[0], ast1.call(
                     ast1.code(
+                        ast1.lookup('__self'),
                         [], [], '',
                         ast
                     ),
                     []
                 )
             );
-
-            return pass.instances[0];
         },
 
-        namedModule: (name, mode, ast) => {
-            boot.module(ast);
+        execModule: (ast) => {
+            const impl = boot.module(ast);
+
+            boot.exports.push({
+                name: '',
+                impl: impl,
+            });
+
+            return pass.instances;
+        },
+
+        exportModule: (name, mode, ast) => {
+            const impl = boot.module(ast);
+
+            boot.exports.push({
+                name: name,
+                impl: impl,
+            });
 
             pass.instances[0].addInit(
                 name, mode,
-                pass.instances[0].impl.type
+                impl.type
             );
 
-            return pass.instances[0];
+            return pass.instances;
         },
     };
 

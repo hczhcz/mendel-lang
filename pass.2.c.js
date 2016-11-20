@@ -70,18 +70,21 @@ module.exports = () => {
         },
 
         reservedOut: (ast, target) => {
-            pass.write(target(ast.name));
+            pass.write(target(
+                '((' + type2c.visit(ast.type)
+                + ') ' + ast.name + ')'
+            ));
         },
 
         reservedIn: (ast, value) => {
-            pass.write(ast.name + ' = ' + value);
+            pass.write(ast.name + ' = ' + value + '->head');
         },
 
         pathOut: (ast, target) => {
             pass.visitOut(
                 ast.upper,
                 (value) => {
-                    return '__upper = ' + value;
+                    return '__upper = &' + value + '->head';
                 }
             );
 
@@ -95,7 +98,7 @@ module.exports = () => {
             pass.visitOut(
                 ast.upper,
                 (value) => {
-                    return '__upper = ' + value;
+                    return '__upper = &' + value + '->head';
                 }
             );
 
@@ -105,11 +108,11 @@ module.exports = () => {
             );
         },
 
-        call: (ast, before, builder, after) => {
+        call: (ast, before, after) => {
             pass.visitOut(
                 ast.callee,
                 (value) => {
-                    return '__upper = ' + value;
+                    return '__upper = &' + value + '->head';
                 }
             );
 
@@ -117,12 +120,14 @@ module.exports = () => {
             const frameId = 'struct frame_' + ast.instance.id;
 
             pass.write(
-                '__inner = (struct head *) malloc(sizeof(' + frameId + '))'
+                '__inner = (struct head *) GC_malloc(sizeof(' + frameId + '))'
             );
             pass.write('__inner->__func = ' + calleeId);
             pass.write(
                 '((' + type2c.visit(ast.instance)
-                + ') __inner)->data.__parent = __upper'
+                + ') __inner)->data.__parent'
+                + ' = ((' + type2c.visit(ast.callee.type)
+                + ') __upper)'
             );
 
             before();
@@ -142,11 +147,6 @@ module.exports = () => {
 
             pass.write('__callee->__caller = __self');
             pass.write('__self = __callee');
-
-            // lazy codegen
-            if (!pass.codeBody[ast.instance.id]) { // TODO: ?
-                pass.build(ast.instance, builder);
-            }
 
             // call
             pass.continuation(
@@ -180,15 +180,6 @@ module.exports = () => {
                 () => {
                     // nothing
                 },
-                (ast) => {
-                    pass.visitOut(
-                        ast,
-                        (value) => {
-                            return '((' + type2c.visit(ast.instance)
-                                + ') __self)->data.__return = ' + value;
-                        }
-                    );
-                },
                 () => {
                     pass.write(target(
                         '((' + type2c.visit(ast.instance)
@@ -205,13 +196,6 @@ module.exports = () => {
                     pass.write(
                         '((' + type2c.visit(ast.instance)
                         + ') __inner)->data.__return = ' + value
-                    );
-                },
-                (ast) => {
-                    pass.visitIn(
-                        ast,
-                        '((' + type2c.visit(ast.instance)
-                        + ') __self)->data.__return'
                     );
                 },
                 () => {
@@ -258,8 +242,8 @@ module.exports = () => {
 
             pass.writeRaw('};');
             pass.writeRaw('');
-            pass.writeHeadRaw('void ' + returnId + '();');
-            pass.writeRaw('void ' + returnId + '() {');
+            pass.writeHeadRaw('static void ' + returnId + '();');
+            pass.writeRaw('static void ' + returnId + '() {');
 
             after(returnId);
         },
@@ -276,7 +260,9 @@ module.exports = () => {
 
             pass.writeHeadRaw(dataId + ' {');
             for (const i in instance.types) {
-                pass.writeHead(type2c.visit(instance.types[i]) + ' ' + i);
+                if (i !== '__root' && i !== '__self') {
+                    pass.writeHead(type2c.visit(instance.types[i]) + ' ' + i);
+                }
             }
             pass.writeHeadRaw('};');
             pass.writeHeadRaw('');
@@ -287,10 +273,10 @@ module.exports = () => {
             pass.writeHeadRaw('};');
             pass.writeHeadRaw('');
 
-            pass.writeHeadRaw('void ' + funcId + '();');
-            pass.writeRaw('void ' + funcId + '() {');
+            pass.writeHeadRaw('static void ' + funcId + '();');
+            pass.writeRaw('static void ' + funcId + '() {');
 
-            builder(instance.impl);
+            builder();
 
             pass.writeHeadRaw('');
 
