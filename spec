@@ -67,10 +67,10 @@ types:
             value -> literal
             type -> type info
         reservedOut
-            name -> string
+            name -> string ('__root' or '__self')
             type -> type info
         reservedIn
-            name -> string
+            name -> string ('__root' or '__self')
             type -> type info
         pathOut
             upper -> pass-2 ast node

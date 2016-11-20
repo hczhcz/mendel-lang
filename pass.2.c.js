@@ -237,8 +237,8 @@ module.exports = () => {
 
             pass.writeRaw('};');
             pass.writeRaw('');
-            pass.writeHeadRaw('void ' + returnId + '();');
-            pass.writeRaw('void ' + returnId + '() {');
+            pass.writeHeadRaw('static void ' + returnId + '();');
+            pass.writeRaw('static void ' + returnId + '() {');
 
             after(returnId);
         },
@@ -255,7 +255,9 @@ module.exports = () => {
 
             pass.writeHeadRaw(dataId + ' {');
             for (const i in instance.types) {
-                pass.writeHead(type2c.visit(instance.types[i]) + ' ' + i);
+                if (i !== '__root' && i !== '__self') {
+                    pass.writeHead(type2c.visit(instance.types[i]) + ' ' + i);
+                }
             }
             pass.writeHeadRaw('};');
             pass.writeHeadRaw('');
@@ -266,8 +268,8 @@ module.exports = () => {
             pass.writeHeadRaw('};');
             pass.writeHeadRaw('');
 
-            pass.writeHeadRaw('void ' + funcId + '();');
-            pass.writeRaw('void ' + funcId + '() {');
+            pass.writeHeadRaw('static void ' + funcId + '();');
+            pass.writeRaw('static void ' + funcId + '() {');
 
             builder();
 
