@@ -1,21 +1,20 @@
 'use strict';
 
-const ast1 = require('../libpepper/ast.1')
-const ast2 = require('../libpepper/ast.2')
-const typeInfo = require('../libpepper/type.info')
-const typeCheck = require('../libpepper/type.check')
+const ast1 = require('./libpepper/ast.1')
+const ast2 = require('./libpepper/ast.2')
+const typeInfo = require('./libpepper/type.info')
+const typeCheck = require('./libpepper/type.check')
 
 module.exports = (boot) => {
     //  __do(...)
     boot.exportModule(
-        '__do', 'const', ast1.code(
-            ast1.lookup('__self'),
+        '__do', 'const', ast1.code(ast1.lookup('__self'),
             [], [], 'const', ast1.meta(
                 (pass, instance) => {
                     return ast2.nativeOut(
                         {
                             js: (pass, target) => {
-                                // nothing // TODO
+                                // nothing
                             }
                         },
                         typeInfo.basic('null')
@@ -30,8 +29,7 @@ module.exports = (boot) => {
 
     //　__assign('target', 'source')
     boot.exportModule(
-        '__assign', 'const', ast1.code(
-            ast1.lookup('__self'),
+        '__assign', 'const', ast1.code(ast1.lookup('__self'),
             ['target', 'source'], ['out', 'const'], '', ast1.meta(
                 (pass, instance) => {
                     instance.accessIn(
@@ -57,8 +55,7 @@ module.exports = (boot) => {
 
     //  write('val')
     boot.exportModule(
-        'write', 'const', ast1.code(
-            ast1.lookup('__self'),
+        'write', 'const', ast1.code(ast1.lookup('__self'),
             ['val'], ['const'], '', ast1.meta(
                 (pass, instance) => {
                     return ast2.nativeOut(
@@ -79,8 +76,7 @@ module.exports = (boot) => {
 
     //  read('val')
     boot.exportModule(
-        'read', 'const', ast1.code(
-            ast1.lookup('__self'),
+        'read', 'const', ast1.code(ast1.lookup('__self'),
             ['val'], ['var'], '', ast1.meta(
                 (pass, instance) => {
                     return ast2.nativeOut(
@@ -117,8 +113,7 @@ module.exports = (boot) => {
 
     // __add('val1', 'val2')
     boot.exportModule(
-        '__add', 'const', ast1.code(
-            ast1.lookup('__self'),
+        '__add', 'const', ast1.code(ast1.lookup('__self'),
             ['val1', 'val2'], ['const', 'const'], '', ast1.meta(
                 (pass, instance) => {
                     let type1 = instance.accessOut('val1');
@@ -158,8 +153,7 @@ module.exports = (boot) => {
 
     //__subtract(const val1, const val2)
     boot.exportModule(
-        '__subtract', 'const', ast1.code(
-            ast1.lookup('__self'),
+        '__subtract', 'const', ast1.code(ast1.lookup('__self'),
             ['val1', 'val2'], ['const', 'const'], '', ast1.meta(
                 (pass, instance) => {
                     let type1 = instance.accessOut('val1');
@@ -199,8 +193,7 @@ module.exports = (boot) => {
 
     //__multiply(const val1, const val2)
     boot.exportModule(
-        '__multiply', 'const', ast1.code(
-            ast1.lookup('__self'),
+        '__multiply', 'const', ast1.code(ast1.lookup('__self'),
             ['val1', 'val2'], ['const', 'const'], '', ast1.meta(
                 (pass, instance) => {
                     let type1 = instance.accessOut('val1');
@@ -240,8 +233,7 @@ module.exports = (boot) => {
 
     //__divide(const val1, const val2)
     boot.exportModule(
-        '__divide', 'const', ast1.code(
-            ast1.lookup('__self'),
+        '__divide', 'const', ast1.code(ast1.lookup('__self'),
             ['val1', 'val2'], ['const', 'const'], '', ast1.meta(
                 (pass, instance) => {
                     let type1 = instance.accessOut('val1');
@@ -281,8 +273,7 @@ module.exports = (boot) => {
 
     // __less('val1', 'val2')
     boot.exportModule(
-        '__less', 'const', ast1.code(
-            ast1.lookup('__self'),
+        '__less', 'const', ast1.code(ast1.lookup('__self'),
             ['val1', 'val2'], ['const', 'const'], '', ast1.meta(
                 (pass, instance) => {
                     let type1 = instance.accessOut('val1');
@@ -322,8 +313,7 @@ module.exports = (boot) => {
 
     // __lessEqual('val1', 'val2')
     boot.exportModule(
-        '__lessEqual', 'const', ast1.code(
-            ast1.lookup('__self'),
+        '__lessEqual', 'const', ast1.code(ast1.lookup('__self'),
             ['val1', 'val2'], ['const', 'const'], '', ast1.meta(
                 (pass, instance) => {
                     let type1 = instance.accessOut('val1');
@@ -363,8 +353,7 @@ module.exports = (boot) => {
 
     // __greater('val1', 'val2')
     boot.exportModule(
-        '__greater', 'const', ast1.code(
-            ast1.lookup('__self'),
+        '__greater', 'const', ast1.code(ast1.lookup('__self'),
             ['val1', 'val2'], ['const', 'const'], '', ast1.meta(
                 (pass, instance) => {
                     let type1 = instance.accessOut('val1');
@@ -404,8 +393,7 @@ module.exports = (boot) => {
 
     // __greaterEqual('val1', 'val2')
     boot.exportModule(
-        '__greaterEqual', 'const', ast1.code(
-            ast1.lookup('__self'),
+        '__greaterEqual', 'const', ast1.code(ast1.lookup('__self'),
             ['val1', 'val2'], ['const', 'const'], '', ast1.meta(
                 (pass, instance) => {
                     let type1 = instance.accessOut('val1');
@@ -445,8 +433,7 @@ module.exports = (boot) => {
 
     // __equal('val1', 'val2')
     boot.exportModule(
-        '__equal', 'const', ast1.code(
-            ast1.lookup('__self'),
+        '__equal', 'const', ast1.code(ast1.lookup('__self'),
             ['val1', 'val2'], ['const', 'const'], '', ast1.meta(
                 (pass, instance) => {
                     let type1 = instance.accessOut('val1');
@@ -484,10 +471,100 @@ module.exports = (boot) => {
         )
     )
 
+    // __positive('val')
+    boot.exportModule(
+        '__positive', 'const', ast1.code(ast1.lookup('__self'),
+            ['val'], ['const'], '', ast1.meta(
+                (pass, instance) => {
+                    return ast2.nativeOut(
+                        {
+                            js: (pass, target) => {
+                                pass.write(target('+__self.get(\'val\')'));
+                            }
+                        },
+                        instance.accessOut('val')
+                    )
+                },
+                (pass, instance, type) => {
+                    throw Error();
+                }
+            )
+        )
+    )
+
+    // __negative('val')
+    boot.exportModule(
+        '__negative', 'const', ast1.code(ast1.lookup('__self'),
+            ['val'], ['const'], '', ast1.meta(
+                (pass, instance) => {
+                    return ast2.nativeOut(
+                        {
+                            js: (pass, target) => {
+                                pass.write(target('-__self.get(\'val\')'));
+                            }
+                        },
+                        instance.accessOut('val')
+                    )
+                },
+                (pass, instance, type) => {
+                    throw Error();
+                }
+            )
+        )
+    )
+
+    // __not('val')
+    boot.exportModule(
+        '__not', 'const', ast1.code(ast1.lookup('__self'),
+            ['val'], ['const'], '', ast1.meta(
+                (pass, instance) => {
+                    return ast2.nativeOut(
+                        {
+                            js: (pass, target) => {
+                                pass.write(target('!__self.get(\'val\')'));
+                            }
+                        },
+                        instance.accessOut('val')
+                    )
+                },
+                (pass, instance, type) => {
+                    throw Error();
+                }
+            )
+        )
+    )
+
+    // __int('val')
+    boot.exportModule(
+        '__int', 'const', ast1.code(ast1.lookup('__self'),
+            ['val'], ['const'], '', ast1.meta(
+                (pass, instance) => {
+                    if (typeCheck.visit(instance.accessOut('val'),
+                        typeInfo.basic('float'))) {
+                            return ast2.nativeOut(
+                                {
+                                    js: (pass, target) => {
+                                        pass.write("let str = __self.get(\'val\').toString()");
+                                        pass.write(target("parseInt(str.substr(0, str.indexOf('.')))"));
+                                    }
+                                },
+                                typeInfo.basic('int')
+                            )
+                        }
+                    else {
+                        throw Error();
+                    }
+                },
+                (pass, instance, type) => {
+                    throw Error();
+                }
+            )
+        )
+    );
+
     // __array(...)
     boot.exportModule(
-        '__array', 'const', ast1.code(
-            ast1.lookup('__self'),
+        '__array', 'const', ast1.code(ast1.lookup('__self'),
             [], [], 'const', ast1.meta(
                 (pass, instance) => {
                     return ast2.nativeOut(
@@ -514,8 +591,7 @@ module.exports = (boot) => {
 
     // __index('container', 'index')
     boot.exportModule(
-        '__index', 'const', ast1.code(
-            ast1.lookup('__self'),
+        '__index', 'const', ast1.code(ast1.lookup('__self'),
             ['container', 'index'], ['const', 'const'], '', ast1.meta(
                 (pass, instance) => {
                     if (instance.accessOut('container').__type === 'array'
@@ -561,8 +637,7 @@ module.exports = (boot) => {
 
     // __if('cond', 'body')
     boot.exportModule(
-        '__if', 'const', ast1.code(
-            ast1.lookup('__self'),
+        '__if', 'const', ast1.code(ast1.lookup('__self'),
             ['cond', 'body'], ['const', 'const'], '',
             ast1.call(ast1.lookup('__do'), [
                 // const c = cond()
@@ -575,7 +650,11 @@ module.exports = (boot) => {
                         return ast2.nativeOut(
                             {
                                 js: (pass, target) => {
-                                    pass.write('if (__self.get("c")) {');
+                                    pass.writeRaw('    if (!__self.get("c")) {');
+                                    pass.writeRaw('        __self.__func = null;');
+                                    pass.writeRaw('        __self.__caller.__func();');
+                                    pass.writeRaw('        return;')
+                                    pass.writeRaw('    }');
                                 }
                             }
                         )
@@ -586,21 +665,28 @@ module.exports = (boot) => {
                 ),
                 // body()
                 ast1.call(ast1.lookup('body'), []),
-                ast1.meta(
-                    (pass, instance) => {
-                        return ast2.nativeOut(
-                            {
-                                js: (pass, target) => {
-                                    pass.write('}');
-                                }
-                            }
-                        )
-                    },
-                    (pass, instance, type) => {
-                        throw Error();
-                    }
-                ),
             ])
+        )
+    )
+
+    // exit('val')
+    boot.exportModule(
+        'exit', 'const', ast1.code(ast1.lookup('__self'),
+            ['val'], 'const', '', ast1.meta(
+                (pass, instance) => {
+                    return ast2.nativeOut(
+                        {
+                            js: (pass, target) => {
+                                pass.write('__self.__caller.__func = null');
+                                pass.write('__self.__caller.__caller.__func()');
+                            }
+                        }
+                    )
+                },
+                (pass, instance, type) => {
+                    throw Error();
+                }
+            )
         )
     )
 };
