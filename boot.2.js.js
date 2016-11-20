@@ -17,10 +17,6 @@ module.exports = () => {
                 + 'let __root = new Map();\n'
                 + 'let __self = __root;\n'
                 + '\n'
-                + '__root.set(\'__do\', __root);\n'
-                + '__root.set(\'__assign\', __root);\n'
-                + '__root.set(\'__write\', __root);\n'
-                + '\n'
                 + pass.code.join('');
         },
 

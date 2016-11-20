@@ -58,7 +58,7 @@ module.exports = () => {
                     + '    func_0();\n'
                     + '\n'
                     + '    return 0;\n'
-                    + '}'
+                    + '}',
             };
 
             delete pass.codeHead[0];

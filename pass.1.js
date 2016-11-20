@@ -194,11 +194,11 @@ module.exports = (root) => {
                     || closure.code.vaMode;
 
                 if (mode === 'dep') {
-                    if (child.mainMode === 'const') {
-                        mode = 'out';
-                    } else {
-                        // mainMode === 'out'
+                    if (child.mainMode === 'out') {
                         mode = 'const';
+                    } else {
+                        // mainMode === 'const'
+                        mode = 'out';
                     }
                 } else if (mode === 'ret') {
                     mode = child.mainMode;
