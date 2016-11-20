@@ -110,8 +110,8 @@ b1.namedModule(
                         },
                         c: (pass, target) => {
                             pass.write(
-                                '((' + type2c.visit(instance)
-                                + ')__self)->data.a'
+                                'puts(((' + type2c.visit(instance)
+                                + ')__self)->data.a)'
                             );
                         },
                     },
@@ -139,7 +139,7 @@ fs.writeFile(
 const m2c = b2c.module(instance);
 fs.writeFile(
     'test_gen.c',
-    b2c.renderHead() + m2c.head + b2c.renderBody() + m2c.body,
+    b2c.renderHead() + m2c.head + b2c.renderBody() + m2c.body + m2c.main,
     (err) => {
         //
     }

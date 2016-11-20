@@ -14,11 +14,7 @@ module.exports = () => {
             // TODO: env info as arguments?
             // TODO: return value as export (module.exports = __return)
 
-            const instance = typeinfo.instance('out'); // a virtual instance 0
-
-            instance.id = 0;
-
-            instance.impl = pass.visitOut(
+            pass.instances[0].impl = pass.visitOut(
                 pass.instances[0], ast1.call(
                     ast1.code(
                         [], [], '',
@@ -28,18 +24,18 @@ module.exports = () => {
                 )
             );
 
-            return instance;
+            return pass.instances[0];
         },
 
         namedModule: (name, mode, ast) => {
-            const instance = boot.module(ast);
+            boot.module(ast);
 
             pass.instances[0].addInit(
                 name, mode,
-                instance.impl.type
+                pass.instances[0].impl.type
             );
 
-            return instance;
+            return pass.instances[0];
         },
     };
 
