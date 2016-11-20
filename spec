@@ -53,6 +53,7 @@ types:
             callee -> pass-1 ast node
             args -> array of pass-1 ast node
         code
+            extend -> pass-1 ast node
             paramNames -> array of string
             paramModes -> array of string (in symbol modes)
             vaMode -> string (in symbol modes, or '')

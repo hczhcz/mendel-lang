@@ -84,7 +84,7 @@ module.exports = (root) => {
                 () => {
                     return ast2.reservedOut(
                         ast.name,
-                        upper.type.accessOut(ast.name)
+                        instance.accessOut(ast.name)
                     );
                 }
             );
@@ -314,12 +314,13 @@ module.exports = (root) => {
         },
 
         codeOut: (instance, ast) => {
-            return ast2.reservedOut(
-                '__self',
-                typeinfo.closure(
-                    instance, ast
-                )
+            const extend = pass.visitOut(
+                instance, ast.extend
             );
+
+            extend.type = typeinfo.closure(extend.type, ast);
+
+            return extend;
         },
 
         codeIn: (instance, ast, type) => {

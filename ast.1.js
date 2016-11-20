@@ -119,6 +119,10 @@ module.exports = {
         AST:
             {
                 __type: 'code',
+                extend: {
+                    __type: 'lookup',
+                    name: '__self',
+                },
                 paramNames: ['foo', 'bar'],
                 paramModes: ['out', 'const'],
                 vaMode: '', // no variable argument in this function
@@ -127,9 +131,10 @@ module.exports = {
                 },
             }
     */
-    code: (paramNames, paramModes, vaMode, impl) => {
+    code: (extend, paramNames, paramModes, vaMode, impl) => {
         return {
             __type: 'code',
+            extend: extend,
             paramNames: paramNames,
             paramModes: paramModes,
             vaMode: vaMode,

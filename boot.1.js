@@ -7,6 +7,14 @@ const pass1 = require('./pass.1');
 module.exports = () => {
     const pass = pass1(typeinfo.instance('out'));
 
+    pass.instances[0].addInit(
+        '__root', 'const',
+        pass.instances[0]
+    );
+    pass.instances[0].addInit(
+        '__self', 'var',
+        pass.instances[0]
+    );
     pass.instances[0].add(
         '__return', 'out'
     );
@@ -25,6 +33,7 @@ module.exports = () => {
             return pass.visitOut(
                 pass.instances[0], ast1.call(
                     ast1.code(
+                        ast1.lookup('__self'),
                         [], [], '',
                         ast
                     ),

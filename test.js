@@ -20,6 +20,7 @@ const ast = ast1.call(ast1.lookup('__do'), [
     ast1.call(ast1.lookup('__assign'), [
         ast1.symbol('b', 'const'),
         ast1.code(
+            ast1.lookup('__self'),
             ['x'], ['const'], '',
             ast1.call(ast1.lookup('__assign'), [
                 ast1.lookup('a'),
@@ -43,6 +44,7 @@ const b2c = boot2c();
 
 b1.exportModule(
     '__do', 'const', ast1.code(
+        ast1.lookup('__self'),
         [], [], 'const',
         ast1.meta(
             (pass, instance) => {
@@ -67,6 +69,7 @@ b1.exportModule(
 
 b1.exportModule(
     '__assign', 'const', ast1.code(
+        ast1.lookup('__self'),
         ['a', 'b'], ['out', 'const'], '',
         ast1.meta(
             (pass, instance) => {
@@ -100,6 +103,7 @@ b1.exportModule(
 
 b1.exportModule(
     '__write', 'const', ast1.code(
+        ast1.lookup('__self'),
         ['a'], ['const'], '',
         ast1.meta(
             (pass, instance) => {
