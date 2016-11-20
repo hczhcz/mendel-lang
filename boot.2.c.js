@@ -22,6 +22,7 @@ module.exports = () => {
             pass.bufferHead.push([]);
             pass.bufferBody.push([]);
 
+            pass.writeHeadRaw('void func_main();');
             pass.writeRaw('void func_main() {');
 
             pass.visitOut(
@@ -30,6 +31,8 @@ module.exports = () => {
                     return value; // TODO: discard?
                 }
             );
+
+            pass.writeHeadRaw('');
 
             pass.writeRaw('}');
             pass.writeRaw('');

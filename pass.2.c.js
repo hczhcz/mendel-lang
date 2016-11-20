@@ -85,7 +85,10 @@ module.exports = () => {
                 }
             );
 
-            pass.write(target('__upper->data.' + ast.name));
+            pass.write(target(
+                '((' + type2c.visit(ast.upper.type)
+                + ') __upper)->data.' + ast.name
+            ));
         },
 
         pathIn: (ast, value) => {
@@ -96,7 +99,10 @@ module.exports = () => {
                 }
             );
 
-            pass.write('__upper->data.' + ast.name + ' = ' + value);
+            pass.write(
+                '((' + type2c.visit(ast.upper.type)
+                + ') __upper)->data.' + ast.name + ' = ' + value
+            );
         },
 
         call: (ast, before, builder, after) => {
@@ -108,14 +114,16 @@ module.exports = () => {
             );
 
             const calleeId = 'func_' + ast.instance.id;
-            const structId = 'struct struct_' + ast.instance.id;
+            const frameId = 'struct frame_' + ast.instance.id;
 
             pass.write(
-                '__inner = (struct struct_head *)'
-                + 'malloc(sizeof(' + structId + '))'
+                '__inner = (struct head *) malloc(sizeof(' + frameId + '))'
             );
             pass.write('__inner->__func = ' + calleeId);
-            pass.write('__inner->data.__parent = __upper');
+            pass.write(
+                '((' + type2c.visit(ast.instance)
+                + ') __inner)->data.__parent = __upper'
+            );
 
             before();
 
@@ -126,7 +134,8 @@ module.exports = () => {
                 pass.visitOut(
                     ast.outArgs[i],
                     (value) => {
-                        return '__callee->data.' + i + ' = ' + value;
+                        return '((' + type2c.visit(ast.instance)
+                            + ') __callee)->data.' + i + ' = ' + value;
                     }
                 );
             }
@@ -154,7 +163,8 @@ module.exports = () => {
             for (const i in ast.inArgs) {
                 pass.visitIn(
                     ast.inArgs[i],
-                    '__callee->data.' + i
+                    '((' + type2c.visit(ast.instance)
+                    + ') __callee)->data.' + i
                 );
             }
 
@@ -174,12 +184,16 @@ module.exports = () => {
                     pass.visitOut(
                         ast,
                         (value) => {
-                            return '__self->data.__return = ' + value;
+                            return '((' + type2c.visit(ast.instance)
+                                + ') __self)->data.__return = ' + value;
                         }
                     );
                 },
                 () => {
-                    pass.write(target('__inner->data.__return'));
+                    pass.write(target(
+                        '((' + type2c.visit(ast.instance)
+                        + ') __inner)->data.__return'
+                    ));
                 }
             );
         },
@@ -188,12 +202,16 @@ module.exports = () => {
             pass.call(
                 ast,
                 () => {
-                    pass.write('__inner->data.__return = ' + value);
+                    pass.write(
+                        '((' + type2c.visit(ast.instance)
+                        + ') __inner)->data.__return = ' + value
+                    );
                 },
                 (ast) => {
                     pass.visitIn(
                         ast,
-                        '__self->data.__return'
+                        '((' + type2c.visit(ast.instance)
+                        + ') __self)->data.__return'
                     );
                 },
                 () => {
@@ -241,25 +259,43 @@ module.exports = () => {
             pass.writeRaw('};');
             pass.writeRaw('');
             pass.writeHeadRaw('void ' + returnId + '();');
-            pass.writeRaw('const ' + returnId + ' = () => {');
+            pass.writeRaw('void ' + returnId + '() {');
 
             after(returnId);
         },
 
         build: (instance, builder) => {
-            const id = 'func_' + instance.id;
+            const funcId = 'func_' + instance.id;
+            const frameId = 'struct frame_' + instance.id;
+            const dataId = 'struct data_' + instance.id;
 
-            pass.id.push(id);
+            pass.id.push(funcId);
 
             pass.bufferHead.push([]);
             pass.bufferBody.push([]);
 
-            pass.writeRaw('void ' + id + '() {');
+            pass.writeHeadRaw(dataId + ' {');
+            for (const i in instance.types) {
+                pass.writeHead(type2c.visit(instance.types[i]) + ' ' + i);
+            }
+            pass.writeHeadRaw('};');
+            pass.writeHeadRaw('');
+
+            pass.writeHeadRaw(frameId + ' {');
+            pass.writeHead('struct head head');
+            pass.writeHead(dataId + ' data');
+            pass.writeHeadRaw('};');
+            pass.writeHeadRaw('');
+
+            pass.writeHeadRaw('void ' + funcId + '();');
+            pass.writeRaw('void ' + funcId + '() {');
 
             builder(instance.impl);
 
+            pass.writeHeadRaw('');
+
             // return
-            pass.write('__self->__func = null');
+            pass.write('__self->__func = NULL');
             pass.write('__self->__caller->__func()');
 
             pass.writeRaw('}');

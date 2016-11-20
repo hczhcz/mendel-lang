@@ -3,6 +3,7 @@
 const fs = require('fs');
 
 const typeinfo = require('./type.info');
+const type2c = require('./type.2.c');
 const ast1 = require('./ast.1');
 const ast2 = require('./ast.2');
 const boot1 = require('./boot.1');
@@ -80,7 +81,11 @@ b1.namedModule(
                             pass.write('__self.set(\'a\', __self.get(\'b\'))');
                         },
                         c: (pass, target) => {
-                            pass.write('__self.set(\'a\', __self.get(\'b\'))');
+                            pass.write(
+                                '((' + type2c.visit(instance)
+                                + ')__self)->data.a = ((' + type2c.visit(instance)
+                                + ')__self)->data.b'
+                            );
                         },
                     },
                     typeinfo.basic('null')
@@ -104,7 +109,10 @@ b1.namedModule(
                             pass.write('console.log(__self.get(\'a\'))');
                         },
                         c: (pass, target) => {
-                            pass.write('console.log(__self.get(\'a\'))');
+                            pass.write(
+                                '((' + type2c.visit(instance)
+                                + ')__self)->data.a'
+                            );
                         },
                     },
                     typeinfo.basic('null')
@@ -146,11 +154,8 @@ try {
         + '#include <stdint.h>\n'
         + '#include <stdio.h>\n'
         + '\n'
-        + 'typedef char null_t[0];\n'
-        + 'typedef char variant_t[8];\n'
-        + '\n'
-        + 'typedef struct array *parray;\n'
-        + 'typedef struct head *phead;\n'
+        + 'typedef struct {} null_t;\n'
+        + 'typedef struct {uint64_t placeholder;} variant_t;\n'
         + '\n'
         + 'struct array {\n'
         + '    size_t size;\n'
@@ -159,18 +164,18 @@ try {
         + '\n'
         + 'struct head {\n'
         + '    void (*__func)();\n'
-        + '    phead __caller;\n'
-        + '    phead __outer;\n'
+        + '    struct head *__caller;\n'
+        + '    struct head *__outer;\n'
         + '};\n'
         + '\n';
 
     const headc2 =
-        'phead __upper;\n'
-        + 'phead __inner;\n'
-        + 'phead __callee;\n'
+        'struct head *__upper;\n'
+        + 'struct head *__inner;\n'
+        + 'struct head *__callee;\n'
         + 'struct frame_0 __root_frame;\n'
-        + 'phead __root = &__root_frame.head;\n'
-        + 'phead __self = __root;\n'
+        + 'struct head *__root = &__root_frame.head;\n'
+        + 'struct head *__self = &__root_frame.head;\n'
         + '\n';
         // TODO: init members of __root_frame
 

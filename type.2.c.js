@@ -17,7 +17,7 @@ module.exports = {
             float: 'double',
             f32: 'float',
             f64: 'double',
-            string: 'pchar',
+            string: 'char *',
             null: 'null_t',
             variant: 'variant_t',
         };
@@ -34,7 +34,7 @@ module.exports = {
     },
 
     instance: (type) => {
-        return 'pframe_' + type.id;
+        return 'struct frame_' + type.id + ' *';
     },
 
     visit: (type) => {
