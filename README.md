@@ -2,35 +2,50 @@
 
 # Mendel Programming Language
 
-Mendel is an user friendly programming language. It has a clean design with modern programming principles.
+Mendel is a statically typed, multi-paradigm, and compiled programming language with modern and clean style. The Mendel compiler was developed in JavaScript (and will migrate to Mendel iteself in the future). Mendel can be compiled to low level subsets of JavaScript and C.
 
-Mendel is a static typed programming language although it was developed based on JavaScript. Mendel is also friendly to JavaScript and C.
+Mendel is a project created in [HackOHI/O](http://hack.osu.edu/). For more information about the project and out team, visit our [presentation](http://go.osu.edu/intro2mendel).
 
-Get to know about the Mendel by visiting our [presentation](http://go.osu.edu/intro2mendel).
+Key features of Mendel Programming Language:
+
+* Templete-based generic
+* Prototype-based OOP
+* Multi-paradigm: Proc + Func + OO
+* Static & strong typing
+* Full type inference
+* Clean, modern and flexible design
+* Compliered to JavaScript & C
+* Simple enough to be built in 24 hours
 
 ## Getting Started
 
 ### Requirements
 
-Currently, the Mendel is complied using node.js. Node.js can be downloaded on [Node.js](https://nodejs.org).
+Currently, the Mendel compiler runs on [Node.js](https://nodejs.org/). You can download its installer on the official website. It is also available in software repository package and source code.
 
-For Windows user, it might be helpful to have an terminal like [PuTTy](http://www.putty.org/) on your computer.
+Since you are here, you may already have [Git](https://www.git-scm.com/) installed. [Npm](https://www.npmjs.com/) is another a useful tool to install required libraries.
 
-### Source
+[PEG.js](http://pegjs.org/) is required for running the compiler. You can download it on the website or install it via npm:
 
-To download the source of the Mendel, open a terminal and type in the following command:
+```bash
+$ npm install pegjs
+```
+
+For users on Microsoft Windows, it might be helpful to have a terminal emulator and a shell (like [PowerShell](https://microsoft.com/powershell)) on your computer.
+
+### Setup
+
+To download the source repository of the Mendel compiler, run the following command:
 
 ```bash
 $ git clone https://github.com/hczhcz/mendel-lang.git
 ```
 
-## Turorial
+## Code Examples
 
-### HelloWorld
+### "Hello, World!"
 
-Your first Mendel code:
-
-```javascript
+```
 write("Hello, World!");
 ```
 
@@ -40,12 +55,12 @@ Output:
 Hello, World!
 ```
 
-### Assignment
+### Statements and Expressions
 
-```javasrcipt
-a := 1;
-b := 2;
-write(a+b);
+```
+const a = 1;
+const b = 2;
+write(a + b);
 ```
 
 Output:
@@ -56,10 +71,11 @@ Output:
 
 ### Generic
 
-```javascript
+```
 func add(a, b) {
     return a + b;
 }
+
 write(add(1, 2));
 write(add(1.2, 2.3));
 ```
@@ -71,38 +87,47 @@ Output:
 3.5
 ```
 
-### Prototype-based OOP
+### Object
 
-```javascript
-func newUser(name, id) {
+```
+func newUser(id, var name) {
     return __self;
 }
-user := newUser("Foo", 42);
-write(user);
+
+const user = newUser(42, "Foo");
+
+write(user.id);
+write(user.name);
+
+user.name = "Bar";
+
+write(user.name);
 ```
 
 Output:
 
 ```
-{"name": "Foo", "id": 42}
+42
+Foo
+Bar
 ```
-
-## Features
-
-- Template and generic driven
-- Prototype-based OOP
-- Multi-paradigm
-- Static & strong type
-- Full type inference
-- Support UTF-8
-- Compiled to JavaScript and C
 
 ## Contributing
 
-Contributing to the Mendel is always welcome.
+Contributions to the Mendel are always welcomed, no matter what form and size the contribution is. Welcome to open a [pull request](https://github.com/hczhcz/mendel-lang/pulls). If you are adding new feature or making some changes on the language design, opening an [issue](https://github.com/hczhcz/mendel-lang/issues) before coding would be a good practice.
 
-If you have any question, feel free to contact the Mendel development group.
+If you have any question, feel free to contact the development team by opening an [issue](https://github.com/hczhcz/mendel-lang/issues) with "question" label.
 
 ## License
 
-The Mendel, including complier and standard library, is under MIT License, expect some of project files suggest otherwise.
+The Mendel project, including complier and standard library, is released under MIT License. You can use any license for your own use, while the official repository will probably not introduce any other licenses.
+
+> The MIT License (MIT)
+>
+> Copyright (c) 2016 Mendel Development Team
+>
+> Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+>
+> The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+>
+> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
