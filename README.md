@@ -8,7 +8,7 @@ Mendel is a static typed programming language although it was developed based on
 
 Get to know about the Mendel by visiting our [presentation](http://go.osu.edu/intro2mendel).
 
-## Getting  Started
+## Getting Started
 
 ### Requirements
 
@@ -35,6 +35,7 @@ write("Hello, World!");
 ```
 
 Output:
+
 ```
 Hello, World!
 ```
@@ -64,6 +65,7 @@ write(add(1.2, 2.3));
 ```
 
 Output:
+
 ```
 3
 3.5
@@ -80,11 +82,13 @@ write(user);
 ```
 
 Output:
+
 ```
 {"name": "Foo", "id": 42}
 ```
 
 ## Features
+
 - Template and generic driven
 - Prototype-based OOP
 - Multi-paradigm
