@@ -41,6 +41,12 @@ To download the source repository of the Mendel compiler, run the following comm
 $ git clone https://github.com/hczhcz/mendel-lang.git
 ```
 
+Then, you can run the compiler by:
+
+```bash
+$ nodejs mendel.driver.js <input file> <output file>
+```
+
 ## Code Examples
 
 ### "Hello, World!"
