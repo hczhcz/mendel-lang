@@ -286,7 +286,7 @@ module.exports = (boot) => {
                                     pass.write(target('__self.get(\'val1\') < __self.get(\'val2\')'));
                                 }
                             },
-                            typeInfo.basic('boolean')
+                            typeInfo.basic('bool')
                         )
                     }
                     else if (typeCheck.visit(type1, type2) &&
@@ -297,7 +297,7 @@ module.exports = (boot) => {
                                     pass.write(target('__self.get(\'val1\') < __self.get(\'val2\')'));
                                 }
                             },
-                            typeInfo.basic('boolean')
+                            typeInfo.basic('bool')
                         )
                     }
                     else {
@@ -326,7 +326,7 @@ module.exports = (boot) => {
                                     pass.write(target('__self.get(\'val1\') <= __self.get(\'val2\')'));
                                 }
                             },
-                            typeInfo.basic('boolean')
+                            typeInfo.basic('bool')
                         )
                     }
                     else if (typeCheck.visit(type1, type2) &&
@@ -337,7 +337,7 @@ module.exports = (boot) => {
                                     pass.write(target('__self.get(\'val1\') <= __self.get(\'val2\')'));
                                 }
                             },
-                            typeInfo.basic('boolean')
+                            typeInfo.basic('bool')
                         )
                     }
                     else {
@@ -366,7 +366,7 @@ module.exports = (boot) => {
                                     pass.write(target('__self.get(\'val1\') > __self.get(\'val2\')'));
                                 }
                             },
-                            typeInfo.basic('boolean')
+                            typeInfo.basic('bool')
                         )
                     }
                     else if (typeCheck.visit(type1, type2) &&
@@ -377,7 +377,7 @@ module.exports = (boot) => {
                                     pass.write(target('__self.get(\'val1\') > __self.get(\'val2\')'));
                                 }
                             },
-                            typeInfo.basic('boolean')
+                            typeInfo.basic('bool')
                         )
                     }
                     else {
@@ -406,7 +406,7 @@ module.exports = (boot) => {
                                     pass.write(target('__self.get(\'val1\') >= __self.get(\'val2\')'));
                                 }
                             },
-                            typeInfo.basic('boolean')
+                            typeInfo.basic('bool')
                         )
                     }
                     else if (typeCheck.visit(type1, type2) &&
@@ -417,7 +417,7 @@ module.exports = (boot) => {
                                     pass.write(target('__self.get(\'val1\') >= __self.get(\'val2\')'));
                                 }
                             },
-                            typeInfo.basic('boolean')
+                            typeInfo.basic('bool')
                         )
                     }
                     else {
@@ -446,7 +446,7 @@ module.exports = (boot) => {
                                     pass.write(target('__self.get(\'val1\') === __self.get(\'val2\')'));
                                 }
                             },
-                            typeInfo.basic('boolean')
+                            typeInfo.basic('bool')
                         )
                     }
                     else if (typeCheck.visit(type1, type2) &&
@@ -457,7 +457,7 @@ module.exports = (boot) => {
                                     pass.write(target('__self.get(\'val1\') === __self.get(\'val2\')'));
                                 }
                             },
-                            typeInfo.basic('boolean')
+                            typeInfo.basic('bool')
                         )
                     }
                     else {

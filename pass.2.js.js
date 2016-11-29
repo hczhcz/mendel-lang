@@ -16,7 +16,7 @@ module.exports = () => {
 
         literalOut: (ast, target) => {
             switch (ast.type.type) {
-                case 'boolean':
+                case 'bool':
                 case 'int':
                 case 'i8':
                 case 'i16':

@@ -3,7 +3,7 @@
 module.exports = {
     basic: (type) => {
         const map = {
-            boolean: 'bool',
+            bool: 'bool',
             int: 'intmax_t',
             i8: 'int8_t',
             i16: 'int16_t',

@@ -28,7 +28,7 @@ module.exports = () => {
 
         literalOut: (ast, target) => {
             switch (ast.type.type) {
-                case 'boolean': {
+                case 'bool': {
                     //
 
                     break;
