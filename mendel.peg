@@ -49,7 +49,7 @@ const flatten = (data) => {
             for (const i in item) {
                 collect(item[i]);
             }
-        } else {
+        } else if (item !== null) {
             result.push(item);
         }
     };
@@ -263,7 +263,7 @@ String = str:(
     '\'' ([^'\\\r\n] / '\\' [^\r\n])* '\'' /
     '"' ([^"\\\r\n] / '\\' [^\r\n])* '"' // '
 ) {
-    return ast1.literal(unescape(join(str)), 'string'); // TODO
+    return ast1.literal(eval(join(str)), 'string'); // TODO: remove eval
 } / '`' raw:[^`]* '`' {
     return ast1.literal(join(raw), 'string');
 }
@@ -338,5 +338,5 @@ Name = str:([A-Za-z_]+ [0-9A-Za-z_]*) {
 }
 
 _ = ('//' [^\r\n]* / [ \t\r\n])* {
-    // empty
+    return null;
 }
