@@ -2,330 +2,341 @@
 
 const ast1 = global.ast1;
 
-var getBiOpFunc = (op) => {
-    let funcName;
-    switch (op) {
-        case "*": funcName="__multiply"; break;
-        case "/": funcName="__divide"; break;
-        case "%": funcName="__modulo"; break;
+const namesBi = {
+    '=': '__assign',
+    '+=': '__assign_add',
+    '-=': '__assign_sub',
+    '|=': '__assign_or',
+    '^=': '__assign_xor',
+    '&=': '__assign_and',
+    'or': '__or',
+    'xor': '__xor',
+    'and': '__and',
+    '==': '__equal',
+    '!=': '__not_equal',
+    '<': '__less',
+    '<=': '__less_equal',
+    '>' : '__greater',
+    '>=': '__greater_equal',
+    'is': '__is',
+    'in': '__in',
+    '+': '__add',
+    '-': '__sub',
+    '|': '__bit_or',
+    '^': '__bit_xor',
+    '&': '__bit_and',
+    '*': '__mul',
+    '/': '__div',
+    '%': '__mod',
+    'shl': '__shl',
+    'shr': '__shr',
+    'rol': '__rol',
+    'ror': '__ror',
+};
 
-        case "+": funcName="__add"; break;
-        case "-": funcName="__subtract"; break;
+const namesMono = {
+    'not': '__not',
+    '+': '__pos',
+    '-': '__neg',
+    '~': '__bit_not',
+};
 
-        case "==": funcName="__equal"; break;
-        case "!=": funcName="__notEqual"; break;
-        case "<=": funcName="__lessEqual"; break;
-        case "<": funcName="__less"; break;
-        case ">=": funcName="__greaterEqual"; break;
-        case ">": funcName="__greater"; break;
+const flatten = (data) => {
+    let result = [];
 
-        case "&&": funcName="__and"; break;
-
-        case "||": funcName="__or"; break;
-
-        default:
-            throw "Unknown bi op "+op;
-    }
-    return ast1.lookup(funcName);
-}
-
-var getUOpFunc = (op) => {
-    let funcName;
-    switch (op) {
-        case "+": funcName="__positive"; break;
-        case "-": funcName="__negative"; break;
-        case "!": funcName="__not"; break;
-
-        default:
-            throw "Unknown u op "+op;
-    }
-    return ast1.lookup(funcName);
-}
-
-var evalBiExpr = (es) => {
-    if (!es) return null;
-    let e = es.shift();
-    while (es.length > 0) {
-        let ne = es.shift();
-        let op = ne[0];
-        let right = ne[1];
-        let f = getBiOpFunc(op);
-        e = ast1.call(f, [e, right]);
-    }
-    return e;
-}
-
-var evalUExpr = (e) => {
-    return ast1.call(getUOpFunc(e[0]), [e[1]]);
-}
-
-}
-
-Grammar = _ s:Statement* _ {
-    let l = [];
-    if (s) {
-        s.forEach((s) => {
-            if (s) {
-                l = l.concat(s);
+    const collect = (item) => {
+        if (item instanceof Array) {
+            for (const i in item) {
+                collect(item[i]);
             }
-        });
-    }
-    return ast1.call(ast1.lookup("__do"), l);
-}
-
-// Statement
-Statement = Comment _ {return null}
-          / s:(Return / Continue / Break) _ ";" _ {return s}
-          / s:(If / While / FuncDecl) _ {return s}
-          / s:(Declaration / SimpleStatement) _ ";" _ {return s}
-SimpleStatement = Assignment / ShortVarDecl / Expr
-
-// Block
-Block = "{" _ s:Statement* _ "}" {
-    let l = [];
-    if (s) {
-        s.forEach((s) => {
-            if (s) {
-                l = l.concat(s);
-            }
-        });
-    }
-    return ast1.call(ast1.lookup("__do"), l);
-}
-
-// If
-If = "if" __ e:Expr _ b1:Block el:(_ "else" (__ i:If {return i}/ _ b:Block {return b}) )? {
-    return ast1.call(ast1.lookup("__if"),[
-        ast1.code(ast1.lookup("__self"),[],[],'',e),
-        ast1.code(ast1.lookup("__self"),[],[],'',b1),
-        //ast1.el,
-    ]);
-}
-
-// While
-While = "while" __ e:Expr _ b:Block {return {"while": {"cond":e, "block":b}}}
-
-// Func Declaration
-FuncDecl = "func" __ name:Ident _ func_in:paramlist _ func_out:resultList? _ b:Block {
-    let inName = [];
-    let inMode = [];
-    if (func_in) {
-        func_in.forEach((p) => {
-            inName.push(p["name"]);
-            inMode.push(p["mode"]);
-        });
-    }
-    return ast1.call(ast1.lookup('__assign'), [
-        ast1.symbol(name, "const"),
-        ast1.code(ast1.lookup("__self"),
-            inName, inMode, "", b
-        ),
-    ]);
-}
-paramlist = "(" _ p:params? _ ")" {return p}
-params = p1:param pn:(_ "," _ p:param {return p})* _ ","? {return [p1].concat(pn)}
-param = m:"var"? _ n:paramName _ t:paramType? {
-    if (!t) t = {multi:false, t:null}
-    if (m) {
-    	t["mode"] = "var"
-    } else {
-    	t["mode"] = "const"
-    }
-    t["name"]=n
-    return t
-}
-paramName = Ident
-paramType = multi:"..."? _ t:Type {
-    if (multi === "...") {
-        multi = true
-    } else {
-        multi = false
-    }
-    return {"multi": multi, "type":t}
-}
-resultList = "(" _ t1:Type tn:(_ "," _ t:Type {return t})* _ ","? _ ")" {return [t1].concat(tn)}
-
-// Declaration TODO
-Declaration = mode:("var" / "const") __ il:identTypeList el:(_ "=" _ el:ExprList {return el})? {
-    return {"mode": mode, "var":il, "exp":el};
-}
-identTypeList = (id1:identTypeListIdentType idn:(_ "," _ id:identTypeListIdentType {return id})* {return [id1].concat(idn)})
-          / (id1:identTypeListIdent idn:(_ "," _ id:identTypeListIdent {return id})* {return [id1].concat(idn)})
-identTypeListIdent = id:Ident {return {"name":id}}
-identTypeListIdentType = id:Ident __ t:Type {return {"name":id, "type":t}}
-
-// Assignment
-Assignment = e1:ExprList _ "=" _ e2:ExprList {
-    let l = [];
-
-    for (var i = 0; i < e1.length; i++) {
-        if (!e2[i]) {
-            throw "Assignment expr list length invalid"
+        } else {
+            result.push(item);
         }
-        l.push(
-            ast1.call(ast1.lookup("__assign"), [
-                e1[i],
-                e2[i],
-            ])
-        );
+    };
+
+    collect(data);
+
+    return result;
+};
+
+const join = (data) => {
+    return flatten(data).join('');
+};
+
+const apply = (expr, actions) => {
+    actions = flatten(actions);
+
+    for (const i in actions) {
+        expr = actions[i](expr);
     }
 
-    return l;
+    return expr;
+};
+
 }
 
-// ShortVarDecl
-ShortVarDecl = i1:IdentList _ ":=" _ e2:ExprList {
-    let l = [];
+Block = stmts:(_ Stmt)* _ {
+    stmts = flatten(stmts);
 
-    for (var i = 0; i < i1.length; i++) {
-        if (!e2[i]) {
-            throw "ShortVarDecl expr list length invalid"
+    return ast1.call(
+        ast1.lookup('__do'),
+        stmts
+    );
+}
+
+Stmt = expr:Expr _ ';' {
+    return expr;
+} // TODO
+
+Expr = Expr0
+
+Expr0 = expr:Expr1 more:(_ More0)* {
+    return apply(expr, more);
+}
+More0 = op:('=' / '+=' / '-=' / '|=' / '^=' / '&=') _ expr:Expr1 {
+    return (oldExpr) => {
+        return ast1.call(
+            ast1.lookup(namesBi[op]),
+            [oldExpr, expr]
+        );
+    };
+}
+
+Expr1 = expr:Expr2 more:((_ More1or)* / (_ More1xor)* / (_ More1and)*) {
+    return apply(expr, more);
+}
+More1or = op:'or' _ expr:Expr2 {
+    return (oldExpr) => {
+        return ast1.call(
+            ast1.lookup(namesBi[op]),
+            [oldExpr, expr]
+        );
+    };
+}
+More1xor = op:'xor' _ expr:Expr2 {
+    return (oldExpr) => {
+        return ast1.call(
+            ast1.lookup(namesBi[op]),
+            [oldExpr, expr]
+        );
+    };
+}
+More1and = op:'and' _ expr:Expr2 {
+    return (oldExpr) => {
+        return ast1.call(
+            ast1.lookup(namesBi[op]),
+            [oldExpr, expr]
+        );
+    };
+}
+
+Expr2 = more:(More2 _)* expr:Expr3 {
+    return apply(expr, more);
+}
+More2 = op:'not' {
+    return (expr) => {
+        return ast1.call(
+            ast1.lookup(namesMono[op]),
+            [expr]
+        );
+    };
+}
+
+Expr3 = expr:Expr4 more:(_ More3)* {
+    return apply(expr, more);
+}
+More3 = op:('==' / '!=' / '<' / '<=' / '>' / '>=' / 'is' / 'in') _ expr:Expr4 {
+    return (oldExpr) => {
+        return ast1.call(
+            ast1.lookup(namesBi[op]),
+            [oldExpr, expr]
+        );
+    };
+}
+
+Expr4 = Expr4a / Expr4b
+
+Expr4a = expr:Expr5a more:(_ More4a)* {
+    return apply(expr, more);
+}
+More4a = op:('+' / '-') _ expr:Expr5a {
+    return (oldExpr) => {
+        return ast1.call(
+            ast1.lookup(namesBi[op]),
+            [oldExpr, expr]
+        );
+    };
+}
+
+Expr4b = expr:Expr5b more:((_ More4or)* / (_ More4xor)* / (_ More4and)*) {
+    return apply(expr, more);
+}
+More4or = op:'|' _ expr:Expr5b {
+    return (oldExpr) => {
+        return ast1.call(
+            ast1.lookup(namesBi[op]),
+            [oldExpr, expr]
+        );
+    };
+}
+More4xor = op:'^' _ expr:Expr5b {
+    return (oldExpr) => {
+        return ast1.call(
+            ast1.lookup(namesBi[op]),
+            [oldExpr, expr]
+        );
+    };
+}
+More4and = op:'&' _ expr:Expr5b {
+    return (oldExpr) => {
+        return ast1.call(
+            ast1.lookup(namesBi[op]),
+            [oldExpr, expr]
+        );
+    };
+}
+
+Expr5a = expr:Expr6 more:(_ More5a)* {
+    return apply(expr, more);
+}
+More5a = op:('*' / '/' / '%') _ expr:Expr6 {
+    return (oldExpr) => {
+        return ast1.call(
+            ast1.lookup(namesBi[op]),
+            [oldExpr, expr]
+        );
+    };
+}
+
+Expr5b = expr:Expr6 more:(_ More5b)* {
+    return apply(expr, more);
+}
+More5b = op:('shl' / 'shr' / 'rol' / 'ror') _ expr:Expr6 {
+    return (oldExpr) => {
+        return ast1.call(
+            ast1.lookup(namesBi[op]),
+            [oldExpr, expr]
+        );
+    };
+}
+
+Expr6 = more:(More6 _)* expr:ExprP {
+    return apply(expr, more);
+}
+More6 = op:('+' / '-' / '~') {
+    return (expr) => {
+        return ast1.call(
+            ast1.lookup(namesMono[op]),
+            [expr]
+        );
+    };
+}
+
+ExprP = expr:(
+    Bracket / Literal / Symbol / Lookup / Code
+) actions:(
+    _ Path / Call
+)* {
+    return apply(expr, actions);
+}
+
+Bracket = '(' _ expr:Expr _ ')' {
+    return expr;
+}
+
+Literal = Number / String / Array / Map
+Number = str:(
+    '0' [Xx] [0-9]+
+) {
+    return ast1.literal(parseInt(join(str), 16), 'unsigned');
+} / str:(
+    ([0-9]+ '.' [0-9]* / [0-9]* '.' [0-9]+)
+    ([Ee] ('+' / '-')? [0-9]+)?
+) {
+    return ast1.literal(parseFloat(join(str)), 'float');
+} / str:(
+    [0-9]+
+) {
+    return ast1.literal(parseInt(join(str), 10), 'int');
+}
+String = str:(
+    '\'' ([^'\\\r\n] / '\\' [^\r\n])* '\'' /
+    '"' ([^"\\\r\n] / '\\' [^\r\n])* '"' // '
+) {
+    return ast1.literal(unescape(join(str)), 'string'); // TODO
+} / '`' raw:[^`]* '`' {
+    return ast1.literal(join(raw), 'string');
+}
+Array = '???' { // TODO
+}
+Map = '???' { // TODO
+}
+
+Symbol = mode:('const' / 'out' / 'var' / 'dep' / 'ret') _ name:Name {
+    return ast1.symbol(name, mode); // TODO space?
+}
+
+Lookup = name:Name {
+    return ast1.lookup(name);
+}
+
+Code = 'func' _ '(' params:(
+    _ Param (_ ',' _ Param)* (_ ',' _ LastParam)? (_ ',')?
+)?_ ')' extend:(_ 'extends' _ Expr)? _ impl:Expr {
+    params = flatten(params);
+
+    let paramNames = [];
+    let paramModes = [];
+    let vaMode = '';
+
+    for (const i in params) {
+        if (params[i].name === '...') {
+            vaMode = params[i].mode;
+        } else {
+            paramNames.push(params[i].name);
+            paramModes.push(params[i].mode);
         }
-        l.push(
-            ast1.call(ast1.lookup("__assign"), [
-                ast1.symbol(i1[i], "var"),
-                e2[i],
-            ])
-        );
     }
 
-    return l;
+    return ast1.code(
+        extend ? extend[3] : ast1.lookup('__self'), // TODO
+        paramNames, paramModes, vaMode,
+        impl
+    );
+}
+Param = mode:(('const' / 'out' / 'var' / 'dep' / 'ret') _)? name:Name {
+    return {
+        name: name,
+        mode: mode[0], // TODO
+    };
+}
+LastParam = mode:(('const' / 'out' / 'var' / 'dep' / 'ret') _)? name:(Name / '...') {
+    return {
+        name: name,
+        mode: mode[0], // TODO
+    };
 }
 
-// Return
-Return = "return" __ e:ExprList? {
-    return ast1.call(ast1.lookup("__exit"), []);
+Path = '.' _ name:Name {
+    return (upper) => {
+        return ast1.path(upper, name);
+    };
 }
 
-// Continue
-Continue = "continue" {return {"continue":null}}
+Call = '(' args:(
+    _ Expr (_ ',' _ Expr)* (_ ',')?
+)? _ ')' {
+    args = flatten(args);
 
-// Break
-Break = "break" {return {"break":null}}
-
-// Expr
-
-Expr = Expr1
-ExprList = e1:Expr en:(_ "," _ e:Expr {return e})* {return [e1].concat(en)}
-
-Expr1 = e1:Expr2 en:(_ op:biop_1 _ e:Expr2 {return [op, e]})* {return evalBiExpr([e1].concat(en))}
-Expr2 = e1:Expr3 en:(_ op:biop_2 _ e:Expr3 {return [op, e]})* {return evalBiExpr([e1].concat(en))}
-Expr3 = e1:Expr4 en:(_ op:biop_3 _ e:Expr4 {return [op, e]})* {return evalBiExpr([e1].concat(en))}
-Expr4 = e1:Expr5 en:(_ op:biop_4 _ e:Expr5 {return [op, e]})* {return evalBiExpr([e1].concat(en))}
-Expr5 = e1:Expr6 en:(_ op:biop_5 _ e:Expr6 {return [op, e]})* {return evalBiExpr([e1].concat(en))}
-Expr6 = "(" _ e:Expr _ ")" {return e} / UnaryExpr
-UnaryExpr = op:unary_op _ e:UnaryExpr {return evalUExpr([op, e])}
-          / PrimaryExpr
-
-biop_5 = "*" / "/" / "%"
-biop_4 = "+" / "-"
-biop_3 = "==" / "!=" / "<=" / "<" / ">=" / ">"
-biop_2 = "&&"
-biop_1 = "||"
-unary_op = "+" / "-" / "!"
-
-PrimaryExpr = e1:Operand en:(_ e:PrimaryExprTail {return e})* {
-    if (!en) return e1;
-    let pe = e1;
-    if (en) {
-        en.forEach((e) => {
-            switch (e[0]) {
-                case "index":
-                    pe = ast1.call(ast1.lookup("__index"), [pe, e[1]]);
-                    break;
-                case "arg":
-                    pe = ast1.call(pe, e[1]);
-                    break;
-                default:
-                    throw e[0]+" unknown";
-            }
-        });
-    }
-    return pe;
-}
-Operand = Literal / id:Ident {return ast1.lookup(id)} / "(" _ e:Expr _ ")" {return e}
-PrimaryExprTail = Index / Argument
-//PrimaryExprTail = Selector / Index / Argument
-//Selector = "." id:Ident {return ["select",id]}
-Index = "[" e:Expr "]" {return ["index",e]}
-Argument = "(" _ arg:(ExprList)? _ ","? _ ")" {return ["arg",arg]}
-
-// IdentList
-IdentList = id1:Ident idn:(_ "," _ id:Ident {return id})* {return [id1].concat(idn)}
-
-// Type
-Type = TypeArray / TypeFunc / Ident
-
-// Type Array
-TypeArray = "array" _ "<" _ t:Type _ ">" {return ["array", t]}
-
-// Type Func
-TypeFunc = "func" _ func_in:paramlist _ func_out:resultList? {return ["func", {"in":func_in, "out":func_out}]}
-
-// Literal
-Literal = BasicLiteral / FuncLiteral / CompLiteral
-
-BasicLiteral = Float / Int / String / Char
-
-FuncLiteral = "func" _ func_in:paramlist _ func_out:resultList? _ b:Block {
-    let inName = [];
-    let inMode = [];
-    if (func_in) {
-        func_in.forEach((p) => {
-            inName.push(p["name"]);
-            inMode.push(p["mode"]);
-        });
-    }
-    return ast1.code(ast1.lookup("__self"),inName, inMode, "", b);
+    return (callee) => {
+        return ast1.call(callee, args);
+    };
 }
 
-CompLiteral = t:CompLiteralType _ v:CompLiteralValue {
-    switch (t[0]) {
-        case "array":
-            return ast1.call(ast1.lookup("__array"), v);
-    }
+Name = str:([A-Za-z_]+ [0-9A-Za-z_]*) {
+    return join(str);
 }
-CompLiteralType = TypeArray
-CompLiteralValue = "{" v:(_ el:elementList _ ","? {return el})? "}" {return v}
-elementList = e1:element en:(_ "," _ e:element {return e})* {return [e1].concat(en)}
-element = Expr / CompLiteralValue
 
-// Lex
-
-Comment = "//" char* newline {return}
-
-Ident = head:(letter/"_") tail:(letter/digit/"_")* {return head+tail.join("")}
-
-Int = digit+ {return ast1.literal(parseInt(text(), 10), 'int')}
-
-Float = (digit+ "." digit* exponent?
-        / digit+ exponent
-        / "." digit+ exponent?)  {return ast1.literal(parseFloat(text(), 10), 'float')}
-exponent = ("e" / "E") ("+" / "-")? digit+
-
-String = "`" cs:rawString         "`" {return ast1.literal(cs.join(""), "string")}
-       / '"' cs:interpretedString '"' {return ast1.literal(cs.join(""), "string")}
-rawString = (!"`" c:(char / newline) {return c})*
-interpretedString = (escape_char / (!'"' c:char {return c}))*
-
-Char = "'" c:(escape_char / char) "'" {return ast1.literal(c, "string")}
-
-_ = space* {return}
-__ = space+ {return}
-space = " " / "\t" / newline
-newline = "\n" / "\r"
-char = !newline c:. {return c}
-letter = [a-zA-Z]
-digit = [0-9]
-escape_char = "\\" c:char {
-    switch (c) {
-        case "a": return "\a";
-        case "b": return "\b";
-        case "f": return "\f";
-        case "n": return "\n";
-        case "r": return "\r";
-        case "t": return "\t";
-        case "v": return "\v";
-        default: return c;
-    }
+_ = ('//' [^\r\n]* / [ \t\r\n])* {
+    // empty
 }
