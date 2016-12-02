@@ -59,10 +59,6 @@ const flatten = (data) => {
     return result;
 };
 
-const join = (data) => {
-    return flatten(data).join('');
-};
-
 const apply = (expr, actions) => {
     actions = flatten(actions);
 
@@ -245,27 +241,27 @@ Bracket = '(' _ expr:Expr _ ')' {
 }
 
 Literal = Number / String / Array / Map
-Number = str:(
+Number = str:$(
     '0' [Xx] [0-9]+
 ) {
-    return ast1.literal(parseInt(join(str), 16), 'unsigned');
-} / str:(
+    return ast1.literal(parseInt(str, 16), 'unsigned');
+} / str:$(
     ([0-9]+ '.' [0-9]* / [0-9]* '.' [0-9]+)
     ([Ee] ('+' / '-')? [0-9]+)?
 ) {
-    return ast1.literal(parseFloat(join(str)), 'float');
-} / str:(
+    return ast1.literal(parseFloat(str), 'float');
+} / str:$(
     [0-9]+
 ) {
-    return ast1.literal(parseInt(join(str), 10), 'int');
+    return ast1.literal(parseInt(str, 10), 'int');
 }
-String = str:(
+String = str:$(
     '\'' ([^'\\\r\n] / '\\' [^\r\n])* '\'' /
     '"' ([^"\\\r\n] / '\\' [^\r\n])* '"' // '
 ) {
-    return ast1.literal(eval(join(str)), 'string'); // TODO: remove eval
-} / '`' raw:[^`]* '`' {
-    return ast1.literal(join(raw), 'string');
+    return ast1.literal(eval(str), 'string'); // TODO: remove eval
+} / '`' raw:$([^`]*) '`' {
+    return ast1.literal(raw, 'string');
 }
 Array = '???' { // TODO
 }
@@ -333,8 +329,8 @@ Call = '(' args:(
     };
 }
 
-Name = str:([A-Za-z_]+ [0-9A-Za-z_]*) {
-    return join(str);
+Name = str:$([A-Za-z_]+ [0-9A-Za-z_]*) {
+    return str;
 }
 
 _ = ('//' [^\r\n]* / [ \t\r\n])* {
