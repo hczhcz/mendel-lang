@@ -101,7 +101,7 @@ More0 = op:('=' / '+=' / '-=' / '|=' / '^=' / '&=') _ expr:Expr1 {
 Expr1 = expr:Expr2 more:((_ More1or)* / (_ More1xor)* / (_ More1and)*) {
     return apply(expr, more);
 }
-More1or = op:'or'_k _ expr:Expr2 {
+More1or = op:$('or' _k) _ expr:Expr2 {
     return (oldExpr) => {
         return ast1.call(
             ast1.lookup(namesBi[op]),
@@ -109,7 +109,7 @@ More1or = op:'or'_k _ expr:Expr2 {
         );
     };
 }
-More1xor = op:'xor'_k _ expr:Expr2 {
+More1xor = op:$('xor' _k) _ expr:Expr2 {
     return (oldExpr) => {
         return ast1.call(
             ast1.lookup(namesBi[op]),
@@ -117,7 +117,7 @@ More1xor = op:'xor'_k _ expr:Expr2 {
         );
     };
 }
-More1and = op:'and'_k _ expr:Expr2 {
+More1and = op:$('and' _k) _ expr:Expr2 {
     return (oldExpr) => {
         return ast1.call(
             ast1.lookup(namesBi[op]),
@@ -129,7 +129,7 @@ More1and = op:'and'_k _ expr:Expr2 {
 Expr2 = more:(More2 _)* expr:Expr3 {
     return apply(expr, more);
 }
-More2 = op:'not'_k {
+More2 = op:$('not' _k) {
     return (expr) => {
         return ast1.call(
             ast1.lookup(namesMono[op]),
@@ -141,7 +141,10 @@ More2 = op:'not'_k {
 Expr3 = expr:Expr4 more:(_ More3)* {
     return apply(expr, more);
 }
-More3 = op:('==' / '!=' / '<' / '<=' / '>' / '>=' / 'is'_k / 'in'_k) _ expr:Expr4 {
+More3 = op:(
+    '==' / '!=' / '<' / '<=' / '>' / '>=' /
+    $('is' _k) / $('in' _k)
+) _ expr:Expr4 {
     return (oldExpr) => {
         return ast1.call(
             ast1.lookup(namesBi[op]),
@@ -207,7 +210,9 @@ More5a = op:('*' / '/' / '%') _ expr:Expr6 {
 Expr5b = expr:Expr6 more:(_ More5b)* {
     return apply(expr, more);
 }
-More5b = op:('shl'_k / 'shr'_k / 'rol'_k / 'ror'_k) _ expr:Expr6 {
+More5b = op:(
+    $('shl' _k) / $('shr' _k) / $('rol' _k) / $('ror' _k)
+) _ expr:Expr6 {
     return (oldExpr) => {
         return ast1.call(
             ast1.lookup(namesBi[op]),
@@ -270,16 +275,16 @@ Map = '???' { // TODO
 }
 
 Symbol = mode:Mode _ name:Name {
-    return ast1.symbol(name, mode); // TODO space?
+    return ast1.symbol(name, mode);
 }
 
 Lookup = name:Name {
     return ast1.lookup(name);
 }
 
-Code = 'func'_k _ '(' params:(
+Code = $('func' _k) _ '(' params:(
     _ Param (_ ',' _ Param)* (_ ',' _ (Param / VA))? (_ ',')?
-)?_ ')' extend:(_ 'extends'_k _ '(' _ Expr _ ')')? _ impl:(Block / Expr) {
+)?_ ')' extend:(_ $('extends' _k) _ '(' _ Expr _ ')')? _ impl:(Block / Expr) {
     params = flatten(params);
 
     let paramNames = [];
@@ -344,7 +349,7 @@ Name = str:$([A-Za-z_]+ [0-9A-Za-z_]*) {
     return str;
 }
 
-Mode = 'const'_k / 'out'_k / 'var'_k / 'dep'_k / 'ret'_k
+Mode = $('const' _k) / $('out' _k) / $('var' _k) / $('dep' _k) / $('ret' _k)
 
 _k = ![0-9A-Za-z_] {
     return null;
