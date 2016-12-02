@@ -71,13 +71,17 @@ const apply = (expr, actions) => {
 
 }
 
-Block = stmts:(_ expr:Expr _ Semicolon)* _ {
+Root = stmts:(_ expr:Expr _ Semicolon)* _ {
     stmts = flatten(stmts);
 
     return ast1.call(
         ast1.lookup('__do'),
         stmts
     );
+}
+
+Block = '{' _ root:Root _ '}' {
+    return root;
 }
 
 Expr = Expr0
@@ -265,7 +269,7 @@ Array = '???' { // TODO
 Map = '???' { // TODO
 }
 
-Symbol = mode:('const'_k / 'out'_k / 'var'_k / 'dep'_k / 'ret'_k) _ name:Name {
+Symbol = mode:Mode _ name:Name {
     return ast1.symbol(name, mode); // TODO space?
 }
 
@@ -274,7 +278,7 @@ Lookup = name:Name {
 }
 
 Code = 'func'_k _ '(' params:(
-    _ Param (_ ',' _ Param)* (_ ',' _ LastParam)? (_ ',')?
+    _ Param (_ ',' _ Param)* (_ ',' _ (Param / VA))? (_ ',')?
 )?_ ')' extend:(_ 'extends'_k _ '(' _ Expr _ ')')? _ impl:(Block / Expr) {
     params = flatten(params);
 
@@ -297,16 +301,26 @@ Code = 'func'_k _ '(' params:(
         impl
     );
 }
-Param = mode:(('const'_k / 'out'_k / 'var'_k / 'dep'_k / 'ret'_k) _)? name:Name {
+Param = mode:Mode _ name:Name {
     return {
         name: name,
-        mode: mode[0], // TODO
+        mode: mode,
+    };
+} / name: Name {
+    return {
+        name: name,
+        mode: 'const',
     };
 }
-LastParam = mode:(('const'_k / 'out'_k / 'var'_k / 'dep'_k / 'ret'_k) _)? name:(Name / '...') {
+VA = mode:Mode _ '...' {
     return {
-        name: name,
-        mode: mode[0], // TODO
+        name: '...',
+        mode: mode,
+    };
+} / '...' {
+    return {
+        name: '...',
+        mode: 'const',
     };
 }
 
@@ -329,6 +343,8 @@ Call = '(' args:(
 Name = str:$([A-Za-z_]+ [0-9A-Za-z_]*) {
     return str;
 }
+
+Mode = 'const'_k / 'out'_k / 'var'_k / 'dep'_k / 'ret'_k
 
 _k = ![0-9A-Za-z_] {
     return null;
