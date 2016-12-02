@@ -71,7 +71,7 @@ const apply = (expr, actions) => {
 
 }
 
-Block = stmts:(_ Stmt)* _ {
+Block = stmts:(_ expr:Expr _ Semicolon)* _ {
     stmts = flatten(stmts);
 
     return ast1.call(
@@ -79,10 +79,6 @@ Block = stmts:(_ Stmt)* _ {
         stmts
     );
 }
-
-Stmt = expr:Expr _ ';' {
-    return expr;
-} // TODO
 
 Expr = Expr0
 
@@ -247,7 +243,8 @@ Number = str:$(
     return ast1.literal(parseInt(str, 16), 'unsigned');
 } / str:$(
     ([0-9]+ '.' [0-9]* / [0-9]* '.' [0-9]+)
-    ([Ee] ('+' / '-')? [0-9]+)?
+    ([Ee] ('+' / '-')? [0-9]+)? /
+    [0-9]+ [Ee] ('+' / '-')? [0-9]+
 ) {
     return ast1.literal(parseFloat(str), 'float');
 } / str:$(
@@ -278,7 +275,7 @@ Lookup = name:Name {
 
 Code = 'func' _ '(' params:(
     _ Param (_ ',' _ Param)* (_ ',' _ LastParam)? (_ ',')?
-)?_ ')' extend:(_ 'extends' _ Expr)? _ impl:Expr {
+)?_ ')' extend:(_ 'extends' _ '(' _ Expr _ ')')? _ impl:(Block / Expr) {
     params = flatten(params);
 
     let paramNames = [];
@@ -331,6 +328,10 @@ Call = '(' args:(
 
 Name = str:$([A-Za-z_]+ [0-9A-Za-z_]*) {
     return str;
+}
+
+Semicolon = ';' {
+    return null;
 }
 
 _ = ('//' [^\r\n]* / [ \t\r\n])* {
