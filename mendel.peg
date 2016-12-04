@@ -71,7 +71,7 @@ const apply = (expr, actions) => {
 
 }
 
-Root = stmts:(_ expr:Expr _ Semicolon)* _ {
+Root = stmts:(_ Stmt)* _ {
     stmts = flatten(stmts);
 
     return ast1.call(
@@ -79,9 +79,76 @@ Root = stmts:(_ expr:Expr _ Semicolon)* _ {
         stmts
     );
 }
-
 Block = '{' _ root:Root _ '}' {
     return root;
+}
+Stmt = Func / If / For / While / Line
+
+Func = $('func' _k) _ name:Name _ body:FuncBody {
+    return ast1.call(
+        ast1.lookup('__assign'),
+        [
+            ast1.symbol(name, 'const'),
+            body,
+        ]
+    );
+}
+
+If = '???' // TODO
+
+For = '???' // TODO
+
+While = '???' // TODO
+
+Line = expr:Expr _ ';' {
+    return expr;
+}
+
+FuncBody = '(' params:(
+    _ Param (_ ',' _ Param)* (_ ',' _ (Param / VA))? (_ ',')?
+)?_ ')' extend:(_ $('extends' _k) _ '(' _ Expr _ ')')? _ impl:(Block / Expr) {
+    params = flatten(params);
+
+    let paramNames = [];
+    let paramModes = [];
+    let vaMode = '';
+
+    for (const i in params) {
+        if (params[i].name === '...') {
+            vaMode = params[i].mode;
+        } else {
+            paramNames.push(params[i].name);
+            paramModes.push(params[i].mode);
+        }
+    }
+
+    return ast1.code(
+        extend ? extend[3] : ast1.lookup('__self'), // TODO
+        paramNames, paramModes, vaMode,
+        impl
+    );
+}
+Param = mode:Mode _ name:Name {
+    return {
+        name: name,
+        mode: mode,
+    };
+} / name: Name {
+    return {
+        name: name,
+        mode: 'const',
+    };
+}
+VA = mode:Mode _ '...' {
+    return {
+        name: '...',
+        mode: mode,
+    };
+} / '...' {
+    return {
+        name: '...',
+        mode: 'const',
+    };
 }
 
 Expr = Expr0
@@ -282,51 +349,8 @@ Lookup = name:Name {
     return ast1.lookup(name);
 }
 
-Code = $('func' _k) _ '(' params:(
-    _ Param (_ ',' _ Param)* (_ ',' _ (Param / VA))? (_ ',')?
-)?_ ')' extend:(_ $('extends' _k) _ '(' _ Expr _ ')')? _ impl:(Block / Expr) {
-    params = flatten(params);
-
-    let paramNames = [];
-    let paramModes = [];
-    let vaMode = '';
-
-    for (const i in params) {
-        if (params[i].name === '...') {
-            vaMode = params[i].mode;
-        } else {
-            paramNames.push(params[i].name);
-            paramModes.push(params[i].mode);
-        }
-    }
-
-    return ast1.code(
-        extend ? extend[3] : ast1.lookup('__self'), // TODO
-        paramNames, paramModes, vaMode,
-        impl
-    );
-}
-Param = mode:Mode _ name:Name {
-    return {
-        name: name,
-        mode: mode,
-    };
-} / name: Name {
-    return {
-        name: name,
-        mode: 'const',
-    };
-}
-VA = mode:Mode _ '...' {
-    return {
-        name: '...',
-        mode: mode,
-    };
-} / '...' {
-    return {
-        name: '...',
-        mode: 'const',
-    };
+Code = $('func' _k) _ body:FuncBody {
+    return body;
 }
 
 Path = '.' _ name:Name {
@@ -352,10 +376,6 @@ Name = str:$([A-Za-z_]+ [0-9A-Za-z_]*) {
 Mode = $('const' _k) / $('out' _k) / $('var' _k) / $('dep' _k) / $('ret' _k)
 
 _k = ![0-9A-Za-z_] {
-    return null;
-}
-
-Semicolon = ';' {
     return null;
 }
 
