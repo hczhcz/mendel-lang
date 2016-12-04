@@ -79,10 +79,12 @@ Root = stmts:(_ Stmt)* _ {
         stmts
     );
 }
+
 Block = '{' _ root:Root _ '}' {
     return root;
 }
-Stmt = Func / If / For / While / Line
+
+Stmt = Func / If / While / Line
 
 Func = $('func' _k) _ name:Name _ body:FuncBody {
     return ast1.call(
@@ -104,6 +106,11 @@ If = $('if' _k) _ '(' _ cond:Expr _ ')' _ body1:(Block / Stmt) body2:(
                 ast1.code(
                     ast1.lookup("__self"), [], [],
                     '',
+                    cond
+                ),
+                ast1.code(
+                    ast1.lookup("__self"), [], [],
+                    '',
                     body1
                 ),
                 ast1.code(
@@ -120,6 +127,11 @@ If = $('if' _k) _ '(' _ cond:Expr _ ')' _ body1:(Block / Stmt) body2:(
                 ast1.code(
                     ast1.lookup("__self"), [], [],
                     '',
+                    cond
+                ),
+                ast1.code(
+                    ast1.lookup("__self"), [], [],
+                    '',
                     body1
                 ),
             ]
@@ -127,9 +139,23 @@ If = $('if' _k) _ '(' _ cond:Expr _ ')' _ body1:(Block / Stmt) body2:(
     }
 }
 
-For = '???' // TODO
-
-While = '???' // TODO
+While = $('while' _k) _ '(' _ cond:Expr _ ')' _ body:(Block / Stmt) {
+    return ast1.call(
+        ast1.lookup('__while'),
+        [
+            ast1.code(
+                ast1.lookup("__self"), [], [],
+                '',
+                cond
+            ),
+            ast1.code(
+                ast1.lookup("__self"), [], [],
+                '',
+                body
+            ),
+        ]
+    );
+}
 
 Line = expr:Expr _ ';' {
     return expr;
