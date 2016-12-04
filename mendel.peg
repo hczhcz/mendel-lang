@@ -2,6 +2,29 @@
 
 const ast1 = global.ast1;
 
+const keywords = {
+    'and': true,
+    'const': true,
+    'dep': true,
+    'else': true,
+    'extends': true,
+    'func': true,
+    'if': true,
+    'in': true,
+    'is': true,
+    'not': true,
+    'or': true,
+    'out': true,
+    'ret': true,
+    'rol': true,
+    'ror': true,
+    'shl': true,
+    'shr': true,
+    'var': true,
+    'while': true,
+    'xor': true,
+};
+
 const namesBi = {
     '=': '__assign',
     '+=': '__assign_add',
@@ -49,7 +72,7 @@ const flatten = (data, type) => {
             for (const i in item) {
                 collect(item[i]);
             }
-        } else if (typeof item === type) {
+        } else if (typeof item === type && item !== null) {
             result.push(item);
         }
     };
@@ -85,9 +108,11 @@ Block = '{' _ root:Root _ '}' {
 }
 
 If = $('if' _k) _ '(' _ cond:Expr _ ')' _ body1:Block body2:(
-    _ $('else' _k) _ body:(Block / If) {return body;}
+    _ $('else' _k) _ (Block / If)
 )? {
     if (body2) {
+        body2 = flatten(body2, 'object');
+
         return ast1.call(
             ast1.lookup('__if_else'),
             [
@@ -361,9 +386,10 @@ Code = $('func' _k) _ body:FuncBody {
 FuncBody = '(' params:(
     _ Param (_ ',' _ Param)* (_ ',' _ (Param / VA))? (_ ',')?
 )? _ ')' extend:(
-    _ $('extends' _k) _ '(' _ expr:Expr _ ')' {return expr;}
+    _ $('extends' _k) _ '(' _ Expr _ ')'
 )? _ impl:(Block / Expr) {
     params = flatten(params, 'object');
+    extend = flatten(extend, 'object');
 
     let paramNames = [];
     let paramModes = [];
@@ -379,7 +405,9 @@ FuncBody = '(' params:(
     }
 
     return ast1.code(
-        extend || ast1.lookup('__self'),
+        extend.length === 1
+            ? extend[0]
+            : ast1.lookup('__self'),
         paramNames, paramModes, vaMode,
         impl
     );
@@ -423,9 +451,9 @@ Call = '(' args:(
     };
 }
 
-Name = str:$([A-Za-z_]+ [0-9A-Za-z_]*) {
-    return str;
-}
+Name = $(str:$([A-Za-z_]+ [0-9A-Za-z_]*) !{
+    return keywords[str];
+})
 
 Mode = $('const' _k) / $('out' _k) / $('var' _k) / $('dep' _k) / $('ret' _k)
 
