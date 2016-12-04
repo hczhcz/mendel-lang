@@ -94,7 +94,38 @@ Func = $('func' _k) _ name:Name _ body:FuncBody {
     );
 }
 
-If = '???' // TODO
+If = $('if' _k) _ '(' _ cond:Expr _ ')' _ body1:(Block / Stmt) body2:(
+    _ $('else' _k) _ body:(Block / Stmt) {return body;}
+)? {
+    if (body2) {
+        return ast1.call(
+            ast1.lookup('__if_else'),
+            [
+                ast1.code(
+                    ast1.lookup("__self"), [], [],
+                    '',
+                    body1
+                ),
+                ast1.code(
+                    ast1.lookup("__self"), [], [],
+                    '',
+                    body2
+                ),
+            ]
+        );
+    } else {
+        return ast1.call(
+            ast1.lookup('__if'),
+            [
+                ast1.code(
+                    ast1.lookup("__self"), [], [],
+                    '',
+                    body1
+                ),
+            ]
+        );
+    }
+}
 
 For = '???' // TODO
 
@@ -106,7 +137,9 @@ Line = expr:Expr _ ';' {
 
 FuncBody = '(' params:(
     _ Param (_ ',' _ Param)* (_ ',' _ (Param / VA))? (_ ',')?
-)?_ ')' extend:(_ $('extends' _k) _ '(' _ Expr _ ')')? _ impl:(Block / Expr) {
+)? _ ')' extend:(
+    _ $('extends' _k) _ '(' _ expr:Expr _ ')' {return expr;}
+)? _ impl:(Block / Expr) {
     params = flatten(params);
 
     let paramNames = [];
@@ -123,7 +156,7 @@ FuncBody = '(' params:(
     }
 
     return ast1.code(
-        extend ? extend[3] : ast1.lookup('__self'), // TODO
+        extend || ast1.lookup('__self'),
         paramNames, paramModes, vaMode,
         impl
     );
