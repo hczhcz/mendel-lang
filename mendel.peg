@@ -41,7 +41,7 @@ const namesMono = {
     '~': '__bit_not',
 };
 
-const flatten = (data) => {
+const flatten = (data, type) => {
     let result = [];
 
     const collect = (item) => {
@@ -49,7 +49,7 @@ const flatten = (data) => {
             for (const i in item) {
                 collect(item[i]);
             }
-        } else if (item !== null) {
+        } else if (typeof item === type) {
             result.push(item);
         }
     };
@@ -60,7 +60,7 @@ const flatten = (data) => {
 };
 
 const apply = (expr, actions) => {
-    actions = flatten(actions);
+    actions = flatten(actions, 'function');
 
     for (const i in actions) {
         expr = actions[i](expr);
@@ -71,8 +71,8 @@ const apply = (expr, actions) => {
 
 }
 
-Root = stmts:(_ Stmt)* _ {
-    stmts = flatten(stmts);
+Root = stmts:(_ If / _ While / _ Line)* _ {
+    stmts = flatten(stmts, 'object');
 
     return ast1.call(
         ast1.lookup('__do'),
@@ -84,8 +84,6 @@ Block = '{' _ root:Root _ '}' {
     return root;
 }
 
-Stmt = Func / If / While / Line
-
 Func = $('func' _k) _ name:Name _ body:FuncBody {
     return ast1.call(
         ast1.lookup('__assign'),
@@ -96,8 +94,8 @@ Func = $('func' _k) _ name:Name _ body:FuncBody {
     );
 }
 
-If = $('if' _k) _ '(' _ cond:Expr _ ')' _ body1:(Block / Stmt) body2:(
-    _ $('else' _k) _ body:(Block / Stmt) {return body;}
+If = $('if' _k) _ '(' _ cond:Expr _ ')' _ body1:Block body2:(
+    _ $('else' _k) _ body:(Block / If) {return body;}
 )? {
     if (body2) {
         return ast1.call(
@@ -139,7 +137,7 @@ If = $('if' _k) _ '(' _ cond:Expr _ ')' _ body1:(Block / Stmt) body2:(
     }
 }
 
-While = $('while' _k) _ '(' _ cond:Expr _ ')' _ body:(Block / Stmt) {
+While = $('while' _k) _ '(' _ cond:Expr _ ')' _ body:Block {
     return ast1.call(
         ast1.lookup('__while'),
         [
@@ -362,7 +360,7 @@ More6 = op:('+' / '-' / '~') {
 ExprP = expr:(
     Bracket / Literal / Symbol / Lookup / Code
 ) actions:(
-    _ Path / Call
+    _ Path / _ Call
 )* {
     return apply(expr, actions);
 }
@@ -421,7 +419,7 @@ Path = '.' _ name:Name {
 Call = '(' args:(
     _ Expr (_ ',' _ Expr)* (_ ',')?
 )? _ ')' {
-    args = flatten(args);
+    args = flatten(args, 'object');
 
     return (callee) => {
         return ast1.call(callee, args);
