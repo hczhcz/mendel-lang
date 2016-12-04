@@ -84,16 +84,6 @@ Block = '{' _ root:Root _ '}' {
     return root;
 }
 
-Func = $('func' _k) _ name:Name _ body:FuncBody {
-    return ast1.call(
-        ast1.lookup('__assign'),
-        [
-            ast1.symbol(name, 'const'),
-            body,
-        ]
-    );
-}
-
 If = $('if' _k) _ '(' _ cond:Expr _ ')' _ body1:Block body2:(
     _ $('else' _k) _ body:(Block / If) {return body;}
 )? {
@@ -157,55 +147,6 @@ While = $('while' _k) _ '(' _ cond:Expr _ ')' _ body:Block {
 
 Line = expr:Expr _ ';' {
     return expr;
-}
-
-FuncBody = '(' params:(
-    _ Param (_ ',' _ Param)* (_ ',' _ (Param / VA))? (_ ',')?
-)? _ ')' extend:(
-    _ $('extends' _k) _ '(' _ expr:Expr _ ')' {return expr;}
-)? _ impl:(Block / Expr) {
-    params = flatten(params);
-
-    let paramNames = [];
-    let paramModes = [];
-    let vaMode = '';
-
-    for (const i in params) {
-        if (params[i].name === '...') {
-            vaMode = params[i].mode;
-        } else {
-            paramNames.push(params[i].name);
-            paramModes.push(params[i].mode);
-        }
-    }
-
-    return ast1.code(
-        extend || ast1.lookup('__self'),
-        paramNames, paramModes, vaMode,
-        impl
-    );
-}
-Param = mode:Mode _ name:Name {
-    return {
-        name: name,
-        mode: mode,
-    };
-} / name: Name {
-    return {
-        name: name,
-        mode: 'const',
-    };
-}
-VA = mode:Mode _ '...' {
-    return {
-        name: '...',
-        mode: mode,
-    };
-} / '...' {
-    return {
-        name: '...',
-        mode: 'const',
-    };
 }
 
 Expr = Expr0
@@ -408,6 +349,62 @@ Lookup = name:Name {
 
 Code = $('func' _k) _ body:FuncBody {
     return body;
+} / $('func' _k) _ name:Name _ body:FuncBody {
+    return ast1.call(
+        ast1.lookup('__assign'),
+        [
+            ast1.symbol(name, 'const'),
+            body,
+        ]
+    );
+}
+FuncBody = '(' params:(
+    _ Param (_ ',' _ Param)* (_ ',' _ (Param / VA))? (_ ',')?
+)? _ ')' extend:(
+    _ $('extends' _k) _ '(' _ expr:Expr _ ')' {return expr;}
+)? _ impl:(Block / Expr) {
+    params = flatten(params, 'object');
+
+    let paramNames = [];
+    let paramModes = [];
+    let vaMode = '';
+
+    for (const i in params) {
+        if (params[i].name === '...') {
+            vaMode = params[i].mode;
+        } else {
+            paramNames.push(params[i].name);
+            paramModes.push(params[i].mode);
+        }
+    }
+
+    return ast1.code(
+        extend || ast1.lookup('__self'),
+        paramNames, paramModes, vaMode,
+        impl
+    );
+}
+Param = mode:Mode _ name:Name {
+    return {
+        name: name,
+        mode: mode,
+    };
+} / name: Name {
+    return {
+        name: name,
+        mode: 'const',
+    };
+}
+VA = mode:Mode _ '...' {
+    return {
+        name: '...',
+        mode: mode,
+    };
+} / '...' {
+    return {
+        name: '...',
+        mode: 'const',
+    };
 }
 
 Path = '.' _ name:Name {
