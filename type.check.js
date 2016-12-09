@@ -14,7 +14,7 @@ module.exports = {
     },
 
     instance: (type1, type2) => {
-        return type1.id === type2.id;
+        return type1.id !== null && type1.id === type2.id;
     },
 
     visit: (type1, type2) => {

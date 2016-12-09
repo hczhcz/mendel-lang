@@ -144,6 +144,8 @@ module.exports = {
                 return instance.doOut(name);
             },
 
+            // TODO: assignments happen outside an instance
+            //       with new types?
             accessIn: (name, type) => {
                 if (
                     instance.modes[name] !== 'out'

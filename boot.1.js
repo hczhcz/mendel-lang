@@ -18,7 +18,7 @@ module.exports = () => {
     pass.instances[0].add(
         '__return', 'out'
     );
-    pass.instances[0].id = 0;
+    pass.instances[0].id = 0; // notice: done() is never called
     pass.instances[0].accessIn(
         '__return',
         typeinfo.basic('null')
