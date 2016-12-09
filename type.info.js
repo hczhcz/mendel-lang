@@ -58,8 +58,6 @@ module.exports = {
                 closure.instances.push(instance);
 
                 builder(instance, closure.code.impl);
-
-                return instance;
             },
         };
 

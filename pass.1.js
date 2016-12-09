@@ -166,7 +166,6 @@ module.exports = (root) => {
                 throw Error();
             }
 
-            // notice: .length change only when a new instance is built
             let child = typeinfo.instance(mainMode);
 
             // notice: __root and __self are not actual members
@@ -220,9 +219,14 @@ module.exports = (root) => {
                 }
             }
 
-            child = closure.add(
+            let impl = null;
+
+            closure.add(
                 child,
-                builder
+                (trueChild, ast) => {
+                    child = trueChild;
+                    impl = builder(trueChild, ast);
+                }
             );
 
             const inArgs = {};
@@ -243,6 +247,12 @@ module.exports = (root) => {
 
             after(child);
 
+            // allocate an instance id
+            const id = pass.instances.length;
+            pass.instances.push(child);
+
+            child.done(id, impl);
+
             return makeCall(callee, child, outArgs, inArgs);
         },
 
@@ -257,17 +267,13 @@ module.exports = (root) => {
                     );
                 },
                 (child, ast) => {
-                    const id = pass.instances.length;
-                    pass.instances.push(child);
-
-                    child.done(
-                        id,
-                        pass.visitOut(
-                            child, ast
-                        )
+                    const impl = pass.visitOut(
+                        child, ast
                     );
 
-                    resultType = child.impl.type;
+                    resultType = impl.type;
+
+                    return impl;
                 },
                 (child) => {
                     child.accessIn(
@@ -295,15 +301,9 @@ module.exports = (root) => {
                     );
                 },
                 (child, ast) => {
-                    const id = pass.instances.length;
-                    pass.instances.push(child);
-
-                    child.done(
-                        id,
-                        pass.visitIn(
-                            child, ast,
-                            type
-                        )
+                    return pass.visitIn(
+                        child, ast,
+                        type
                     );
                 },
                 (child) => {
