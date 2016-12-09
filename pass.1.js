@@ -257,11 +257,14 @@ module.exports = (root) => {
                     );
                 },
                 (child, ast) => {
-                    child.id = pass.instances.length;
+                    const id = pass.instances.length;
                     pass.instances.push(child);
 
-                    child.impl = pass.visitOut(
-                        child, ast
+                    child.done(
+                        id,
+                        pass.visitOut(
+                            child, ast
+                        )
                     );
 
                     resultType = child.impl.type;
@@ -292,12 +295,15 @@ module.exports = (root) => {
                     );
                 },
                 (child, ast) => {
-                    child.id = pass.instances.length;
+                    const id = pass.instances.length;
                     pass.instances.push(child);
 
-                    child.impl = pass.visitIn(
-                        child, ast,
-                        type
+                    child.done(
+                        id,
+                        pass.visitIn(
+                            child, ast,
+                            type
+                        )
                     );
                 },
                 (child) => {

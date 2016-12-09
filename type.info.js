@@ -73,8 +73,8 @@ module.exports = {
             mainMode: mainMode,
             modes: {},
             types: {}, // edit by member functions
-            id: null, // int, set by pass 1
-            impl: null, // ast2, set by pass 1
+            id: null, // set by instance.done()
+            impl: null, // set by instance.done()
 
             addInit: (name, mode, type) => {
                 instance.inits.push(name);
@@ -153,6 +153,17 @@ module.exports = {
                 }
 
                 instance.doIn(name, type);
+            },
+
+            done: (id, impl) => {
+                for (const i in instance.modes) {
+                    if (!instance.types[i]) {
+                        throw Error();
+                    }
+                }
+
+                instance.id = id;
+                instance.impl = impl;
             },
         };
 
