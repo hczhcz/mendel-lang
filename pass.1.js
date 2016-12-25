@@ -3,9 +3,11 @@
 const typeinfo = require('./type.info');
 const ast2 = require('./ast.2');
 
-module.exports = (root) => {
+module.exports = (root, addInstance) => {
     const pass = {
-        instances: [root],
+        root: root,
+        id: 0,
+        addInstance: addInstance,
 
         literalOut: (instance, ast) => {
             return ast2.literalOut(
@@ -171,7 +173,7 @@ module.exports = (root) => {
             // notice: __root and __self are not actual members
             child.addInit(
                 '__root', 'const',
-                pass.instances[0]
+                pass.root
             );
             child.addInit(
                 '__self', 'var',
@@ -248,10 +250,10 @@ module.exports = (root) => {
             after(child);
 
             // allocate an instance id
-            const id = pass.instances.length;
-            pass.instances.push(child);
+            child.done(pass.id, impl);
+            pass.id += 1;
 
-            child.done(id, impl);
+            addInstance(child);
 
             return makeCall(callee, child, outArgs, inArgs);
         },

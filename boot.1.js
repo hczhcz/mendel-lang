@@ -4,34 +4,34 @@ const typeinfo = require('./type.info');
 const ast1 = require('./ast.1');
 const pass1 = require('./pass.1');
 
-module.exports = () => {
-    const pass = pass1(typeinfo.instance('out'));
+module.exports = (addInstance, addExec, addExport) => {
+    const pass = pass1(typeinfo.instance('out'), addInstance);
 
-    pass.instances[0].addInit(
+    pass.root.addInit(
         '__root', 'const',
-        pass.instances[0]
+        pass.root
     );
-    pass.instances[0].addInit(
+    pass.root.addInit(
         '__self', 'var',
-        pass.instances[0]
+        pass.root
     );
-    pass.instances[0].add(
+    pass.root.add(
         '__return', 'out'
     );
-    pass.instances[0].id = 0; // notice: done() is never called
-    pass.instances[0].accessIn(
+    pass.root.id = 0; // notice: done() is never called
+    pass.root.accessIn(
         '__return',
         typeinfo.basic('null')
     );
 
     const boot = {
-        exports: [],
+        addExport: addExport,
 
         module: (ast) => {
             // TODO: return value as export (module.exports = __return)
 
             return pass.visitOut(
-                pass.instances[0], ast1.call(
+                pass.root, ast1.call(
                     ast1.code(
                         ast1.lookup('__self'),
                         [], [], '',
@@ -45,28 +45,18 @@ module.exports = () => {
         execModule: (ast) => {
             const impl = boot.module(ast);
 
-            boot.exports.push({
-                name: '',
-                impl: impl,
-            });
-
-            return pass.instances;
+            addExec(impl);
         },
 
         exportModule: (name, mode, ast) => {
             const impl = boot.module(ast);
 
-            boot.exports.push({
-                name: name,
-                impl: impl,
-            });
-
-            pass.instances[0].addInit(
+            pass.root.addInit(
                 name, mode,
                 impl.type
             );
 
-            return pass.instances;
+            addExport(name, impl);
         },
     };
 
