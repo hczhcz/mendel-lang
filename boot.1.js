@@ -25,6 +25,7 @@ module.exports = (addInstance, addExec, addExport) => {
     );
 
     const boot = {
+        addExec: addExec,
         addExport: addExport,
 
         module: (ast) => {
@@ -45,7 +46,7 @@ module.exports = (addInstance, addExec, addExport) => {
         execModule: (ast) => {
             const impl = boot.module(ast);
 
-            addExec(impl);
+            boot.addExec(impl);
         },
 
         exportModule: (name, mode, ast) => {
@@ -56,7 +57,7 @@ module.exports = (addInstance, addExec, addExport) => {
                 impl.type
             );
 
-            addExport(name, impl);
+            boot.addExport(name, impl);
         },
     };
 
