@@ -43,22 +43,6 @@ module.exports = () => {
                 + pass.codeBody.join('');
         },
 
-        collectRoot: (exports) => {
-            for (const i in exports) {
-                pass.visitOut(
-                    exports[i].impl,
-                    (value) => {
-                        if (exports[i].name !== '') {
-                            return '__root_frame.data.' + exports[i].name
-                                + ' = ' + value;
-                        } else {
-                            return '(void) ' + value; // notice: discard
-                        }
-                    }
-                );
-            }
-        },
-
         collect: (instances, exports) => {
             for (const i in instances) {
                 pass.build(instances[i], () => {
@@ -100,6 +84,24 @@ module.exports = () => {
             delete pass.codeBody[0];
 
             return result;
+        },
+
+        genExec: (impl) => {
+            pass.visitOut(
+                impl,
+                (value) => {
+                    return '(void) ' + value; // notice: discard
+                }
+            );
+        },
+
+        genExport: (name, impl) => {
+            pass.visitOut(
+                impl,
+                (value) => {
+                    return '__root_frame.data.' + name + ' = ' + value;
+                }
+            );
         },
     };
 
