@@ -57,22 +57,20 @@ module.exports = (genHead, genBody) => {
         },
 
         genInstance: (instance) => {
-            pass.build(instances[i], () => {
-                if (i === '0') {
-                    boot.collectRoot(exports);
-                } else if (instances[i].mainMode === 'out') {
+            pass.build(instance, () => {
+                if (instance.mainMode === 'out') {
                     pass.visitOut(
-                        instances[i].impl,
+                        instance.impl,
                         (value) => {
-                            return '((' + type2c.visit(instances[i])
+                            return '((' + type2c.visit(instance)
                                 + ') __self)->data.__return = ' + value;
                         }
                     );
                 } else {
                     // mainMode === 'const'
                     pass.visitIn(
-                        instances[i].impl,
-                        '((' + type2c.visit(instances[i])
+                        instance.impl,
+                        '((' + type2c.visit(instance)
                         + ') __self)->data.__return'
                     );
                 }

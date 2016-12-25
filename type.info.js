@@ -92,16 +92,16 @@ module.exports = {
 
                 if (mode === 'dep') {
                     if (instance.mainMode === 'const') {
-                        mode = 'out';
+                        instance.modes[name] = 'out';
                     } else {
                         // mainMode === 'out'
-                        mode = 'const';
+                        instance.modes[name] = 'const';
                     }
                 } else if (mode === 'ret') {
-                    mode = instance.mainMode;
+                    instance.modes[name] = instance.mainMode;
+                } else {
+                    instance.modes[name] = mode;
                 }
-
-                instance.modes[name] = mode;
             },
 
             doOut: (name) => {

@@ -191,7 +191,7 @@ module.exports = (root, addInstance) => {
             for (const i in ast.args) {
                 const name = closure.code.paramNames[i]
                     || '__argument_' + i;
-                const mode = closure.code.paramModes[i]
+                let mode = closure.code.paramModes[i]
                     || closure.code.vaMode;
 
                 if (mode === 'dep') {

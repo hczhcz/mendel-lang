@@ -28,12 +28,10 @@ module.exports = (gen) => {
         },
 
         genInstance: (instance) => {
-            pass.build(instances[i], () => {
-                if (i === '0') {
-                    boot.collectRoot(exports);
-                } else if (instances[i].mainMode === 'out') {
+            pass.build(instance, () => {
+                if (instance.mainMode === 'out') {
                     pass.visitOut(
-                        instances[i].impl,
+                        instance.impl,
                         (value) => {
                             return '__self.set(\'__return\', ' + value + ')';
                         }
@@ -41,7 +39,7 @@ module.exports = (gen) => {
                 } else {
                     // mainMode === 'const'
                     pass.visitIn(
-                        instances[i].impl,
+                        instance.impl,
                         '__self.get(\'__return\')'
                     );
                 }
