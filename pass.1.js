@@ -253,7 +253,7 @@ module.exports = (root, addInstance) => {
             child.done(pass.id, impl);
             pass.id += 1;
 
-            addInstance(child);
+            pass.addInstance(child);
 
             return makeCall(callee, child, outArgs, inArgs);
         },

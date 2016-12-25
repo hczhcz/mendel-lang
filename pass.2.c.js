@@ -2,13 +2,13 @@
 
 const type2c = require('./type.2.c');
 
-module.exports = () => {
+module.exports = (genHead, genBody) => {
     const pass = {
-        codeHead: [],
-        codeBody: [],
         id: [], // stack
         bufferHead: [], // stack
         bufferBody: [], // stack
+        genHead: genHead,
+        genBody: genBody,
 
         writeHeadRaw: (line) => {
             pass.bufferHead[pass.bufferHead.length - 1].push(line + '\n');
@@ -291,8 +291,8 @@ module.exports = () => {
 
             pass.id.pop();
 
-            pass.codeHead[instance.id] = pass.bufferHead.pop().join('');
-            pass.codeBody[instance.id] = pass.bufferBody.pop().join('');
+            pass.genHead(pass.bufferHead.pop().join(''));
+            pass.genBody(pass.bufferBody.pop().join(''));
         },
     };
 

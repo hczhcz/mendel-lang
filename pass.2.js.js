@@ -1,10 +1,11 @@
 'use strict';
 
-module.exports = () => {
+module.exports = (gen) => {
     const pass = {
         code: [],
         id: [], // stack
         buffer: [], // stack
+        gen: gen,
 
         writeRaw: (line) => {
             pass.buffer[pass.buffer.length - 1].push(line + '\n');
@@ -234,7 +235,7 @@ module.exports = () => {
 
             pass.id.pop();
 
-            pass.code[instance.id] = pass.buffer.pop().join('');
+            pass.gen(pass.buffer.pop().join(''));
         },
     };
 
