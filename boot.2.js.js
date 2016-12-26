@@ -2,11 +2,14 @@
 
 const pass2js = require('./pass.2.js');
 
-module.exports = (gen) => {
+module.exports = (root, gen) => {
     const pass = pass2js(gen);
 
     const boot = {
         // TODO: init the standard library
+
+        root: root,
+        exec: [],
 
         render: () => {
             pass.gen(
@@ -18,12 +21,6 @@ module.exports = (gen) => {
                     + 'let __root = new Map();\n'
                     + 'let __self = __root;\n'
                     + '\n'
-            );
-        },
-
-        renderMain: () => {
-            pass.gen(
-                'func_0();\n'
             );
         },
 
@@ -47,23 +44,37 @@ module.exports = (gen) => {
         },
 
         addExec: (impl) => {
-            pass.visitOut(
-                impl,
-                (value) => {
-                    return 'void ' + value; // notice: discard
-                }
-            );
+            boot.exec.push(() => {
+                pass.visitOut(
+                    impl,
+                    (value) => {
+                        return 'void ' + value; // notice: discard
+                    }
+                );
+            });
         },
 
         addExport: (name, impl) => {
-            pass.visitOut(
-                impl,
-                (value) => {
-                    return '__root.set('
-                        + '\'' + name + '\', ' + value
-                        + ')';
+            boot.exec.push(() => {
+                pass.visitOut(
+                    impl,
+                    (value) => {
+                        return '__root.set('
+                            + '\'' + name + '\', ' + value
+                            + ')';
+                    }
+                );
+            });
+        },
+
+        genMain: () => {
+            pass.build(root, () => {
+                for (const i in boot.exec) {
+                    boot.exec[i]();
                 }
-            );
+
+                boot.exec = [];
+            });
         },
     };
 

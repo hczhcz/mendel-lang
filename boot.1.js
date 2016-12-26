@@ -4,8 +4,8 @@ const typeinfo = require('./type.info');
 const ast1 = require('./ast.1');
 const pass1 = require('./pass.1');
 
-module.exports = (addInstance, addExec, addExport) => {
-    const pass = pass1(typeinfo.instance('out'), addInstance);
+module.exports = (root, addInstance, addExec, addExport) => {
+    const pass = pass1(root, addInstance);
 
     pass.root.addInit(
         '__root', 'const',

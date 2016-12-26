@@ -3,11 +3,14 @@
 const type2c = require('./type.2.c');
 const pass2c = require('./pass.2.c');
 
-module.exports = (genHead, genBody) => {
+module.exports = (root, genHead, genBody) => {
     const pass = pass2c(genHead, genBody);
 
     const boot = {
         // TODO: init the standard library
+
+        root: root,
+        exec: [],
 
         renderHead: () => {
             pass.genHead(
@@ -42,17 +45,13 @@ module.exports = (genHead, genBody) => {
                     + 'struct head *__root = &__root_frame.head;\n'
                     + 'struct head *__self = &__root_frame.head;\n'
                     + '\n'
-            );
-        },
-
-        renderMain: () => {
-            pass.genBody(
-                'int main(int argc, char *argv[]) {\n'
+                    + 'int main(int argc, char *argv[]) {\n'
                     + '    GC_init();\n'
                     + '    func_0();\n'
                     + '\n'
                     + '    return 0;\n'
                     + '}\n'
+                    + '\n'
             );
         },
 
@@ -78,21 +77,35 @@ module.exports = (genHead, genBody) => {
         },
 
         addExec: (impl) => {
-            pass.visitOut(
-                impl,
-                (value) => {
-                    return '(void) ' + value; // notice: discard
-                }
-            );
+            boot.exec.push(() => {
+                pass.visitOut(
+                    impl,
+                    (value) => {
+                        return '(void) ' + value; // notice: discard
+                    }
+                );
+            });
         },
 
         addExport: (name, impl) => {
-            pass.visitOut(
-                impl,
-                (value) => {
-                    return '__root_frame.data.' + name + ' = ' + value;
+            boot.exec.push(() => {
+                pass.visitOut(
+                    impl,
+                    (value) => {
+                        return '__root_frame.data.' + name + ' = ' + value;
+                    }
+                );
+            });
+        },
+
+        genMain: () => {
+            pass.build(root, () => {
+                for (const i in boot.exec) {
+                    boot.exec[i]();
                 }
-            );
+
+                boot.exec = [];
+            });
         },
     };
 
