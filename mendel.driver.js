@@ -13,16 +13,18 @@ if (process.argv.length < 4) {
     throw Error();
 }
 
+const b2js = boot2js(console.log);
+// const b2c = boot2c();
+const b1 = boot1(b2js.addInstance, b2js.addExec, b2js.addExport);
 const b0 = boot0();
-const b1 = boot1();
-const b2js = boot2js();
-const b2c = boot2c();
 
 libcore(b1);
 
 const code0 = String(fs.readFileSync(process.argv[2]));
 const code1 = b0.parse(code0);
-const code2 = b1.execModule(code1);
-const code3js = b2js.collect(code2, b1.exports);
 
-fs.writeFileSync(process.argv[3], b2js.render() + code3js);
+b2js.render();
+b1.execModule(code1);
+b2js.renderMain();
+
+// fs.writeFileSync(process.argv[3], b2js.render() + code3js);

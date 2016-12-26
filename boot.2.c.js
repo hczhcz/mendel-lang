@@ -56,7 +56,7 @@ module.exports = (genHead, genBody) => {
             );
         },
 
-        genInstance: (instance) => {
+        addInstance: (instance) => {
             pass.build(instance, () => {
                 if (instance.mainMode === 'out') {
                     pass.visitOut(
@@ -77,7 +77,7 @@ module.exports = (genHead, genBody) => {
             });
         },
 
-        genExec: (impl) => {
+        addExec: (impl) => {
             pass.visitOut(
                 impl,
                 (value) => {
@@ -86,7 +86,7 @@ module.exports = (genHead, genBody) => {
             );
         },
 
-        genExport: (name, impl) => {
+        addExport: (name, impl) => {
             pass.visitOut(
                 impl,
                 (value) => {
