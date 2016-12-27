@@ -14,11 +14,15 @@ if (process.argv.length < 4) {
     throw Error();
 }
 
+const outFile = fs.openSync(process.argv[3], 'w');
+
 const root = typeinfo.instance('out');
 
 const b2js = boot2js(
     root,
-    console.log
+    (data) => {
+        fs.writeSync(outFile, data);
+    }
 );
 // const b2c = boot2c();
 const b1 = boot1(
@@ -38,5 +42,3 @@ b1.execModule(code1);
 b2js.collect();
 
 b2js.renderMain();
-
-// fs.writeFileSync(process.argv[3], b2js.render() + code3js);
