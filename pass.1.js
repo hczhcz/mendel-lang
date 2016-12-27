@@ -6,7 +6,7 @@ const ast2 = require('./ast.2');
 module.exports = (root, addInstance) => {
     const pass = {
         root: root,
-        id: 0,
+        id: 1,
         addInstance: addInstance,
 
         literalOut: (instance, ast) => {
