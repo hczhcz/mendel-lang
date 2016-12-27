@@ -35,6 +35,8 @@ const code0 = String(fs.readFileSync(process.argv[2]));
 const code1 = b0.parse(code0);
 
 b1.execModule(code1);
-b2js.genMain();
+b2js.collect();
+
+b2js.renderMain();
 
 // fs.writeFileSync(process.argv[3], b2js.render() + code3js);

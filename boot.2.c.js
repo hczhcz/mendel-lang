@@ -45,13 +45,17 @@ module.exports = (root, genHead, genBody) => {
                     + 'struct head *__root = &__root_frame.head;\n'
                     + 'struct head *__self = &__root_frame.head;\n'
                     + '\n'
-                    + 'int main(int argc, char *argv[]) {\n'
+            );
+        },
+
+        renderMain: () => {
+            pass.genBody(
+                'int main(int argc, char *argv[]) {\n'
                     + '    GC_init();\n'
                     + '    func_0();\n'
                     + '\n'
                     + '    return 0;\n'
                     + '}\n'
-                    + '\n'
             );
         },
 
@@ -98,7 +102,7 @@ module.exports = (root, genHead, genBody) => {
             });
         },
 
-        genMain: () => {
+        collect: () => {
             pass.build(root, () => {
                 for (const i in boot.exec) {
                     boot.exec[i]();

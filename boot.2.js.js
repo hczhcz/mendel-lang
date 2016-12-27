@@ -24,6 +24,12 @@ module.exports = (root, gen) => {
             );
         },
 
+        renderMain: () => {
+            pass.gen(
+                'func_0();\n'
+            );
+        },
+
         addInstance: (instance) => {
             pass.build(instance, () => {
                 if (instance.mainMode === 'out') {
@@ -67,7 +73,7 @@ module.exports = (root, gen) => {
             });
         },
 
-        genMain: () => {
+        collect: () => {
             pass.build(root, () => {
                 for (const i in boot.exec) {
                     boot.exec[i]();
