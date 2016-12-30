@@ -249,11 +249,13 @@ module.exports = (root, addInstance) => {
 
             after(child);
 
-            // allocate an instance id
-            child.done(pass.id, impl);
-            pass.id += 1;
+            if (impl) { // TODO: dirty fix
+                // allocate an instance id
+                child.done(pass.id, impl);
+                pass.id += 1;
 
-            pass.addInstance(child);
+                pass.addInstance(child);
+            }
 
             return makeCall(callee, child, outArgs, inArgs);
         },

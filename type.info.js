@@ -48,7 +48,7 @@ module.exports = {
                         }
 
                         if (ok) {
-                            return closure.instances[i];
+                            return;
                         }
                     }
                 }
