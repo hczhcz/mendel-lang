@@ -156,6 +156,10 @@ module.exports = {
             },
 
             done: (id, impl) => {
+                if (instance.id !== null) {
+                    throw Error();
+                }
+
                 for (const i in instance.modes) {
                     if (!instance.types[i]) {
                         throw Error();
