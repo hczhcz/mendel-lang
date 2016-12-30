@@ -6,8 +6,6 @@ module.exports = (root, gen) => {
     const pass = pass2js(gen);
 
     const boot = {
-        // TODO: init the standard library
-
         root: root,
         exec: [],
 
@@ -27,6 +25,7 @@ module.exports = (root, gen) => {
         renderMain: () => {
             pass.gen(
                 'func_0();\n'
+                    + '\n'
             );
         },
 

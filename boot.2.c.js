@@ -7,8 +7,6 @@ module.exports = (root, genHead, genBody) => {
     const pass = pass2c(genHead, genBody);
 
     const boot = {
-        // TODO: init the standard library
-
         root: root,
         exec: [],
 
@@ -56,6 +54,7 @@ module.exports = (root, genHead, genBody) => {
                     + '\n'
                     + '    return 0;\n'
                     + '}\n'
+                    + '\n'
             );
         },
 
