@@ -18,9 +18,9 @@ module.exports = (root, gen) => {
 
     const boot = {
         root: root,
-        exec: [],
+        operations: [],
 
-        addInstance: (instance) => {
+        newInstance: (instance) => {
             pass.build(instance, () => {
                 if (instance.mainMode === 'out') {
                     pass.visitOut(
@@ -39,8 +39,8 @@ module.exports = (root, gen) => {
             });
         },
 
-        addExec: (impl) => {
-            boot.exec.push(() => {
+        execute: (impl) => {
+            boot.operations.push(() => {
                 pass.visitOut(
                     impl,
                     (value) => {
@@ -50,8 +50,8 @@ module.exports = (root, gen) => {
             });
         },
 
-        addExport: (name, impl) => {
-            boot.exec.push(() => {
+        export: (name, impl) => {
+            boot.operations.push(() => {
                 pass.visitOut(
                     impl,
                     (value) => {
@@ -65,11 +65,11 @@ module.exports = (root, gen) => {
 
         collect: () => {
             pass.build(root, () => {
-                for (const i in boot.exec) {
-                    boot.exec[i]();
+                for (const i in boot.operations) {
+                    boot.operations[i]();
                 }
 
-                boot.exec = [];
+                boot.operations = [];
             });
 
             pass.gen(

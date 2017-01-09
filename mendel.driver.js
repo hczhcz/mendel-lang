@@ -27,7 +27,7 @@ const b2js = boot2js(
 // const b2c = boot2c();
 const b1 = boot1(
     root,
-    b2js.addInstance, b2js.addExec, b2js.addExport
+    b2js.newInstance, b2js.execute, b2js.export
 );
 const b0 = boot0();
 
@@ -36,5 +36,5 @@ libcore(b1);
 const code0 = String(fs.readFileSync(process.argv[2]));
 const code1 = b0.parse(code0);
 
-b1.execModule(code1);
+b1.execute(code1);
 b2js.collect();

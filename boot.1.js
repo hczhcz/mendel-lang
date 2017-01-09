@@ -4,8 +4,8 @@ const typeinfo = require('./type.info');
 const ast1 = require('./ast.1');
 const pass1 = require('./pass.1');
 
-module.exports = (root, addInstance, addExec, addExport) => {
-    const pass = pass1(root, addInstance);
+module.exports = (root, onNewInstance, onExecute, onExport) => {
+    const pass = pass1(root, onNewInstance);
 
     pass.root.addInit(
         '__root', 'const',
@@ -25,8 +25,8 @@ module.exports = (root, addInstance, addExec, addExport) => {
     );
 
     const boot = {
-        addExec: addExec,
-        addExport: addExport,
+        onExecute: onExecute,
+        onExport: onExport,
 
         module: (ast) => {
             // TODO: return value as export (module.exports = __return)
@@ -43,13 +43,13 @@ module.exports = (root, addInstance, addExec, addExport) => {
             );
         },
 
-        execModule: (ast) => {
+        execute: (ast) => {
             const impl = boot.module(ast);
 
-            boot.addExec(impl);
+            boot.onExecute(impl);
         },
 
-        exportModule: (name, mode, ast) => {
+        export: (name, mode, ast) => {
             const impl = boot.module(ast);
 
             pass.root.addInit(
@@ -57,7 +57,7 @@ module.exports = (root, addInstance, addExec, addExport) => {
                 impl.type
             );
 
-            boot.addExport(name, impl);
+            boot.onExport(name, impl);
         },
     };
 

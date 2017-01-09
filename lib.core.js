@@ -7,7 +7,7 @@ const typeCheck = require('./type.check')
 
 module.exports = (boot) => {
     //  __do(...)
-    boot.exportModule(
+    boot.export(
         '__do', 'const', ast1.code(ast1.lookup('__self'),
             [], [], 'const', ast1.meta(
                 (pass, instance) => {
@@ -28,7 +28,7 @@ module.exports = (boot) => {
     );
 
     //　__assign('target', 'source')
-    boot.exportModule(
+    boot.export(
         '__assign', 'const', ast1.code(ast1.lookup('__self'),
             ['target', 'source'], ['out', 'const'], '', ast1.meta(
                 (pass, instance) => {
@@ -54,7 +54,7 @@ module.exports = (boot) => {
     );
 
     //  write('val')
-    boot.exportModule(
+    boot.export(
         'write', 'const', ast1.code(ast1.lookup('__self'),
             ['val'], ['const'], '', ast1.meta(
                 (pass, instance) => {
@@ -75,7 +75,7 @@ module.exports = (boot) => {
     );
 
     //  read('val')
-    boot.exportModule(
+    boot.export(
         'read', 'const', ast1.code(ast1.lookup('__self'),
             ['val'], ['var'], '', ast1.meta(
                 (pass, instance) => {
@@ -112,7 +112,7 @@ module.exports = (boot) => {
     );
 
     // __add('val1', 'val2')
-    boot.exportModule(
+    boot.export(
         '__add', 'const', ast1.code(ast1.lookup('__self'),
             ['val1', 'val2'], ['const', 'const'], '', ast1.meta(
                 (pass, instance) => {
@@ -152,7 +152,7 @@ module.exports = (boot) => {
     )
 
     //__subtract(const val1, const val2)
-    boot.exportModule(
+    boot.export(
         '__subtract', 'const', ast1.code(ast1.lookup('__self'),
             ['val1', 'val2'], ['const', 'const'], '', ast1.meta(
                 (pass, instance) => {
@@ -192,7 +192,7 @@ module.exports = (boot) => {
     )
 
     //__multiply(const val1, const val2)
-    boot.exportModule(
+    boot.export(
         '__multiply', 'const', ast1.code(ast1.lookup('__self'),
             ['val1', 'val2'], ['const', 'const'], '', ast1.meta(
                 (pass, instance) => {
@@ -232,7 +232,7 @@ module.exports = (boot) => {
     )
 
     //__divide(const val1, const val2)
-    boot.exportModule(
+    boot.export(
         '__divide', 'const', ast1.code(ast1.lookup('__self'),
             ['val1', 'val2'], ['const', 'const'], '', ast1.meta(
                 (pass, instance) => {
@@ -272,7 +272,7 @@ module.exports = (boot) => {
     )
 
     // __less('val1', 'val2')
-    boot.exportModule(
+    boot.export(
         '__less', 'const', ast1.code(ast1.lookup('__self'),
             ['val1', 'val2'], ['const', 'const'], '', ast1.meta(
                 (pass, instance) => {
@@ -312,7 +312,7 @@ module.exports = (boot) => {
     )
 
     // __lessEqual('val1', 'val2')
-    boot.exportModule(
+    boot.export(
         '__lessEqual', 'const', ast1.code(ast1.lookup('__self'),
             ['val1', 'val2'], ['const', 'const'], '', ast1.meta(
                 (pass, instance) => {
@@ -352,7 +352,7 @@ module.exports = (boot) => {
     )
 
     // __greater('val1', 'val2')
-    boot.exportModule(
+    boot.export(
         '__greater', 'const', ast1.code(ast1.lookup('__self'),
             ['val1', 'val2'], ['const', 'const'], '', ast1.meta(
                 (pass, instance) => {
@@ -392,7 +392,7 @@ module.exports = (boot) => {
     )
 
     // __greaterEqual('val1', 'val2')
-    boot.exportModule(
+    boot.export(
         '__greaterEqual', 'const', ast1.code(ast1.lookup('__self'),
             ['val1', 'val2'], ['const', 'const'], '', ast1.meta(
                 (pass, instance) => {
@@ -432,7 +432,7 @@ module.exports = (boot) => {
     )
 
     // __equal('val1', 'val2')
-    boot.exportModule(
+    boot.export(
         '__equal', 'const', ast1.code(ast1.lookup('__self'),
             ['val1', 'val2'], ['const', 'const'], '', ast1.meta(
                 (pass, instance) => {
@@ -472,7 +472,7 @@ module.exports = (boot) => {
     )
 
     // __positive('val')
-    boot.exportModule(
+    boot.export(
         '__positive', 'const', ast1.code(ast1.lookup('__self'),
             ['val'], ['const'], '', ast1.meta(
                 (pass, instance) => {
@@ -493,7 +493,7 @@ module.exports = (boot) => {
     )
 
     // __negative('val')
-    boot.exportModule(
+    boot.export(
         '__negative', 'const', ast1.code(ast1.lookup('__self'),
             ['val'], ['const'], '', ast1.meta(
                 (pass, instance) => {
@@ -514,7 +514,7 @@ module.exports = (boot) => {
     )
 
     // __not('val')
-    boot.exportModule(
+    boot.export(
         '__not', 'const', ast1.code(ast1.lookup('__self'),
             ['val'], ['const'], '', ast1.meta(
                 (pass, instance) => {
@@ -535,7 +535,7 @@ module.exports = (boot) => {
     )
 
     // int('val')
-    boot.exportModule(
+    boot.export(
         'int', 'const', ast1.code(ast1.lookup('__self'),
             ['val'], ['const'], '', ast1.meta(
                 (pass, instance) => {
@@ -557,7 +557,7 @@ module.exports = (boot) => {
     );
 
     // __array(...)
-    boot.exportModule(
+    boot.export(
         '__array', 'const', ast1.code(ast1.lookup('__self'),
             [], [], 'const', ast1.meta(
                 (pass, instance) => {
@@ -584,7 +584,7 @@ module.exports = (boot) => {
     )
 
     // __index('container', 'index')
-    boot.exportModule(
+    boot.export(
         '__index', 'const', ast1.code(ast1.lookup('__self'),
             ['container', 'index'], ['const', 'const'], '', ast1.meta(
                 (pass, instance) => {
@@ -630,7 +630,7 @@ module.exports = (boot) => {
     )
 
     // __if('cond', 'body')
-    boot.exportModule(
+    boot.export(
         '__if', 'const', ast1.code(ast1.lookup('__self'),
             ['cond', 'body'], ['const', 'const'], '',
             ast1.call(ast1.lookup('__do'), [
@@ -664,7 +664,7 @@ module.exports = (boot) => {
     )
 
     // exit('val')
-    boot.exportModule(
+    boot.export(
         'exit', 'const', ast1.code(ast1.lookup('__self'),
             ['val'], 'const', '', ast1.meta(
                 (pass, instance) => {
