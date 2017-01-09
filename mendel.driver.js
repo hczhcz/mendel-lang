@@ -24,17 +24,19 @@ const b2js = boot2js(
         fs.writeSync(outFile, data);
     }
 );
+
 // const b2c = boot2c();
+
 const b1 = boot1(
     root,
     b2js.newInstance, b2js.execute, b2js.export
 );
-const b0 = boot0();
+
+const b0 = boot0(
+    b1.execute, b1.export
+);
 
 libcore(b1);
 
-const code0 = String(fs.readFileSync(process.argv[2]));
-const code1 = b0.parse(code0);
-
-b1.execute(code1);
+b0.execute(String(fs.readFileSync(process.argv[2])));
 b2js.collect();
