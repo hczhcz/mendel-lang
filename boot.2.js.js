@@ -5,29 +5,20 @@ const pass2js = require('./pass.2.js');
 module.exports = (root, gen) => {
     const pass = pass2js(gen);
 
+    pass.gen(
+        '\'use strict\';\n'
+            + '\n'
+            + 'let __upper = null;\n'
+            + 'let __inner = null;\n'
+            + 'let __callee = null;\n'
+            + 'let __root = new Map();\n'
+            + 'let __self = __root;\n'
+            + '\n'
+    );
+
     const boot = {
         root: root,
         exec: [],
-
-        render: () => {
-            pass.gen(
-                '\'use strict\';\n'
-                    + '\n'
-                    + 'let __upper = null;\n'
-                    + 'let __inner = null;\n'
-                    + 'let __callee = null;\n'
-                    + 'let __root = new Map();\n'
-                    + 'let __self = __root;\n'
-                    + '\n'
-            );
-        },
-
-        renderMain: () => {
-            pass.gen(
-                'func_0();\n'
-                    + '\n'
-            );
-        },
 
         addInstance: (instance) => {
             pass.build(instance, () => {
@@ -80,6 +71,11 @@ module.exports = (root, gen) => {
 
                 boot.exec = [];
             });
+
+            pass.gen(
+                'func_0();\n'
+                    + '\n'
+            );
         },
     };
 

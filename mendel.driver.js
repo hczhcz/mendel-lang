@@ -31,8 +31,6 @@ const b1 = boot1(
 );
 const b0 = boot0();
 
-b2js.render();
-
 libcore(b1);
 
 const code0 = String(fs.readFileSync(process.argv[2]));
@@ -40,5 +38,3 @@ const code1 = b0.parse(code0);
 
 b1.execModule(code1);
 b2js.collect();
-
-b2js.renderMain();
