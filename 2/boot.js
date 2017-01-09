@@ -1,71 +1,75 @@
 'use strict';
 
+const entity = require('./entity');
+const ast2 = require('./ast');
 const pass2 = require('./pass');
 
-module.exports = (root, gen) => {
+module.exports = (gen) => {
     const pass = pass2(gen);
 
     const boot = {
-        // root: root,
-        // operations: [],
+        main: entity.func('func_main'),
 
-        // newInstance: (instance) => {
-        //     pass.build(instance, () => {
-        //         if (instance.mainMode === 'out') {
-        //             pass.visitOut(
-        //                 instance.impl,
-        //                 (value) => {
-        //                     return '__self.set(\'__return\', ' + value + ')';
-        //                 }
-        //             );
-        //         } else {
-        //             // mainMode === 'const'
-        //             pass.visitIn(
-        //                 instance.impl,
-        //                 '__self.get(\'__return\')'
-        //             );
-        //         }
-        //     });
-        // },
+        newInstance: (instance) => {
+            pass.build(instance, (func) => {
+                if (instance.mainMode === 'out') {
+                    pass.visitOut(
+                        func,
+                        instance.impl,
+                        (value) => {
+                            func.add(ast2.set(
+                                ast2.cast(
+                                    ast2.reserved('__self'),
+                                    instance.id
+                                ),
+                                '__return',
+                                value
+                            ));
+                        }
+                    );
+                } else {
+                    // mainMode === 'const'
+                    pass.visitIn(
+                        func,
+                        instance.impl,
+                        ast2.get(
+                            ast2.cast(
+                                ast2.reserved('__self'),
+                                instance.id
+                            ),
+                            '__return'
+                        )
+                    );
+                }
+            });
+        },
 
-        // execute: (impl) => {
-        //     boot.operations.push(() => {
-        //         pass.visitOut(
-        //             impl,
-        //             (value) => {
-        //                 return 'void ' + value; // notice: discard
-        //             }
-        //         );
-        //     });
-        // },
+        execute: (ast) => {
+            pass.visitOut(
+                boot.main,
+                ast,
+                (value) => {
+                    // notice: discard
+                }
+            );
+        },
 
-        // export: (name, impl) => {
-        //     boot.operations.push(() => {
-        //         pass.visitOut(
-        //             impl,
-        //             (value) => {
-        //                 return '__root.set('
-        //                     + '\'' + name + '\', ' + value
-        //                     + ')';
-        //             }
-        //         );
-        //     });
-        // },
-
-        // collect: () => {
-        //     pass.build(root, () => {
-        //         for (const i in boot.operations) {
-        //             boot.operations[i]();
-        //         }
-
-        //         boot.operations = [];
-        //     });
-
-        //     pass.gen(
-        //         'func_0();\n'
-        //             + '\n'
-        //     );
-        // },
+        export: (name, ast) => {
+            pass.visitOut(
+                boot.main,
+                ast,
+                (value) => {
+                    boot.main.add(ast2.set(
+                        ast2.cast(
+                            ast2.reserved('__root'),
+                            0 // TODO: root.id?
+                        ),
+                        name,
+                        value
+                    ));
+                }
+            );
+        },
     };
 
     return boot;

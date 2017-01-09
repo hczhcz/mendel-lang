@@ -5,6 +5,7 @@ const fs = require('fs');
 
 const boot0 = require('./0/boot');
 const boot1 = require('./1/boot');
+const boot2 = require('./2/boot');
 const boot3js = require('./3.js/boot');
 const boot3c = require('./3.c/boot');
 const libcore = require('./lib.core');
@@ -42,8 +43,12 @@ const b3js = boot3js(
 
 // const b3c = boot3c();
 
+const b2 = boot2((func) => {
+    console.log(func);
+});
+
 const b1 = boot1(
-    b3js.newInstance, b3js.execute, b3js.export
+    b2.newInstance, b2.execute, b2.export
 );
 
 const b0 = boot0(
