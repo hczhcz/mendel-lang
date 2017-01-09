@@ -3,9 +3,9 @@
 const type = require('./type');
 const ast1 = require('./ast');
 
-module.exports = (root, addInstance) => {
+module.exports = (addInstance) => {
     const pass = {
-        root: root,
+        root: type.instance('out'),
         id: 1,
         addInstance: addInstance,
 

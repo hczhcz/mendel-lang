@@ -3,8 +3,8 @@
 const type = require('./type');
 const pass1 = require('./pass');
 
-module.exports = (root, addInstance, onExecute, onExport) => {
-    const pass = pass1(root, addInstance);
+module.exports = (addInstance, onExecute, onExport) => {
+    const pass = pass1(addInstance);
 
     pass.root.addInit(
         '__root', 'const',

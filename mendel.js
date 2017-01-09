@@ -3,7 +3,6 @@
 const process = require('process');
 const fs = require('fs');
 
-const type = require('./1/type');
 const boot0 = require('./0/boot');
 const boot1 = require('./1/boot');
 const boot3js = require('./3.js/boot');
@@ -15,8 +14,6 @@ if (process.argv.length < 4) {
 }
 
 const outFile = fs.openSync(process.argv[3], 'w');
-
-const root = type.instance('out');
 
 const b3js = boot3js(
     root,
@@ -46,7 +43,6 @@ const b3js = boot3js(
 // const b3c = boot3c();
 
 const b1 = boot1(
-    root,
     b3js.newInstance, b3js.execute, b3js.export
 );
 
