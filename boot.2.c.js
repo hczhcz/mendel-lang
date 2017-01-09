@@ -86,7 +86,7 @@ module.exports = (root, genHead, genBody) => {
         },
 
         collect: () => {
-            pass.build(root, () => {
+            pass.build(boot.root, () => {
                 for (const i in boot.operations) {
                     boot.operations[i]();
                 }

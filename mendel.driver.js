@@ -25,6 +25,24 @@ const b2js = boot2js(
     }
 );
 
+// const b2js = boot2js(
+//     root,
+//     (() => {
+//         const doEvalGen = 'doEval = (data) => {\n'
+//             + '    eval(data + doEvalGen);\n'
+//             + '};\n'
+//             + '\n';
+
+//         let doEval;
+
+//         eval(doEvalGen);
+
+//         return (data) => {
+//             doEval(data);
+//         };
+//     })()
+// );
+
 // const b2c = boot2c();
 
 const b1 = boot1(
