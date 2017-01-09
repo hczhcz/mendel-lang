@@ -24,7 +24,7 @@ module.exports = (addFunction) => {
         },
 
         reservedIn: (func, ast, value) => {
-            func.add(ast2.assign(
+            func.add(ast2.move(
                 ast2.reserved(ast.name),
                 ast2.head(value)
             ));
@@ -35,7 +35,7 @@ module.exports = (addFunction) => {
                 func,
                 ast.upper,
                 (value) => {
-                    func.add(ast2.assign(
+                    func.add(ast2.move(
                         ast2.reserved('__upper'),
                         ast2.head(value)
                     ));
@@ -55,7 +55,7 @@ module.exports = (addFunction) => {
             pass.visitOut(
                 ast.upper,
                 (value) => {
-                    func.add(ast2.assign(
+                    func.add(ast2.move(
                         ast2.reserved('__upper'),
                         ast2.head(value)
                     ));
@@ -76,7 +76,7 @@ module.exports = (addFunction) => {
             pass.visitOut(
                 ast.callee,
                 (value) => {
-                    func.add(ast2.assign(
+                    func.add(ast2.move(
                         ast2.reserved('__upper'),
                         ast2.head(value)
                     ));
@@ -105,14 +105,14 @@ module.exports = (addFunction) => {
 
             before();
 
-            func.add(ast2.assign(
+            func.add(ast2.move(
                 ast2.reserved2(
                     ast2.reserved('__inner'),
                     '__outer'
                 ),
                 ast2.reserved('__callee')
             ));
-            func.add(ast2.assign(
+            func.add(ast2.move(
                 ast2.reserved('__callee'),
                 ast2.reserved('__inner')
             ));
@@ -133,14 +133,14 @@ module.exports = (addFunction) => {
                 );
             }
 
-            func.add(ast2.assign(
+            func.add(ast2.move(
                 ast2.reserved2(
                     ast2.reserved('__callee'),
                     '__caller'
                 ),
                 ast2.reserved('__self')
             ));
-            func.add(ast2.assign(
+            func.add(ast2.move(
                 ast2.reserved('__self'),
                 ast2.reserved('__callee')
             ));
@@ -161,11 +161,11 @@ module.exports = (addFunction) => {
                 }
             );
 
-            func.add(ast2.assign(
+            func.add(ast2.move(
                 ast2.reserved('__callee'),
                 ast2.reserved('__self')
             ));
-            func.add(ast2.assign(
+            func.add(ast2.move(
                 ast2.reserved('__self'),
                 ast2.reserved2(
                     ast2.reserved('__callee'),
@@ -186,11 +186,11 @@ module.exports = (addFunction) => {
                 );
             }
 
-            func.add(ast2.assign(
+            func.add(ast2.move(
                 ast2.reserved('__inner'),
                 ast2.reserved('__callee')
             ));
-            func.add(ast2.assign(
+            func.add(ast2.move(
                 ast2.reserved('__callee'),
                 ast2.reserved2(
                     ast2.reserved('__inner'),

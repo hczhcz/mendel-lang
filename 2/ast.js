@@ -1,83 +1,89 @@
 'use strict';
 
 module.exports = {
-    // literalOut: (value, type) => {
-    //     return {
-    //         __type: 'literalOut',
-    //         value: value,
-    //         type: type,
-    //     };
-    // },
+    value: (value, type) => {
+        return {
+            __type: '__value',
+            value: value,
+            type: type,
+        };
+    },
 
-    // reservedOut: (name, type) => {
-    //     return {
-    //         __type: 'reservedOut',
-    //         name: name,
-    //         type: type,
-    //     };
-    // },
+    reserved: (name) => {
+        return {
+            __type: '__reserved',
+            name: name,
+        };
+    },
 
-    // reservedIn: (name, type) => {
-    //     return {
-    //         __type: 'reservedIn',
-    //         name: name,
-    //         type: type,
-    //     };
-    // },
+    reserved2: (upper, name) => {
+        return {
+            __type: '__reserved2',
+            upper: upper,
+            name: name,
+        };
+    },
 
-    // pathOut: (upper, name, type) => {
-    //     return {
-    //         __type: 'pathOut',
-    //         upper: upper,
-    //         name: name,
-    //         type: type,
-    //     };
-    // },
+    cast: (source, id) => {
+        return {
+            __type: '__cast',
+            source: source,
+            id: id,
+        };
+    },
 
-    // pathIn: (upper, name, type) => {
-    //     return {
-    //         __type: 'pathIn',
-    //         upper: upper,
-    //         name: name,
-    //         type: type,
-    //     };
-    // },
+    head: (source) => {
+        return {
+            __type: '__head',
+            source: source,
+        };
+    },
 
-    // callOut: (callee, instance, outArgs, inArgs, type) => {
-    //     return {
-    //         __type: 'callOut',
-    //         callee: callee,
-    //         instance: instance,
-    //         outArgs: outArgs,
-    //         inArgs: inArgs,
-    //         type: type,
-    //     };
-    // },
+    move: (target, value) => {
+        return {
+            __type: '__move',
+            target: target,
+            value: value,
+        };
+    },
 
-    // callIn: (callee, instance, outArgs, inArgs, type) => {
-    //     return {
-    //         __type: 'callIn',
-    //         callee: callee,
-    //         instance: instance,
-    //         outArgs: outArgs,
-    //         inArgs: inArgs,
-    //         type: type,
-    //     };
-    // },
+    alloc: (upper, id) => {
+        return {
+            __type: '__alloc',
+            upper: upper,
+            id: id,
+        };
+    },
 
-    // nativeOut: (impls, type) => {
-    //     return {
-    //         __type: 'nativeOut',
-    //         impls: impls,
-    //         type: type,
-    //     };
-    // },
+    get: (upper, name) => {
+        return {
+            __type: '__get',
+            upper: upper,
+            name: name,
+        };
+    },
 
-    // nativeIn: (impls, type) => {
-    //     return {
-    //         __type: 'nativeIn',
-    //         impls: impls,
-    //         type: type,
-    //     };
-    // },
+    set: (upper, name, value) => {
+        return {
+            __type: '__set',
+            upper: upper,
+            name: name,
+            value: value,
+        };
+    },
+
+    func: (upper, func) => {
+        return {
+            __type: '__func',
+            upper: upper,
+            func: func,
+        };
+    },
+
+    invoke: (upper) => {
+        return {
+            __type: '__invoke',
+            upper: upper,
+        };
+    },
 };
