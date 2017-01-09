@@ -3,11 +3,11 @@
 const process = require('process');
 const fs = require('fs');
 
-const typeinfo = require('./type.info');
-const boot0 = require('./boot.0');
-const boot1 = require('./boot.1');
-const boot2js = require('./boot.2.js');
-const boot2c = require('./boot.2.c');
+const type = require('./1/type');
+const boot0 = require('./0/boot');
+const boot1 = require('./1/boot');
+const boot2js = require('./2.js/boot');
+const boot2c = require('./2.c/boot');
 const libcore = require('./lib.core');
 
 if (process.argv.length < 4) {
@@ -16,7 +16,7 @@ if (process.argv.length < 4) {
 
 const outFile = fs.openSync(process.argv[3], 'w');
 
-const root = typeinfo.instance('out');
+const root = type.instance('out');
 
 const b2js = boot2js(
     root,

@@ -1,7 +1,7 @@
 'use strict';
 
-const typeinfo = require('./type.info');
-const ast2 = require('./ast.2');
+const type = require('./type');
+const ast1 = require('./ast');
 
 module.exports = (root, addInstance) => {
     const pass = {
@@ -10,9 +10,9 @@ module.exports = (root, addInstance) => {
         addInstance: addInstance,
 
         literalOut: (instance, ast) => {
-            return ast2.literalOut(
+            return ast1.literalOut(
                 ast.value,
-                typeinfo.basic(ast.type)
+                type.basic(ast.type)
             );
         },
 
@@ -25,9 +25,9 @@ module.exports = (root, addInstance) => {
                 ast.name, ast.mode
             );
 
-            return ast2.literalOut(
+            return ast1.literalOut(
                 null,
-                typeinfo.basic('null')
+                type.basic('null')
             );
         },
 
@@ -40,8 +40,8 @@ module.exports = (root, addInstance) => {
                 type
             );
 
-            return ast2.pathIn(
-                ast2.reservedOut(
+            return ast1.pathIn(
+                ast1.reservedOut(
                     '__self',
                     instance
                 ),
@@ -57,13 +57,13 @@ module.exports = (root, addInstance) => {
                     return makeReserved();
                 }
                 default: {
-                    let upper = ast2.reservedOut(
+                    let upper = ast1.reservedOut(
                         '__self',
                         instance
                     );
 
                     while (!upper.type.modes[ast.name]) {
-                        upper = ast2.pathOut(
+                        upper = ast1.pathOut(
                             upper, '__parent',
                             upper.type.accessOut('__parent')
                         );
@@ -78,13 +78,13 @@ module.exports = (root, addInstance) => {
             return pass.lookup(
                 instance, ast,
                 (upper) => {
-                    return ast2.pathOut(
+                    return ast1.pathOut(
                         upper, ast.name,
                         upper.type.accessOut(ast.name)
                     );
                 },
                 () => {
-                    return ast2.reservedOut(
+                    return ast1.reservedOut(
                         ast.name,
                         instance.accessOut(ast.name)
                     );
@@ -101,7 +101,7 @@ module.exports = (root, addInstance) => {
                         type
                     );
 
-                    return ast2.pathIn(
+                    return ast1.pathIn(
                         upper, ast.name,
                         type
                     );
@@ -112,7 +112,7 @@ module.exports = (root, addInstance) => {
                         type
                     );
 
-                    return ast2.reservedIn(
+                    return ast1.reservedIn(
                         ast.name,
                         type
                     );
@@ -125,7 +125,7 @@ module.exports = (root, addInstance) => {
                 instance, ast.upper
             );
 
-            return ast2.pathOut(
+            return ast1.pathOut(
                 upper, ast.name,
                 upper.type.accessOut(ast.name)
             );
@@ -141,7 +141,7 @@ module.exports = (root, addInstance) => {
                 type
             );
 
-            return ast2.pathIn(
+            return ast1.pathIn(
                 upper, ast.name,
                 type
             );
@@ -168,7 +168,7 @@ module.exports = (root, addInstance) => {
                 throw Error();
             }
 
-            let child = typeinfo.instance(mainMode);
+            let child = type.instance(mainMode);
 
             // notice: __root and __self are not actual members
             child.addInit(
@@ -286,7 +286,7 @@ module.exports = (root, addInstance) => {
                     );
                 },
                 (callee, child, outArgs, inArgs) => {
-                    return ast2.callOut(
+                    return ast1.callOut(
                         callee, child,
                         outArgs, inArgs,
                         resultType
@@ -314,7 +314,7 @@ module.exports = (root, addInstance) => {
                     // nothing
                 },
                 (callee, child, outArgs, inArgs) => {
-                    return ast2.callIn(
+                    return ast1.callIn(
                         callee, child,
                         outArgs, inArgs,
                         type
@@ -328,7 +328,7 @@ module.exports = (root, addInstance) => {
                 instance, ast.extend
             );
 
-            extend.type = typeinfo.closure(extend.type, ast);
+            extend.type = type.closure(extend.type, ast);
 
             return extend;
         },
@@ -355,19 +355,6 @@ module.exports = (root, addInstance) => {
             return pass[ast.__type + 'In'](
                 instance, ast,
                 type
-            );
-        },
-
-        module: (ast) => {
-            return pass.visitOut(
-                pass.root, ast1.call(
-                    ast1.code(
-                        ast1.lookup('__self'),
-                        [], [], '',
-                        ast
-                    ),
-                    []
-                )
             );
         },
     };

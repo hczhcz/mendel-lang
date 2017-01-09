@@ -130,7 +130,7 @@ module.exports = {
     },
 
     // AST of a compile-time function
-    // **Warning: the interface of ast1.meta may change in the future**
+    // **Warning: the interface of ast0.meta may change in the future**
     meta: (outGen, inGen) => {
         return {
             __type: 'meta',

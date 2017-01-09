@@ -1,9 +1,9 @@
 'use strict';
 
-const pass2js = require('./pass.2.js');
+const pass2 = require('./pass');
 
 module.exports = (root, gen) => {
-    const pass = pass2js(gen);
+    const pass = pass2(gen);
 
     pass.gen(
         '\'use strict\';\n'

@@ -1,10 +1,10 @@
 'use strict';
 
-const ctypename = require('./c.typename');
-const pass2c = require('./pass.2.c');
+const typename = require('./type.name');
+const pass2 = require('./pass');
 
 module.exports = (root, genHead, genBody) => {
-    const pass = pass2c(genHead, genBody);
+    const pass = pass2(genHead, genBody);
 
     pass.genHead(
         '#include <stdbool.h>\n'
@@ -48,7 +48,7 @@ module.exports = (root, genHead, genBody) => {
                     pass.visitOut(
                         instance.impl,
                         (value) => {
-                            return '((' + ctypename.visit(instance)
+                            return '((' + typename.visit(instance)
                                 + ') __self)->data.__return = ' + value;
                         }
                     );
@@ -56,7 +56,7 @@ module.exports = (root, genHead, genBody) => {
                     // mainMode === 'const'
                     pass.visitIn(
                         instance.impl,
-                        '((' + ctypename.visit(instance)
+                        '((' + typename.visit(instance)
                         + ') __self)->data.__return'
                     );
                 }

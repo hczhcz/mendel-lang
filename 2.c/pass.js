@@ -1,6 +1,6 @@
 'use strict';
 
-const ctypename = require('./c.typename');
+const typename = require('./type.name');
 
 module.exports = (genHead, genBody) => {
     const pass = {
@@ -71,7 +71,7 @@ module.exports = (genHead, genBody) => {
 
         reservedOut: (ast, target) => {
             pass.write(target(
-                '((' + ctypename.visit(ast.type)
+                '((' + typename.visit(ast.type)
                 + ') ' + ast.name + ')'
             ));
         },
@@ -89,7 +89,7 @@ module.exports = (genHead, genBody) => {
             );
 
             pass.write(target(
-                '((' + ctypename.visit(ast.upper.type)
+                '((' + typename.visit(ast.upper.type)
                 + ') __upper)->data.' + ast.name
             ));
         },
@@ -103,7 +103,7 @@ module.exports = (genHead, genBody) => {
             );
 
             pass.write(
-                '((' + ctypename.visit(ast.upper.type)
+                '((' + typename.visit(ast.upper.type)
                 + ') __upper)->data.' + ast.name + ' = ' + value
             );
         },
@@ -124,9 +124,9 @@ module.exports = (genHead, genBody) => {
             );
             pass.write('__inner->__func = ' + calleeId);
             pass.write(
-                '((' + ctypename.visit(ast.instance)
+                '((' + typename.visit(ast.instance)
                 + ') __inner)->data.__parent'
-                + ' = ((' + ctypename.visit(ast.callee.type)
+                + ' = ((' + typename.visit(ast.callee.type)
                 + ') __upper)'
             );
 
@@ -139,7 +139,7 @@ module.exports = (genHead, genBody) => {
                 pass.visitOut(
                     ast.outArgs[i],
                     (value) => {
-                        return '((' + ctypename.visit(ast.instance)
+                        return '((' + typename.visit(ast.instance)
                             + ') __callee)->data.' + i + ' = ' + value;
                     }
                 );
@@ -163,7 +163,7 @@ module.exports = (genHead, genBody) => {
             for (const i in ast.inArgs) {
                 pass.visitIn(
                     ast.inArgs[i],
-                    '((' + ctypename.visit(ast.instance)
+                    '((' + typename.visit(ast.instance)
                     + ') __callee)->data.' + i
                 );
             }
@@ -182,7 +182,7 @@ module.exports = (genHead, genBody) => {
                 },
                 () => {
                     pass.write(target(
-                        '((' + ctypename.visit(ast.instance)
+                        '((' + typename.visit(ast.instance)
                         + ') __inner)->data.__return'
                     ));
                 }
@@ -194,7 +194,7 @@ module.exports = (genHead, genBody) => {
                 ast,
                 () => {
                     pass.write(
-                        '((' + ctypename.visit(ast.instance)
+                        '((' + typename.visit(ast.instance)
                         + ') __inner)->data.__return = ' + value
                     );
                 },
@@ -261,7 +261,7 @@ module.exports = (genHead, genBody) => {
             pass.writeHeadRaw(dataId + ' {');
             for (const i in instance.types) {
                 if (i !== '__root' && i !== '__self') {
-                    pass.writeHead(ctypename.visit(instance.types[i]) + ' ' + i);
+                    pass.writeHead(typename.visit(instance.types[i]) + ' ' + i);
                 }
             }
             pass.writeHeadRaw('};');

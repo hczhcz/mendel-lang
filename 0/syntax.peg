@@ -1,6 +1,6 @@
 {
 
-const ast1 = global.ast1;
+const ast0 = global.ast0;
 
 const keywords = {
     'and': true,
@@ -97,8 +97,8 @@ const apply = (expr, actions) => {
 Root = stmts:(_ If / _ While / _ Line)* _ {
     stmts = flatten(stmts, 'object');
 
-    return ast1.call(
-        ast1.lookup('__do'),
+    return ast0.call(
+        ast0.lookup('__do'),
         stmts
     );
 }
@@ -113,37 +113,37 @@ If = $('if' _k) _ '(' _ cond:Expr _ ')' _ body1:Block body2:(
     if (body2) {
         body2 = flatten(body2, 'object');
 
-        return ast1.call(
-            ast1.lookup('__if_else'),
+        return ast0.call(
+            ast0.lookup('__if_else'),
             [
-                ast1.code(
-                    ast1.lookup("__self"), [], [],
+                ast0.code(
+                    ast0.lookup("__self"), [], [],
                     '',
                     cond
                 ),
-                ast1.code(
-                    ast1.lookup("__self"), [], [],
+                ast0.code(
+                    ast0.lookup("__self"), [], [],
                     '',
                     body1
                 ),
-                ast1.code(
-                    ast1.lookup("__self"), [], [],
+                ast0.code(
+                    ast0.lookup("__self"), [], [],
                     '',
                     body2
                 ),
             ]
         );
     } else {
-        return ast1.call(
-            ast1.lookup('__if'),
+        return ast0.call(
+            ast0.lookup('__if'),
             [
-                ast1.code(
-                    ast1.lookup("__self"), [], [],
+                ast0.code(
+                    ast0.lookup("__self"), [], [],
                     '',
                     cond
                 ),
-                ast1.code(
-                    ast1.lookup("__self"), [], [],
+                ast0.code(
+                    ast0.lookup("__self"), [], [],
                     '',
                     body1
                 ),
@@ -153,16 +153,16 @@ If = $('if' _k) _ '(' _ cond:Expr _ ')' _ body1:Block body2:(
 }
 
 While = $('while' _k) _ '(' _ cond:Expr _ ')' _ body:Block {
-    return ast1.call(
-        ast1.lookup('__while'),
+    return ast0.call(
+        ast0.lookup('__while'),
         [
-            ast1.code(
-                ast1.lookup("__self"), [], [],
+            ast0.code(
+                ast0.lookup("__self"), [], [],
                 '',
                 cond
             ),
-            ast1.code(
-                ast1.lookup("__self"), [], [],
+            ast0.code(
+                ast0.lookup("__self"), [], [],
                 '',
                 body
             ),
@@ -181,8 +181,8 @@ Expr0 = expr:Expr1 more:(_ More0)* {
 }
 More0 = op:('=' / '+=' / '-=' / '|=' / '^=' / '&=') _ expr:Expr1 {
     return (oldExpr) => {
-        return ast1.call(
-            ast1.lookup(namesBi[op]),
+        return ast0.call(
+            ast0.lookup(namesBi[op]),
             [oldExpr, expr]
         );
     };
@@ -193,24 +193,24 @@ Expr1 = expr:Expr2 more:((_ More1or)* / (_ More1xor)* / (_ More1and)*) {
 }
 More1or = op:$('or' _k) _ expr:Expr2 {
     return (oldExpr) => {
-        return ast1.call(
-            ast1.lookup(namesBi[op]),
+        return ast0.call(
+            ast0.lookup(namesBi[op]),
             [oldExpr, expr]
         );
     };
 }
 More1xor = op:$('xor' _k) _ expr:Expr2 {
     return (oldExpr) => {
-        return ast1.call(
-            ast1.lookup(namesBi[op]),
+        return ast0.call(
+            ast0.lookup(namesBi[op]),
             [oldExpr, expr]
         );
     };
 }
 More1and = op:$('and' _k) _ expr:Expr2 {
     return (oldExpr) => {
-        return ast1.call(
-            ast1.lookup(namesBi[op]),
+        return ast0.call(
+            ast0.lookup(namesBi[op]),
             [oldExpr, expr]
         );
     };
@@ -221,8 +221,8 @@ Expr2 = more:(More2 _)* expr:Expr3 {
 }
 More2 = op:$('not' _k) {
     return (expr) => {
-        return ast1.call(
-            ast1.lookup(namesMono[op]),
+        return ast0.call(
+            ast0.lookup(namesMono[op]),
             [expr]
         );
     };
@@ -236,8 +236,8 @@ More3 = op:(
     $('is' _k) / $('in' _k)
 ) _ expr:Expr4 {
     return (oldExpr) => {
-        return ast1.call(
-            ast1.lookup(namesBi[op]),
+        return ast0.call(
+            ast0.lookup(namesBi[op]),
             [oldExpr, expr]
         );
     };
@@ -250,8 +250,8 @@ Expr4a = expr:Expr5a more:(_ More4a)* {
 }
 More4a = op:('+' / '-') _ expr:Expr5a {
     return (oldExpr) => {
-        return ast1.call(
-            ast1.lookup(namesBi[op]),
+        return ast0.call(
+            ast0.lookup(namesBi[op]),
             [oldExpr, expr]
         );
     };
@@ -262,24 +262,24 @@ Expr4b = expr:Expr5b more:((_ More4or)* / (_ More4xor)* / (_ More4and)*) {
 }
 More4or = op:'|' _ expr:Expr5b {
     return (oldExpr) => {
-        return ast1.call(
-            ast1.lookup(namesBi[op]),
+        return ast0.call(
+            ast0.lookup(namesBi[op]),
             [oldExpr, expr]
         );
     };
 }
 More4xor = op:'^' _ expr:Expr5b {
     return (oldExpr) => {
-        return ast1.call(
-            ast1.lookup(namesBi[op]),
+        return ast0.call(
+            ast0.lookup(namesBi[op]),
             [oldExpr, expr]
         );
     };
 }
 More4and = op:'&' _ expr:Expr5b {
     return (oldExpr) => {
-        return ast1.call(
-            ast1.lookup(namesBi[op]),
+        return ast0.call(
+            ast0.lookup(namesBi[op]),
             [oldExpr, expr]
         );
     };
@@ -290,8 +290,8 @@ Expr5a = expr:Expr6 more:(_ More5a)* {
 }
 More5a = op:('*' / '/' / '%') _ expr:Expr6 {
     return (oldExpr) => {
-        return ast1.call(
-            ast1.lookup(namesBi[op]),
+        return ast0.call(
+            ast0.lookup(namesBi[op]),
             [oldExpr, expr]
         );
     };
@@ -304,8 +304,8 @@ More5b = op:(
     $('shl' _k) / $('shr' _k) / $('rol' _k) / $('ror' _k)
 ) _ expr:Expr6 {
     return (oldExpr) => {
-        return ast1.call(
-            ast1.lookup(namesBi[op]),
+        return ast0.call(
+            ast0.lookup(namesBi[op]),
             [oldExpr, expr]
         );
     };
@@ -316,8 +316,8 @@ Expr6 = more:(More6 _)* expr:ExprP {
 }
 More6 = op:('+' / '-' / '~') {
     return (expr) => {
-        return ast1.call(
-            ast1.lookup(namesMono[op]),
+        return ast0.call(
+            ast0.lookup(namesMono[op]),
             [expr]
         );
     };
@@ -339,25 +339,25 @@ Literal = Number / String / Array / Map
 Number = str:$(
     '0' [Xx] [0-9]+
 ) {
-    return ast1.literal(parseInt(str, 16), 'unsigned');
+    return ast0.literal(parseInt(str, 16), 'unsigned');
 } / str:$(
     ([0-9]+ '.' [0-9]* / [0-9]* '.' [0-9]+)
     ([Ee] ('+' / '-')? [0-9]+)? /
     [0-9]+ [Ee] ('+' / '-')? [0-9]+
 ) {
-    return ast1.literal(parseFloat(str), 'float');
+    return ast0.literal(parseFloat(str), 'float');
 } / str:$(
     [0-9]+
 ) {
-    return ast1.literal(parseInt(str, 10), 'int');
+    return ast0.literal(parseInt(str, 10), 'int');
 }
 String = str:$(
     '\'' ([^'\\\r\n] / '\\' [^\r\n])* '\'' /
     '"' ([^"\\\r\n] / '\\' [^\r\n])* '"' // '
 ) {
-    return ast1.literal(eval(str), 'string'); // TODO: remove eval
+    return ast0.literal(eval(str), 'string'); // TODO: remove eval
 } / '`' raw:$([^`]*) '`' {
-    return ast1.literal(raw, 'string');
+    return ast0.literal(raw, 'string');
 }
 Array = '???' { // TODO
 }
@@ -365,20 +365,20 @@ Map = '???' { // TODO
 }
 
 Symbol = mode:Mode _ name:Name {
-    return ast1.symbol(name, mode);
+    return ast0.symbol(name, mode);
 }
 
 Lookup = name:Name {
-    return ast1.lookup(name);
+    return ast0.lookup(name);
 }
 
 Code = $('func' _k) _ body:FuncBody {
     return body;
 } / $('func' _k) _ name:Name _ body:FuncBody {
-    return ast1.call(
-        ast1.lookup('__assign'),
+    return ast0.call(
+        ast0.lookup('__assign'),
         [
-            ast1.symbol(name, 'const'),
+            ast0.symbol(name, 'const'),
             body,
         ]
     );
@@ -404,10 +404,10 @@ FuncBody = '(' params:(
         }
     }
 
-    return ast1.code(
+    return ast0.code(
         extend.length === 1
             ? extend[0]
-            : ast1.lookup('__self'),
+            : ast0.lookup('__self'),
         paramNames, paramModes, vaMode,
         impl
     );
@@ -437,7 +437,7 @@ VA = mode:Mode _ '...' {
 
 Path = '.' _ name:Name {
     return (upper) => {
-        return ast1.path(upper, name);
+        return ast0.path(upper, name);
     };
 }
 
@@ -447,7 +447,7 @@ Call = '(' args:(
     args = flatten(args, 'object');
 
     return (callee) => {
-        return ast1.call(callee, args);
+        return ast0.call(callee, args);
     };
 }
 
