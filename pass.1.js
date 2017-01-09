@@ -357,6 +357,19 @@ module.exports = (root, addInstance) => {
                 type
             );
         },
+
+        module: (ast) => {
+            return pass.visitOut(
+                pass.root, ast1.call(
+                    ast1.code(
+                        ast1.lookup('__self'),
+                        [], [], '',
+                        ast
+                    ),
+                    []
+                )
+            );
+        },
     };
 
     return pass;

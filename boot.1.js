@@ -28,29 +28,14 @@ module.exports = (root, addInstance, onExecute, onExport) => {
         onExecute: onExecute,
         onExport: onExport,
 
-        module: (ast) => {
-            // TODO: return value as export (module.exports = __return)
-
-            return pass.visitOut(
-                pass.root, ast1.call(
-                    ast1.code(
-                        ast1.lookup('__self'),
-                        [], [], '',
-                        ast
-                    ),
-                    []
-                )
-            );
-        },
-
         execute: (ast) => {
-            const impl = boot.module(ast);
+            const impl = pass.module(ast);
 
             boot.onExecute(impl);
         },
 
         export: (name, mode, ast) => {
-            const impl = boot.module(ast);
+            const impl = pass.module(ast);
 
             pass.root.addInit(
                 name, mode,
