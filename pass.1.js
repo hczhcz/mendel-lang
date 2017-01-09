@@ -3,11 +3,11 @@
 const typeinfo = require('./type.info');
 const ast2 = require('./ast.2');
 
-module.exports = (root, onNewInstance) => {
+module.exports = (root, addInstance) => {
     const pass = {
         root: root,
         id: 1,
-        onNewInstance: onNewInstance,
+        addInstance: addInstance,
 
         literalOut: (instance, ast) => {
             return ast2.literalOut(
@@ -254,7 +254,7 @@ module.exports = (root, onNewInstance) => {
                 child.done(pass.id, impl);
                 pass.id += 1;
 
-                pass.onNewInstance(child);
+                pass.addInstance(child);
             }
 
             return makeCall(callee, child, outArgs, inArgs);
