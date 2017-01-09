@@ -1,6 +1,6 @@
 'use strict';
 
-const type2c = require('./type.2.c');
+const ctypename = require('./c.typename');
 const pass2c = require('./pass.2.c');
 
 module.exports = (root, genHead, genBody) => {
@@ -48,7 +48,7 @@ module.exports = (root, genHead, genBody) => {
                     pass.visitOut(
                         instance.impl,
                         (value) => {
-                            return '((' + type2c.visit(instance)
+                            return '((' + ctypename.visit(instance)
                                 + ') __self)->data.__return = ' + value;
                         }
                     );
@@ -56,7 +56,7 @@ module.exports = (root, genHead, genBody) => {
                     // mainMode === 'const'
                     pass.visitIn(
                         instance.impl,
-                        '((' + type2c.visit(instance)
+                        '((' + ctypename.visit(instance)
                         + ') __self)->data.__return'
                     );
                 }
