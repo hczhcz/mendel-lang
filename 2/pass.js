@@ -53,6 +53,7 @@ module.exports = (addFunction) => {
 
         pathIn: (func, ast, value) => {
             pass.visitOut(
+                func,
                 ast.upper,
                 (value) => {
                     func.add(ast2.move(
@@ -74,6 +75,7 @@ module.exports = (addFunction) => {
 
         call: (func, ast, before, after) => {
             pass.visitOut(
+                func,
                 ast.callee,
                 (value) => {
                     func.add(ast2.move(
@@ -89,7 +91,7 @@ module.exports = (addFunction) => {
             ));
             func.add(ast2.bind(
                 ast2.reserved('__inner'),
-                'func_' + ast.instance.id
+                'func_' + ast.instance.id + '_0'
             ));
             func.add(ast2.set(
                 ast2.cast(
@@ -119,6 +121,7 @@ module.exports = (addFunction) => {
 
             for (const i in ast.outArgs) {
                 pass.visitOut(
+                    func,
                     ast.outArgs[i],
                     (value) => {
                         func.add(ast2.set(
@@ -175,6 +178,7 @@ module.exports = (addFunction) => {
 
             for (const i in ast.inArgs) {
                 pass.visitIn(
+                    func,
                     ast.inArgs[i],
                     ast2.get(
                         ast2.cast(
@@ -203,6 +207,7 @@ module.exports = (addFunction) => {
 
         callOut: (func, ast, target) => {
             pass.call(
+                func,
                 ast,
                 () => {
                     // nothing
@@ -221,6 +226,7 @@ module.exports = (addFunction) => {
 
         callIn: (func, ast, value) => {
             pass.call(
+                func,
                 ast,
                 () => {
                     func.add(ast2.set(

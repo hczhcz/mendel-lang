@@ -4,8 +4,8 @@ const entity = require('./entity');
 const ast2 = require('./ast');
 const pass2 = require('./pass');
 
-module.exports = (gen) => {
-    const pass = pass2(gen);
+module.exports = (addFunction) => {
+    const pass = pass2(addFunction);
 
     const boot = {
         main: entity.func(0), // TODO: id?
