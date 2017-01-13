@@ -3,10 +3,8 @@
 const entity = require('./entity');
 const ast2 = require('./ast');
 
-module.exports = (addFunction) => {
+module.exports = () => {
     const pass = {
-        addFunction: addFunction,
-
         literalOut: (func, ast, target) => {
             // TODO: check all usages of ast.type, ast.???.type, etc.
             // what if ast.type.__type !== 'basic'?
@@ -272,28 +270,6 @@ module.exports = (addFunction) => {
                 func, ast,
                 value
             );
-        },
-
-        build: (instance, builder) => {
-            const func = entity.func(instance.id);
-
-            builder(func);
-
-            // return
-            func.add(ast2.bind(
-                ast2.reserved('__self'),
-                'func_null' // TODO
-            ));
-            if (instance.id !== 0) {
-                func.add(ast2.invoke(
-                    ast2.reserved2(
-                        ast2.reserved('__self'),
-                        '__caller'
-                    )
-                ));
-            }
-
-            pass.addFunction(func);
         },
     };
 
