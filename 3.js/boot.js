@@ -2,10 +2,10 @@
 
 const pass2 = require('./pass');
 
-module.exports = (root, gen) => {
-    const pass = pass2(gen);
+module.exports = (root, write) => {
+    const pass = pass2(write);
 
-    pass.gen(
+    pass.write(
         '\'use strict\';\n'
             + '\n'
             + 'let __upper = null;\n'
@@ -20,47 +20,8 @@ module.exports = (root, gen) => {
         root: root,
         operations: [],
 
-        newInstance: (instance) => {
-            pass.build(instance, () => {
-                if (instance.mainMode === 'out') {
-                    pass.visitOut(
-                        instance.impl,
-                        (value) => {
-                            return '__self.set(\'__return\', ' + value + ')';
-                        }
-                    );
-                } else {
-                    // mainMode === 'const'
-                    pass.visitIn(
-                        instance.impl,
-                        '__self.get(\'__return\')'
-                    );
-                }
-            });
-        },
-
-        execute: (impl) => {
-            boot.operations.push(() => {
-                pass.visitOut(
-                    impl,
-                    (value) => {
-                        return 'void ' + value; // notice: discard
-                    }
-                );
-            });
-        },
-
-        export: (name, impl) => {
-            boot.operations.push(() => {
-                pass.visitOut(
-                    impl,
-                    (value) => {
-                        return '__root.set('
-                            + '\'' + name + '\', ' + value
-                            + ')';
-                    }
-                );
-            });
+        newFunction: (func) => {
+            //
         },
 
         collect: () => {
@@ -72,7 +33,7 @@ module.exports = (root, gen) => {
                 boot.operations = [];
             });
 
-            pass.gen(
+            pass.write(
                 'func_0();\n'
                     + '\n'
             );

@@ -3,10 +3,10 @@
 const typename = require('./type.name');
 const pass2 = require('./pass');
 
-module.exports = (root, genHead, genBody) => {
-    const pass = pass2(genHead, genBody);
+module.exports = (root, writeHead, writeBody) => {
+    const pass = pass2(writeHead, writeBody);
 
-    pass.genHead(
+    pass.writeHead(
         '#include <stdbool.h>\n'
             + '#include <stdint.h>\n'
             + '#include <stdio.h>\n'
@@ -28,7 +28,7 @@ module.exports = (root, genHead, genBody) => {
             + '\n'
     );
 
-    pass.genBody(
+    pass.writeBody(
         'struct head *__upper;\n'
             + 'struct head *__inner;\n'
             + 'struct head *__callee;\n'
@@ -42,47 +42,8 @@ module.exports = (root, genHead, genBody) => {
         root: root,
         operations: [],
 
-        newInstance: (instance) => {
-            pass.build(instance, () => {
-                if (instance.mainMode === 'out') {
-                    pass.visitOut(
-                        instance.impl,
-                        (value) => {
-                            return '((' + typename.visit(instance)
-                                + ') __self)->data.__return = ' + value;
-                        }
-                    );
-                } else {
-                    // mainMode === 'const'
-                    pass.visitIn(
-                        instance.impl,
-                        '((' + typename.visit(instance)
-                        + ') __self)->data.__return'
-                    );
-                }
-            });
-        },
-
-        execute: (impl) => {
-            boot.operations.push(() => {
-                pass.visitOut(
-                    impl,
-                    (value) => {
-                        return '(void) ' + value; // notice: discard
-                    }
-                );
-            });
-        },
-
-        export: (name, impl) => {
-            boot.operations.push(() => {
-                pass.visitOut(
-                    impl,
-                    (value) => {
-                        return '__root_frame.data.' + name + ' = ' + value;
-                    }
-                );
-            });
+        newFunction: (func) => {
+            //
         },
 
         collect: () => {
@@ -94,7 +55,7 @@ module.exports = (root, genHead, genBody) => {
                 boot.operations = [];
             });
 
-            pass.genBody(
+            pass.writeBody(
                 'int main(int argc, char *argv[]) {\n'
                     + '    GC_init();\n'
                     + '    func_0();\n'

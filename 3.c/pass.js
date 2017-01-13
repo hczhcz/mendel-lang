@@ -2,29 +2,10 @@
 
 const typename = require('./type.name');
 
-module.exports = (genHead, genBody) => {
+module.exports = (writeHead, writeBody) => {
     const pass = {
-        id: [], // stack
-        bufferHead: [], // stack
-        bufferBody: [], // stack
-        genHead: genHead,
-        genBody: genBody,
-
-        writeHeadRaw: (line) => {
-            pass.bufferHead[pass.bufferHead.length - 1].push(line + '\n');
-        },
-
-        writeHead: (line) => {
-            pass.writeHeadRaw('    ' + line + ';');
-        },
-
-        writeRaw: (line) => {
-            pass.bufferBody[pass.bufferBody.length - 1].push(line + '\n');
-        },
-
-        write: (line) => {
-            pass.writeRaw('    ' + line + ';');
-        },
+        writeHead: writeHead,
+        writeBody: writeBody,
 
         literalOut: (ast, target) => {
             switch (ast.type.type) {
@@ -290,9 +271,6 @@ module.exports = (genHead, genBody) => {
             pass.writeRaw('');
 
             pass.id.pop();
-
-            pass.genHead(pass.bufferHead.pop().join(''));
-            pass.genBody(pass.bufferBody.pop().join(''));
         },
     };
 

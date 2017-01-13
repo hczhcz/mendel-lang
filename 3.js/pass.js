@@ -1,19 +1,8 @@
 'use strict';
 
-module.exports = (gen) => {
+module.exports = (write) => {
     const pass = {
-        code: [],
-        id: [], // stack
-        buffer: [], // stack
-        gen: gen,
-
-        writeRaw: (line) => {
-            pass.buffer[pass.buffer.length - 1].push(line + '\n');
-        },
-
-        write: (line) => {
-            pass.writeRaw('    ' + line + ';');
-        },
+        write: write,
 
         literalOut: (ast, target) => {
             switch (ast.type.type) {
@@ -234,8 +223,6 @@ module.exports = (gen) => {
             pass.writeRaw('');
 
             pass.id.pop();
-
-            pass.gen(pass.buffer.pop().join(''));
         },
     };
 
