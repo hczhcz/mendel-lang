@@ -87,7 +87,7 @@ module.exports = (addFunction) => {
                 ast2.reserved('__inner'),
                 ast.instance.id
             ));
-            func.add(ast2.func(
+            func.add(ast2.bind(
                 ast2.reserved('__inner'),
                 'func_' + ast.instance.id
             ));
@@ -148,7 +148,7 @@ module.exports = (addFunction) => {
             // call
             func.continuation(
                 (returnId) => {
-                    func.add(ast2.func(
+                    func.add(ast2.bind(
                         ast2.reserved2(
                             ast2.reserved('__callee'),
                             '__caller'
@@ -274,7 +274,7 @@ module.exports = (addFunction) => {
             builder(func);
 
             // return
-            func.add(ast2.func(
+            func.add(ast2.bind(
                 ast2.reserved('__self'),
                 'func_null' // TODO
             ));

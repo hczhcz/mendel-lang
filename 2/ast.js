@@ -3,7 +3,7 @@
 module.exports = {
     value: (value, type) => {
         return {
-            __type: '__value',
+            __type: 'value',
             value: value,
             type: type,
         };
@@ -11,14 +11,14 @@ module.exports = {
 
     reserved: (name) => {
         return {
-            __type: '__reserved',
+            __type: 'reserved',
             name: name,
         };
     },
 
     reserved2: (upper, name) => {
         return {
-            __type: '__reserved2',
+            __type: 'reserved2',
             upper: upper,
             name: name,
         };
@@ -26,7 +26,7 @@ module.exports = {
 
     cast: (source, id) => {
         return {
-            __type: '__cast',
+            __type: 'cast',
             source: source,
             id: id,
         };
@@ -34,14 +34,14 @@ module.exports = {
 
     head: (source) => {
         return {
-            __type: '__head',
+            __type: 'head',
             source: source,
         };
     },
 
     move: (target, value) => {
         return {
-            __type: '__move',
+            __type: 'move',
             target: target,
             value: value,
         };
@@ -49,7 +49,7 @@ module.exports = {
 
     alloc: (upper, id) => {
         return {
-            __type: '__alloc',
+            __type: 'alloc',
             upper: upper,
             id: id,
         };
@@ -57,7 +57,7 @@ module.exports = {
 
     get: (upper, name) => {
         return {
-            __type: '__get',
+            __type: 'get',
             upper: upper,
             name: name,
         };
@@ -65,24 +65,24 @@ module.exports = {
 
     set: (upper, name, value) => {
         return {
-            __type: '__set',
+            __type: 'set',
             upper: upper,
             name: name,
             value: value,
         };
     },
 
-    func: (upper, func) => {
+    bind: (upper, func) => {
         return {
-            __type: '__func',
+            __type: 'func',
             upper: upper,
-            func: func,
+            bind: func,
         };
     },
 
     invoke: (upper) => {
         return {
-            __type: '__invoke',
+            __type: 'invoke',
             upper: upper,
         };
     },
