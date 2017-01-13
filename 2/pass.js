@@ -269,7 +269,7 @@ module.exports = (addFunction) => {
         },
 
         build: (instance, builder) => {
-            const func = entity.func();
+            const func = entity.func(instance.id);
 
             builder(func);
 

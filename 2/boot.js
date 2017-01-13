@@ -8,7 +8,7 @@ module.exports = (gen) => {
     const pass = pass2(gen);
 
     const boot = {
-        main: entity.func('func_main'),
+        main: entity.func(0), // TODO: id?
 
         newInstance: (instance) => {
             pass.build(instance, (func) => {

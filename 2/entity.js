@@ -1,10 +1,10 @@
 'use strict';
 
 module.exports = {
-    func: (name) => {
+    func: (id) => {
         const func = {
             __type: 'func',
-            name: name,
+            id: id,
             insts: [[]],
 
             add: (inst) => {
@@ -12,9 +12,7 @@ module.exports = {
             },
 
             continuation: (generator) => {
-                const returnId = func.insts.length;
-
-                generator(returnId);
+                generator(func.insts.length);
 
                 func.insts.push([]);
             },
