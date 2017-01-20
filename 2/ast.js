@@ -76,7 +76,7 @@ module.exports = {
         return {
             __type: 'func',
             upper: upper,
-            bind: func,
+            func: func,
         };
     },
 
