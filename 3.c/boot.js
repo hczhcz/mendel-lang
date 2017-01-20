@@ -3,8 +3,8 @@
 const typename = require('./type.name');
 const pass2 = require('./pass');
 
-module.exports = (root, writeHead, writeBody) => {
-    const pass = pass2(writeHead, writeBody);
+module.exports = (root, writeHead, write) => {
+    const pass = pass2(writeHead, write);
 
     pass.writeHead(
         '#include <stdbool.h>\n'
@@ -28,7 +28,7 @@ module.exports = (root, writeHead, writeBody) => {
             + '\n'
     );
 
-    pass.writeBody(
+    pass.write(
         'struct head *__upper;\n'
             + 'struct head *__inner;\n'
             + 'struct head *__callee;\n'
@@ -55,7 +55,7 @@ module.exports = (root, writeHead, writeBody) => {
                 boot.operations = [];
             });
 
-            pass.writeBody(
+            pass.write(
                 'int main(int argc, char *argv[]) {\n'
                     + '    GC_init();\n'
                     + '    func_0();\n'

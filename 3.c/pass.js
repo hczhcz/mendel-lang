@@ -2,15 +2,15 @@
 
 const typename = require('./type.name');
 
-module.exports = (writeHead, writeBody) => {
+module.exports = (writeHead, write) => {
     const pass = {
         writeHead: writeHead,
-        writeBody: writeBody,
+        write: write,
 
-        literalOut: (ast, target) => {
-            switch (ast.type.type) {
+        value: (ast) => {
+            switch (ast.type) {
                 case 'bool': {
-                    //
+                    pass.write(ast.value ? 'true' : 'false');
 
                     break;
                 }
@@ -19,7 +19,7 @@ module.exports = (writeHead, writeBody) => {
                 case 'i16':
                 case 'i32':
                 case 'i64': {
-                    pass.write(target(ast.value.toString() + 'll'));
+                    pass.write(ast.value.toString() + 'll');
 
                     break;
                 }
@@ -28,19 +28,19 @@ module.exports = (writeHead, writeBody) => {
                 case 'u16':
                 case 'u32':
                 case 'u64': {
-                    pass.write(target(ast.value.toString() + 'ull'));
+                    pass.write(ast.value.toString() + 'ull');
 
                     break;
                 }
                 case 'float':
                 case 'f32':
                 case 'f64': {
-                    pass.write(target(ast.value.toString()));
+                    pass.write(ast.value.toString());
 
                     break;
                 }
                 case 'string': {
-                    pass.write(target(JSON.stringify(ast.value)));
+                    pass.write(JSON.stringify(ast.value));
 
                     break;
                 }
@@ -50,227 +50,63 @@ module.exports = (writeHead, writeBody) => {
             }
         },
 
-        reservedOut: (ast, target) => {
-            pass.write(target(
-                '((' + typename.visit(ast.type)
-                + ') ' + ast.name + ')'
-            ));
+        reserved: (ast) => {
+            pass.write(ast.name);
         },
 
-        reservedIn: (ast, value) => {
-            pass.write(ast.name + ' = ' + value + '->head');
+        reserved2: (ast) => {
+            pass.write(ast.upper + '->' + ast.name);
         },
 
-        pathOut: (ast, target) => {
-            pass.visitOut(
-                ast.upper,
-                (value) => {
-                    return '__upper = &' + value + '->head';
-                }
-            );
-
-            pass.write(target(
-                '((' + typename.visit(ast.upper.type)
-                + ') __upper)->data.' + ast.name
-            ));
+        cast: (ast) => {
+            pass.write('((struct frame_' + ast.id + ' *) ');
+            pass.visit(ast.source);
+            pass.write(')');
         },
 
-        pathIn: (ast, value) => {
-            pass.visitOut(
-                ast.upper,
-                (value) => {
-                    return '__upper = &' + value + '->head';
-                }
-            );
+        head: (ast) => {
+            pass.visit(ast.source);
+            pass.write('->head');
+        },
 
+        move: (ast) => {
+            pass.visit(ast.target);
+            pass.write(' = ');
+            pass.visit(ast.value);
+        },
+
+        alloc: (ast) => {
+            pass.visit(ast.upper);
             pass.write(
-                '((' + typename.visit(ast.upper.type)
-                + ') __upper)->data.' + ast.name + ' = ' + value
+                + ' = (struct head *) GC_malloc(sizeof(struct frame_'
+                + ast.id
+                + '))'
             );
         },
 
-        call: (ast, before, after) => {
-            pass.visitOut(
-                ast.callee,
-                (value) => {
-                    return '__upper = &' + value + '->head';
-                }
-            );
-
-            const calleeId = 'func_' + ast.instance.id;
-            const frameId = 'struct frame_' + ast.instance.id;
-
-            pass.write(
-                '__inner = (struct head *) GC_malloc(sizeof(' + frameId + '))'
-            );
-            pass.write('__inner->__func = ' + calleeId);
-            pass.write(
-                '((' + typename.visit(ast.instance)
-                + ') __inner)->data.__parent'
-                + ' = ((' + typename.visit(ast.callee.type)
-                + ') __upper)'
-            );
-
-            before();
-
-            pass.write('__inner->__outer = __callee');
-            pass.write('__callee = __inner');
-
-            for (const i in ast.outArgs) {
-                pass.visitOut(
-                    ast.outArgs[i],
-                    (value) => {
-                        return '((' + typename.visit(ast.instance)
-                            + ') __callee)->data.' + i + ' = ' + value;
-                    }
-                );
-            }
-
-            pass.write('__callee->__caller = __self');
-            pass.write('__self = __callee');
-
-            // call
-            pass.continuation(
-                (returnId) => {
-                    pass.write('__callee->__caller->__func = ' + returnId);
-                    pass.write('__callee->__func()');
-                },
-                (returnId) => {
-                    pass.write('__callee = __self');
-                    pass.write('__self = __callee->__caller');
-                }
-            );
-
-            for (const i in ast.inArgs) {
-                pass.visitIn(
-                    ast.inArgs[i],
-                    '((' + typename.visit(ast.instance)
-                    + ') __callee)->data.' + i
-                );
-            }
-
-            pass.write('__inner = __callee');
-            pass.write('__callee = __inner->__outer');
-
-            after();
+        get: (ast) => {
+            pass.visit(ast.upper);
+            pass.write('->data.' + ast.name);
         },
 
-        callOut: (ast, target) => {
-            pass.call(
-                ast,
-                () => {
-                    // nothing
-                },
-                () => {
-                    pass.write(target(
-                        '((' + typename.visit(ast.instance)
-                        + ') __inner)->data.__return'
-                    ));
-                }
-            );
+        set: (ast) => {
+            pass.visit(ast.upper);
+            pass.write('->data.' + ast.name + ' = ');
+            pass.visit(ast.value);
         },
 
-        callIn: (ast, value) => {
-            pass.call(
-                ast,
-                () => {
-                    pass.write(
-                        '((' + typename.visit(ast.instance)
-                        + ') __inner)->data.__return = ' + value
-                    );
-                },
-                () => {
-                    // nothing
-                }
-            );
+        bind: (ast) => {
+            pass.visit(ast.upper);
+            pass.write('->__func = ' + ast.func);
         },
 
-        nativeOut: (ast, target) => {
-            if (ast.impls.c) {
-                ast.impls.c(pass, target);
-            } else {
-                throw Error();
-            }
+        invoke: (ast) => {
+            pass.visit(ast.upper);
+            pass.write('->__func()');
         },
 
-        nativeIn: (ast, value) => {
-            if (ast.impls.c) {
-                ast.impls.c(pass, value);
-            } else {
-                throw Error();
-            }
-        },
-
-        visitOut: (ast, target) => {
-            pass[ast.__type](
-                ast,
-                target
-            );
-        },
-
-        visitIn: (ast, value) => {
-            pass[ast.__type](
-                ast,
-                value
-            );
-        },
-
-        continuation: (before, after) => {
-            const returnId = pass.id[pass.id.length - 1]
-                + '_' + pass.bufferBody[pass.bufferBody.length - 1].length;
-
-            before(returnId);
-
-            pass.writeRaw('};');
-            pass.writeRaw('');
-            pass.writeHeadRaw('static void ' + returnId + '();');
-            pass.writeRaw('static void ' + returnId + '() {');
-
-            after(returnId);
-        },
-
-        build: (instance, builder) => {
-            const funcId = 'func_' + instance.id;
-            const frameId = 'struct frame_' + instance.id;
-            const dataId = 'struct data_' + instance.id;
-
-            pass.id.push(funcId);
-
-            pass.bufferHead.push([]);
-            pass.bufferBody.push([]);
-
-            pass.writeHeadRaw(dataId + ' {');
-            for (const i in instance.types) {
-                if (i !== '__root' && i !== '__self') {
-                    pass.writeHead(typename.visit(instance.types[i]) + ' ' + i);
-                }
-            }
-            pass.writeHeadRaw('};');
-            pass.writeHeadRaw('');
-
-            pass.writeHeadRaw(frameId + ' {');
-            pass.writeHead('struct head head');
-            pass.writeHead(dataId + ' data');
-            pass.writeHeadRaw('};');
-            pass.writeHeadRaw('');
-
-            pass.writeHeadRaw('static void ' + funcId + '();');
-            pass.writeRaw('static void ' + funcId + '() {');
-
-            builder();
-
-            pass.writeHeadRaw('');
-
-            // return
-            pass.write('__self->__func = NULL');
-            if (instance.id !== 0) {
-                pass.write('__self->__caller->__func()');
-            }
-
-            pass.writeRaw('}');
-            pass.writeRaw('');
-
-            pass.id.pop();
+        visit: (ast) => {
+            pass[ast.__type](ast);
         },
     };
 
