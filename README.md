@@ -2,19 +2,19 @@
 
 # Mendel Programming Language
 
-Mendel is a statically typed, multi-paradigm, and compiled programming language with modern and clean style. The Mendel compiler was developed in JavaScript (and will migrate to Mendel iteself in the future). Mendel can be compiled to low level subsets of JavaScript and C.
+Mendel is a statically typed, multi-paradigm, and compiled programming language with modern and clean style. The Mendel compiler was developed in JavaScript (and will migrate to Mendel itself in the future). Mendel can be compiled to low level subsets of JavaScript and C.
 
 Mendel is a project created in [HackOHI/O](http://hack.osu.edu/). For more information about the project and out team, visit our [presentation](http://go.osu.edu/intro2mendel).
 
 Key features of Mendel Programming Language:
 
-* Templete-based generic
+* Template-based generic
 * Prototype-based OOP
 * Multi-paradigm: Proc + Func + OO
 * Static & strong typing
 * Full type inference
 * Clean, modern and flexible design
-* Compliered to JavaScript & C
+* Compiled to JavaScript & C
 * Simple enough to be built in 24 hours
 
 ## Getting Started
