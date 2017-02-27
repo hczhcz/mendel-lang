@@ -242,20 +242,12 @@ module.exports = () => {
             );
         },
 
-        nativeOut: (func, ast, target) => {
-            if (ast.impls.js) {
-                ast.impls.js(pass, func, target);
-            } else {
-                throw Error();
-            }
+        metaOut: (func, ast, target) => {
+            ast.gen(pass, func, target);
         },
 
-        nativeIn: (func, ast, value) => {
-            if (ast.impls.js) {
-                ast.impls.js(pass, func, value);
-            } else {
-                throw Error();
-            }
+        metaIn: (func, ast, value) => {
+            ast.gen(pass, func, value);
         },
 
         visitOut: (func, ast, target) => {

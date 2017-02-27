@@ -65,18 +65,18 @@ module.exports = {
         };
     },
 
-    nativeOut: (impls, type) => {
+    metaOut: (gen, type) => {
         return {
-            __type: 'nativeOut',
-            impls: impls,
+            __type: 'metaOut',
+            gen: gen,
             type: type,
         };
     },
 
-    nativeIn: (impls, type) => {
+    metaIn: (gen, type) => {
         return {
-            __type: 'nativeIn',
-            impls: impls,
+            __type: 'metaIn',
+            gen: gen,
             type: type,
         };
     },
