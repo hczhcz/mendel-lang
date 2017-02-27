@@ -74,7 +74,7 @@ module.exports = {
 
     bind: (upper, func) => {
         return {
-            __type: 'func',
+            __type: 'bind',
             upper: upper,
             func: func,
         };
