@@ -16,11 +16,11 @@ module.exports = {
         };
     },
 
-    reserved2: (upper, name) => {
+    reserved2: (name, name2) => {
         return {
             __type: 'reserved2',
-            upper: upper,
             name: name,
+            name2: name2,
         };
     },
 

@@ -107,7 +107,7 @@ module.exports = () => {
 
             func.add(ast2.move(
                 ast2.reserved2(
-                    ast2.reserved('__inner'),
+                    '__inner',
                     '__outer'
                 ),
                 ast2.reserved('__callee')
@@ -136,7 +136,7 @@ module.exports = () => {
 
             func.add(ast2.move(
                 ast2.reserved2(
-                    ast2.reserved('__callee'),
+                    '__callee',
                     '__caller'
                 ),
                 ast2.reserved('__self')
@@ -151,7 +151,7 @@ module.exports = () => {
                 (returnId) => {
                     func.add(ast2.bind(
                         ast2.reserved2(
-                            ast2.reserved('__callee'),
+                            '__callee',
                             '__caller'
                         ),
                         'func_' + ast.instance.id + '_' + returnId
@@ -169,7 +169,7 @@ module.exports = () => {
             func.add(ast2.move(
                 ast2.reserved('__self'),
                 ast2.reserved2(
-                    ast2.reserved('__callee'),
+                    '__callee',
                     '__caller'
                 )
             ));
@@ -195,7 +195,7 @@ module.exports = () => {
             func.add(ast2.move(
                 ast2.reserved('__callee'),
                 ast2.reserved2(
-                    ast2.reserved('__inner'),
+                    '__inner',
                     '__outer'
                 )
             ));

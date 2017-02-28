@@ -55,7 +55,7 @@ module.exports = (writeHead, write) => {
         },
 
         reserved2: (ast) => {
-            pass.write(ast.upper + '->' + ast.name);
+            pass.write(ast.name + '->' + ast.name2);
         },
 
         cast: (ast) => {

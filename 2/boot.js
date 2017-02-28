@@ -55,7 +55,7 @@ module.exports = (addFunction) => {
             if (instance.id !== 0) {
                 func.add(ast2.invoke(
                     ast2.reserved2(
-                        ast2.reserved('__self'),
+                        '__self',
                         '__caller'
                     )
                 ));
