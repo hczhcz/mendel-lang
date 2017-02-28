@@ -32,10 +32,11 @@ module.exports = {
         };
     },
 
-    head: (source) => {
+    head: (source, value) => {
         return {
             __type: 'head',
             source: source,
+            value: value,
         };
     },
 

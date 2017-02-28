@@ -66,7 +66,8 @@ module.exports = (writeHead, write) => {
 
         head: (ast) => {
             pass.visit(ast.source);
-            pass.write('->head');
+            pass.write('->head = ');
+            pass.visit(ast.value);
         },
 
         move: (ast) => {
@@ -78,7 +79,7 @@ module.exports = (writeHead, write) => {
         alloc: (ast) => {
             pass.visit(ast.upper);
             pass.write(
-                + ' = (struct head *) GC_malloc(sizeof(struct frame_'
+                ' = (struct head *) GC_malloc(sizeof(struct frame_'
                 + ast.id
                 + '))'
             );

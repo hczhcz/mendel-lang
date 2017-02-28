@@ -22,9 +22,9 @@ module.exports = () => {
         },
 
         reservedIn: (func, ast, value) => {
-            func.add(ast2.move(
+            func.add(ast2.head(
                 ast2.reserved(ast.name),
-                ast2.head(value)
+                value
             ));
         },
 
@@ -33,9 +33,9 @@ module.exports = () => {
                 func,
                 ast.upper,
                 (value) => {
-                    func.add(ast2.move(
+                    func.add(ast2.head(
                         ast2.reserved('__upper'),
-                        ast2.head(value)
+                        value
                     ));
                 }
             );
@@ -54,9 +54,9 @@ module.exports = () => {
                 func,
                 ast.upper,
                 (value) => {
-                    func.add(ast2.move(
+                    func.add(ast2.head(
                         ast2.reserved('__upper'),
-                        ast2.head(value)
+                        value
                     ));
                 }
             );
@@ -76,9 +76,9 @@ module.exports = () => {
                 func,
                 ast.callee,
                 (value) => {
-                    func.add(ast2.move(
+                    func.add(ast2.head(
                         ast2.reserved('__upper'),
-                        ast2.head(value)
+                        value
                     ));
                 }
             );

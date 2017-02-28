@@ -51,6 +51,8 @@ module.exports = (write) => {
 
         head: (ast) => {
             pass.visit(ast.source);
+            pass.write(' = ');
+            pass.visit(ast.value);
         },
 
         move: (ast) => {
