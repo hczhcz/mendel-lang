@@ -1,6 +1,5 @@
 'use strict';
 
-const entity = require('./entity');
 const ast2 = require('./ast');
 
 module.exports = () => {

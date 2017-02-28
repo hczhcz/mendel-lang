@@ -10,7 +10,11 @@ module.exports = (writeHead, write) => {
         value: (ast) => {
             switch (ast.type) {
                 case 'bool': {
-                    pass.write(ast.value ? 'true' : 'false');
+                    if (ast.value) {
+                        pass.write('true');
+                    } else {
+                        pass.write('false');
+                    }
 
                     break;
                 }
