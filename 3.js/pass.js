@@ -88,6 +88,10 @@ module.exports = (write) => {
             pass.write('.__func()');
         },
 
+        native: (ast) => {
+            pass.write(ast.impls.js);
+        },
+
         visit: (ast) => {
             pass[ast.__type](ast);
         },

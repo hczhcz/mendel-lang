@@ -87,4 +87,11 @@ module.exports = {
             upper: upper,
         };
     },
+
+    native: (impls) => {
+        return {
+            __type: 'native',
+            impls: impls,
+        };
+    },
 };
