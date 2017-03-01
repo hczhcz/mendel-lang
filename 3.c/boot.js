@@ -3,7 +3,7 @@
 const typename = require('./type.name');
 const pass2 = require('./pass');
 
-module.exports = (root, writeHead, write) => {
+module.exports = (main, writeHead, write) => {
     const pass = pass2(writeHead, write);
 
     pass.writeHead(
@@ -26,6 +26,10 @@ module.exports = (root, writeHead, write) => {
             + '    struct head *__outer;\n'
             + '};\n'
             + '\n'
+            + 'void func_null() {\n'
+            + '    exit(1);\n' // TODO
+            + '};\n'
+            + '\n'
     );
 
     pass.write(
@@ -39,7 +43,7 @@ module.exports = (root, writeHead, write) => {
     );
 
     const boot = {
-        root: root,
+        main: main,
         operations: [],
 
         newFunction: (func) => {
@@ -58,7 +62,7 @@ module.exports = (root, writeHead, write) => {
             pass.write(
                 'int main(int argc, char *argv[]) {\n'
                     + '    GC_init();\n'
-                    + '    func_0();\n'
+                    + '    func_0_0();\n'
                     + '\n'
                     + '    return 0;\n'
                     + '}\n'

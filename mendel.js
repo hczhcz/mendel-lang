@@ -43,9 +43,9 @@ const b3js = boot3js(
 
 // const b3c = boot3c();
 
-const b2 = boot2((func) => {
-    console.log(func);
-});
+const b2 = boot2(
+    b3js.newFunction
+);
 
 const b1 = boot1(
     b2.newInstance, b2.execute, b2.export

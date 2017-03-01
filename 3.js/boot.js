@@ -2,7 +2,7 @@
 
 const pass2 = require('./pass');
 
-module.exports = (root, write) => {
+module.exports = (main, write) => {
     const pass = pass2(write);
 
     pass.write(
@@ -14,10 +14,14 @@ module.exports = (root, write) => {
             + 'let __root = new Map();\n'
             + 'let __self = __root;\n'
             + '\n'
+            + 'const func_null = () => {\n'
+            + '    throw Error();\n' // TODO
+            + '};\n'
+            + '\n'
     );
 
     const boot = {
-        root: root,
+        main: main,
         operations: [],
 
         newFunction: (func) => {
@@ -34,7 +38,7 @@ module.exports = (root, write) => {
             });
 
             pass.write(
-                'func_0();\n'
+                'func_0_0();\n'
                     + '\n'
             );
         },
