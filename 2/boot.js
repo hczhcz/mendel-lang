@@ -8,11 +8,12 @@ module.exports = (addFunction, onExecute) => {
     const pass = pass2();
 
     const boot = {
+        id: 0,
         addFunction: addFunction,
         onExecute: onExecute,
 
         newInstance: (instance) => {
-            const func = entity.func(instance.id);
+            const func = entity.func(String(instance.id));
 
             // body
             if (instance.mainMode === 'out') {
@@ -63,7 +64,9 @@ module.exports = (addFunction, onExecute) => {
         },
 
         execute: (ast) => {
-            const main = entity.func(0);
+            const main = entity.func('main_' + boot.id);
+
+            boot.id += 1;
 
             pass.visitOut(
                 main,
@@ -77,7 +80,9 @@ module.exports = (addFunction, onExecute) => {
         },
 
         export: (name, ast) => {
-            const main = entity.func(0);
+            const main = entity.func('main_' + boot.id);
+
+            boot.id += 1;
 
             pass.visitOut(
                 main,
