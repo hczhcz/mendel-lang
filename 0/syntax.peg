@@ -64,7 +64,7 @@ const namesMono = {
     '~': '__bit_not',
 };
 
-const flatten = (data, type) => {
+const flatten = (tree, type) => {
     let result = [];
 
     const collect = (item) => {
@@ -77,7 +77,7 @@ const flatten = (data, type) => {
         }
     };
 
-    collect(data);
+    collect(tree);
 
     return result;
 };

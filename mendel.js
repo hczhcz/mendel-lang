@@ -44,7 +44,7 @@ const b3js = boot3js(
 // const b3c = boot3c();
 
 const b2 = boot2(
-    b3js.newFunction
+    b3js.newFunction, b3js.execute
 );
 
 const b1 = boot1(
@@ -58,4 +58,3 @@ const b0 = boot0(
 libcore(b1);
 
 b0.execute(String(fs.readFileSync(process.argv[2])));
-b3js.collect();

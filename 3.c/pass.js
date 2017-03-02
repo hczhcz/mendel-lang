@@ -1,7 +1,5 @@
 'use strict';
 
-const typename = require('./type.name');
-
 module.exports = (writeHead, write) => {
     const pass = {
         writeHead: writeHead,

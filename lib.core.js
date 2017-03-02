@@ -4,6 +4,7 @@ const ast0 = require('./0/ast');
 const ast1 = require('./1/ast');
 const type = require('./1/type');
 const typecheck = require('./1/type.check');
+const ast2 = require('./2/ast');
 
 module.exports = (boot) => {
     //  __do(...)
