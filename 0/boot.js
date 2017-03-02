@@ -17,30 +17,30 @@ module.exports = (onExecute, onExport) => {
         onExecute: onExecute,
         onExport: onExport,
 
-        execute: (code) => {
+        execute: (text) => {
             boot.onExecute(
                 ast0.call(
                     ast0.code(
                         ast0.lookup('__self'),
                         [], [], '',
-                        pass.parse(code)
+                        pass.parse(text)
                     ),
                     []
-                ) // TODO: duplicated code
+                )
             );
         },
 
-        export: (name, mode, code) => {
+        export: (name, mode, text) => {
             boot.onExport(
                 name, mode,
                 ast0.call(
                     ast0.code(
                         ast0.lookup('__self'),
                         [], [], '',
-                        pass.parse(code)
+                        pass.parse(text)
                     ),
                     []
-                ) // TODO: duplicated code
+                )
             );
         },
     };

@@ -18,16 +18,16 @@ const outFile = fs.openSync(process.argv[3], 'w');
 
 const b3js = boot3js(
     root,
-    (data) => {
-        fs.writeSync(outFile, data);
+    (text) => {
+        fs.writeSync(outFile, text);
     }
 );
 
 // const b3js = boot3js(
 //     root,
 //     (() => {
-//         const doEvalGen = 'doEval = (data) => {\n'
-//             + '    eval(data + doEvalGen);\n'
+//         const doEvalGen = 'doEval = (text) => {\n'
+//             + '    eval(text + doEvalGen);\n'
 //             + '};\n'
 //             + '\n';
 
@@ -35,8 +35,8 @@ const b3js = boot3js(
 
 //         eval(doEvalGen);
 
-//         return (data) => {
-//             doEval(data);
+//         return (text) => {
+//             doEval(text);
 //         };
 //     })()
 // );
