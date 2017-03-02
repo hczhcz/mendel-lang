@@ -52,14 +52,12 @@ module.exports = (addFunction) => {
             ));
 
             // return
-            if (instance.id !== 0) {
-                func.add(ast2.invoke(
-                    ast2.reserved2(
-                        '__self',
-                        '__caller'
-                    )
-                ));
-            }
+            func.add(ast2.invoke(
+                ast2.reserved2(
+                    '__self',
+                    '__caller'
+                )
+            ));
 
             boot.addFunction(func);
         },

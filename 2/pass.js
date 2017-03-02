@@ -153,7 +153,7 @@ module.exports = () => {
                             '__callee',
                             '__caller'
                         ),
-                        'func_' + ast.instance.id + '_' + returnId
+                        'func_' + func.id + '_' + returnId
                     ));
                     func.add(ast2.invoke(
                         ast2.reserved('__callee')

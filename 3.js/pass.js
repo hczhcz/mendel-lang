@@ -68,12 +68,12 @@ module.exports = (write) => {
 
         get: (ast) => {
             pass.visit(ast.upper);
-            pass.write('.get(' + ast.name + ')');
+            pass.write('.get(\'' + ast.name + '\')');
         },
 
         set: (ast) => {
             pass.visit(ast.upper);
-            pass.write('.set(' + ast.name + ', ');
+            pass.write('.set(\'' + ast.name + '\', ');
             pass.visit(ast.value);
             pass.write(')');
         },
