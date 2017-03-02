@@ -4,12 +4,12 @@ const entity = require('./entity');
 const ast2 = require('./ast');
 const pass2 = require('./pass');
 
-module.exports = (addFunction) => {
+module.exports = (addFunction, onExecute) => {
     const pass = pass2();
 
     const boot = {
-        main: entity.func(0), // TODO: id?
         addFunction: addFunction,
+        onExecute: onExecute,
 
         newInstance: (instance) => {
             const func = entity.func(instance.id);
@@ -63,21 +63,27 @@ module.exports = (addFunction) => {
         },
 
         execute: (ast) => {
+            const main = entity.func(0);
+
             pass.visitOut(
-                boot.main,
+                main,
                 ast,
                 (value) => {
                     // notice: discard
                 }
             );
+
+            boot.onExecute(main);
         },
 
         export: (name, ast) => {
+            const main = entity.func(0);
+
             pass.visitOut(
-                boot.main,
+                main,
                 ast,
                 (value) => {
-                    boot.main.add(ast2.set(
+                    main.add(ast2.set(
                         ast2.cast(
                             ast2.reserved('__root'),
                             0 // TODO: root.id?
@@ -87,6 +93,8 @@ module.exports = (addFunction) => {
                     ));
                 }
             );
+
+            boot.onExecute(main);
         },
     };
 
