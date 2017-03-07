@@ -98,7 +98,7 @@ module.exports = () => {
                 '__parent',
                 ast2.cast(
                     ast2.reserved('__upper'),
-                    ast.callee.type.id
+                    ast.callee.type.parent.id
                 )
             ));
 

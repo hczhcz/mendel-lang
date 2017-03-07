@@ -328,7 +328,7 @@ module.exports = (addInstance) => {
                 instance, ast.extend
             );
 
-            extend.type = type.closure(extend.type, ast);
+            extend.type = type.closure(extend.type, ast); // TODO: remove this casting
 
             return extend;
         },
