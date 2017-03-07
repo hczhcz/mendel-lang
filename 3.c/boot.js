@@ -1,10 +1,10 @@
 'use strict';
 
 const typename = require('./type.name');
-const pass2 = require('./pass');
+const pass3 = require('./pass');
 
-module.exports = (main, writeHead, write) => {
-    const pass = pass2(writeHead, write);
+module.exports = (writeHead, write) => {
+    const pass = pass3(writeHead, write);
 
     const boot = {
         main: main,

@@ -1,13 +1,14 @@
 'use strict';
 
-const pass2 = require('./pass');
+const pass3 = require('./pass');
 
-module.exports = (main, write) => {
-    const pass = pass2(write);
+module.exports = (write, onSection) => {
+    const pass = pass3(write);
 
     const boot = {
         main: main,
         operations: [],
+        onSection: onSection,
 
         newFunction: (func) => {
             //
@@ -37,12 +38,14 @@ module.exports = (main, write) => {
         + 'let __callee = null;\n'
         + 'let __root = new Map();\n'
         + 'let __self = __root;\n'
+        + '\n'
     );
 
     pass.write(
         'const func_null = () => {\n'
         + '    throw Error();\n' // TODO
         + '};\n'
+        + '\n'
     );
 
     return boot;
