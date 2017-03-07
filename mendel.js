@@ -10,41 +10,65 @@ const boot3js = require('./3.js/boot');
 const boot3c = require('./3.c/boot');
 const libcore = require('./lib.core');
 
-if (process.argv.length < 4) {
+if (process.argv.length < 3) {
     throw Error();
 }
 
-const outFile = fs.openSync(process.argv[3], 'w');
+const outJs = fs.openSync(process.argv[2] + '.js', 'w');
+const outH = fs.openSync(process.argv[2] + '.h', 'w');
+const outC = fs.openSync(process.argv[2] + '.c', 'w');
 
 const b3js = boot3js(
-    root,
     (text) => {
-        fs.writeSync(outFile, text);
+        fs.writeSync(outJs, text);
+    },
+    () => {
+        // nothing
     }
 );
 
-// const b3js = boot3js(
-//     root,
-//     (() => {
-//         const doEvalGen = 'doEval = (text) => {\n'
-//             + '    eval(text + doEvalGen);\n'
-//             + '};\n'
-//             + '\n';
+let buffer = '';
+const b3jsJIT = boot3js(
+    (text) => {
+        buffer += text;
+    },
+    (() => {
+        const doEvalGen = 'doEval = (text) => {\n'
+            + '    eval(text + doEvalGen);\n'
+            + '};\n'
+            + '\n';
 
-//         let doEval = null;
+        let doEval = null;
 
-//         eval(doEvalGen);
+        eval(doEvalGen);
 
-//         return (text) => {
-//             doEval(text);
-//         };
-//     })()
-// );
+        return () => {
+            doEval(buffer);
+            buffer = '';
+        };
+    })()
+);
 
-// const b3c = boot3c();
+const b3c = boot3c(
+    (text) => {
+        fs.writeSync(outH, text);
+    },
+    (text) => {
+        fs.writeSync(outC, text);
+    }
+);
 
 const b2 = boot2(
-    b3js.newFunction, b3js.execute
+    (func) => {
+        b3js.newFunction(func);
+        b3jsJIT.newFunction(func);
+        b3c.newFunction(func);
+    },
+    (func) => {
+        b3js.execute(func);
+        b3jsJIT.execute(func);
+        b3c.execute(func);
+    }
 );
 
 const b1 = boot1(
