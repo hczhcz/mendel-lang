@@ -34,7 +34,7 @@ module.exports = {
     },
 
     instance: (type) => {
-        return 'struct frame_' + type.id + ' *';
+        return 'frame_' + type.id + '_p';
     },
 
     visit: (type) => {

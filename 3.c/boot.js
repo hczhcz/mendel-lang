@@ -7,27 +7,68 @@ module.exports = (writeHead, write) => {
     const pass = pass3(writeHead, write);
 
     const boot = {
-        main: main,
-        operations: [],
+        executeList: [],
 
         newFunction: (func) => {
-            //
+            pass.writeHead(
+                'struct data_' + func.id + ' {\n'
+            );
+
+            // TODO
+
+            pass.writeHead(
+                '};\n'
+                + '\n'
+            );
+
+            pass.writeHead(
+                'typedef struct frame_' + func.id
+                    + ' *frame_' + func.id + '_p;\n'
+                + 'struct frame_' + func.id + ' {\n'
+                + '    struct head head;\n'
+                + '    struct data_' + func.id + ' data;\n'
+                + '};\n'
+            );
+
+            for (const i in func.insts) {
+                pass.write(
+                    'static void func_' + func.id + '_' + i + '() {\n'
+                );
+
+                for (const j in func.insts[i]) {
+                    pass.write('    ');
+                    pass.visit(func.insts[i][j]);
+                    pass.write(';\n');
+                }
+
+                pass.write(
+                    '}\n'
+                    + '\n'
+                );
+            }
+        },
+
+        execute: (func) => {
+            boot.newFunction(func);
+
+            boot.executeList.push(func.id);
         },
 
         collect: () => {
-            pass.build(boot.root, () => {
-                for (const i in boot.operations) {
-                    boot.operations[i]();
-                }
-
-                boot.operations = [];
-            });
-
             pass.write(
                 'int main(int argc, char *argv[]) {\n'
                 + '    GC_init();\n'
-                + '    func_0_0();\n'
                 + '\n'
+            );
+
+            for (const i in boot.executeList) {
+                pass.write(
+                    '    ' + boot.executeList[i] + '();\n'
+                );
+            }
+
+            pass.write(
+                '\n'
                 + '    return 0;\n'
                 + '}\n'
                 + '\n'
@@ -42,32 +83,34 @@ module.exports = (writeHead, write) => {
         + '#include <gc.h>\n'
         + '\n'
         + 'typedef struct {} null_t;\n'
-        + 'typedef struct {uint64_t placeholder;} variant_t;\n'
+        + 'typedef void (*func_t)();\n'
         + '\n'
+        + 'typedef struct array *array_p;\n'
         + 'struct array {\n'
         + '    size_t size;\n'
         + '    null_t data;\n'
-        + '};\n'
+        + '};\n' // TODO
         + '\n'
+        + 'typedef struct head *head_p;\n'
         + 'struct head {\n'
-        + '    void (*__func)();\n'
-        + '    struct head *__caller;\n'
-        + '    struct head *__outer;\n'
+        + '    func_t __func;\n'
+        + '    head_p __caller;\n'
+        + '    head_p __outer;\n'
         + '};\n'
         + '\n'
-        + 'void func_null() {\n'
+        + 'static void func_null() {\n'
         + '    exit(1);\n' // TODO
         + '};\n'
         + '\n'
     );
 
     pass.write(
-        'struct head *__upper;\n'
-        + 'struct head *__inner;\n'
-        + 'struct head *__callee;\n'
-        + 'struct frame_0 __root_frame;\n'
-        + 'struct head *__root = &__root_frame.head;\n'
-        + 'struct head *__self = &__root_frame.head;\n'
+        'static head_p __upper;\n'
+        + 'static head_p __inner;\n'
+        + 'static head_p __callee;\n'
+        + 'static struct frame_0 __root_frame;\n'
+        + 'static head_p __root = &__root_frame.head;\n'
+        + 'static head_p __self = &__root_frame.head;\n'
         + '\n'
     );
 

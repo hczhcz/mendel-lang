@@ -6,27 +6,39 @@ module.exports = (write, onSection) => {
     const pass = pass3(write);
 
     const boot = {
-        main: main,
-        operations: [],
         onSection: onSection,
 
         newFunction: (func) => {
-            //
-        },
+            for (const i in func.insts) {
+                pass.write(
+                    'const func_' + func.id + '_' + i + ' = () => {\n'
+                );
 
-        collect: () => {
-            pass.build(root, () => {
-                for (const i in boot.operations) {
-                    boot.operations[i]();
+                for (const j in func.insts[i]) {
+                    pass.write('    ');
+                    pass.visit(func.insts[i][j]);
+                    pass.write(';\n');
                 }
 
-                boot.operations = [];
-            });
+                pass.write(
+                    '};\n'
+                    + '\n'
+                );
+            }
+
+            // notice: func_X_Y uses func_X_Y+1
+            boot.onSection();
+        },
+
+        execute: (func) => {
+            boot.newFunction(func);
 
             pass.write(
-                'func_0_0();\n'
-                    + '\n'
+                'func_' + func.id + '_0();\n'
+                + '\n'
             );
+
+            boot.onSection();
         },
     };
 
@@ -41,12 +53,16 @@ module.exports = (write, onSection) => {
         + '\n'
     );
 
+    boot.onSection();
+
     pass.write(
         'const func_null = () => {\n'
         + '    throw Error();\n' // TODO
         + '};\n'
         + '\n'
     );
+
+    boot.onSection();
 
     return boot;
 };
