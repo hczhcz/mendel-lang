@@ -117,18 +117,18 @@ If = $('if' _k) _ '(' _ cond:Expr _ ')' _ body1:Block body2:(
             ast0.lookup('__if_else'),
             [
                 ast0.code(
-                    ast0.lookup("__self"), [], [],
-                    '',
+                    ast0.lookup("__self"),
+                    [], [], '',
                     cond
                 ),
                 ast0.code(
-                    ast0.lookup("__self"), [], [],
-                    '',
+                    ast0.lookup("__self"),
+                    [], [], '',
                     body1
                 ),
                 ast0.code(
-                    ast0.lookup("__self"), [], [],
-                    '',
+                    ast0.lookup("__self"),
+                    [], [], '',
                     body2
                 ),
             ]
@@ -138,13 +138,13 @@ If = $('if' _k) _ '(' _ cond:Expr _ ')' _ body1:Block body2:(
             ast0.lookup('__if'),
             [
                 ast0.code(
-                    ast0.lookup("__self"), [], [],
-                    '',
+                    ast0.lookup("__self"),
+                    [], [], '',
                     cond
                 ),
                 ast0.code(
-                    ast0.lookup("__self"), [], [],
-                    '',
+                    ast0.lookup("__self"),
+                    [], [], '',
                     body1
                 ),
             ]

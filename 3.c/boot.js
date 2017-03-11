@@ -77,7 +77,8 @@ module.exports = (writeHead, write) => {
     };
 
     pass.writeHead(
-        '#include <stdbool.h>\n'
+        '#include <stdlib.h>\n'
+        + '#include <stdbool.h>\n'
         + '#include <stdint.h>\n'
         + '#include <stdio.h>\n'
         + '#include <gc.h>\n'
