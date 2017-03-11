@@ -2,6 +2,7 @@
 
 const process = require('process');
 const fs = require('fs');
+const path = require('path');
 
 const boot0 = require('./0/boot');
 const boot1 = require('./1/boot');
@@ -14,9 +15,31 @@ if (process.argv.length < 3) {
     throw Error();
 }
 
-const outJs = fs.openSync(process.argv[2] + '.js', 'w');
-const outH = fs.openSync(process.argv[2] + '.h', 'w');
-const outC = fs.openSync(process.argv[2] + '.c', 'w');
+const inPath = path.parse(process.argv[2]);
+
+const outJs = fs.openSync(path.format({
+    root: inPath.root,
+    dir: inPath.dir,
+    name: inPath.name,
+    ext: '.js',
+}), 'w');
+const outH = fs.openSync(path.format({
+    root: inPath.root,
+    dir: inPath.dir,
+    name: inPath.name,
+    ext: '.h',
+}), 'w');
+const outC = fs.openSync(path.format({
+    root: inPath.root,
+    dir: inPath.dir,
+    name: inPath.name,
+    ext: '.c',
+}), 'w');
+
+fs.writeSync(outC, '#include "' + path.format({
+    name: inPath.name,
+    ext: '.h',
+}) + '"\n\n');
 
 const b3js = boot3js(
     (text) => {
@@ -81,4 +104,4 @@ const b0 = boot0(
 
 libcore(b1);
 
-b0.execute(String(fs.readFileSync(process.argv[2])));
+b0.execute(String(fs.readFileSync(path.format(inPath))));
