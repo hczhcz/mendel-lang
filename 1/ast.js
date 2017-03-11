@@ -65,6 +65,14 @@ module.exports = {
         };
     },
 
+    codeOut: (extend, type) => {
+        return {
+            __type: 'codeOut',
+            extend: extend,
+            type: type,
+        };
+    },
+
     metaOut: (gen, type) => {
         return {
             __type: 'metaOut',

@@ -241,6 +241,13 @@ module.exports = () => {
             );
         },
 
+        codeOut: (func, ast, target) => {
+            pass.visitOut(
+                func, ast.extend,
+                target
+            );
+        },
+
         metaOut: (func, ast, target) => {
             ast.gen(pass, func, target);
         },

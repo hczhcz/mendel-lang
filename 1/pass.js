@@ -328,9 +328,10 @@ module.exports = (addInstance) => {
                 instance, ast.extend
             );
 
-            extend.type = type.closure(extend.type, ast); // TODO: remove this casting
-
-            return extend;
+            return ast1.codeOut(
+                extend,
+                type.closure(extend.type, ast)
+            );
         },
 
         codeIn: (instance, ast, type) => {
