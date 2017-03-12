@@ -15,7 +15,9 @@ module.exports = (addInstance, onExecute, onExport) => {
                 pass.root, ast
             );
 
-            boot.onExecute(impl);
+            boot.onExecute(
+                pass.root, impl
+            );
         },
 
         export: (name, mode, ast) => {
@@ -28,7 +30,9 @@ module.exports = (addInstance, onExecute, onExport) => {
                 impl.type
             );
 
-            boot.onExport(name, impl);
+            boot.onExport(
+                pass.root, name, impl
+            );
         },
     };
 

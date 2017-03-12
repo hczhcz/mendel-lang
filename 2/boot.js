@@ -63,8 +63,9 @@ module.exports = (addFunction, onExecute) => {
             boot.addFunction(func);
         },
 
-        execute: (ast) => {
-            const main = entity.func('main_' + boot.id);
+        execute: (root, ast) => {
+            const main = entity2.func(root);
+            root.id = 'main_' + boot.id; // TODO: hack
 
             boot.id += 1;
 
@@ -79,8 +80,9 @@ module.exports = (addFunction, onExecute) => {
             boot.onExecute(main);
         },
 
-        export: (name, ast) => {
-            const main = entity.func('main_' + boot.id);
+        export: (root, name, ast) => {
+            const main = entity2.func(root);
+            root.id = 'main_' + boot.id; // TODO: hack
 
             boot.id += 1;
 
