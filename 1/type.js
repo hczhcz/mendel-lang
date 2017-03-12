@@ -1,6 +1,6 @@
 'use strict';
 
-const typecheck = require('./type.check');
+const typecheck1 = require('./type.check');
 
 module.exports = {
     basic: (type) => {
@@ -45,7 +45,7 @@ module.exports = {
                             if (
                                 closure.instances[i].modes[name]
                                 !== instance.modes[name]
-                                || !typecheck.visit(
+                                || !typecheck1.visit(
                                     closure.instances[i].types[name],
                                     instance.types[name]
                                 )

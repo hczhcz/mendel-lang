@@ -1,6 +1,6 @@
 'use strict';
 
-const type = require('./type');
+const type1 = require('./type');
 const pass1 = require('./pass');
 
 module.exports = (addInstance, onExecute, onExport) => {
@@ -34,11 +34,11 @@ module.exports = (addInstance, onExecute, onExport) => {
 
     pass.root.addInit(
         '__root', 'const',
-        type.object(pass.root)
+        type1.object(pass.root)
     );
     pass.root.addInit(
         '__self', 'var',
-        type.object(pass.root)
+        type1.object(pass.root)
     );
     pass.root.add(
         '__return', 'out'
@@ -46,7 +46,7 @@ module.exports = (addInstance, onExecute, onExport) => {
     pass.root.id = 0; // notice: done() is never called
     pass.root.accessIn(
         '__return',
-        type.basic('null')
+        type1.basic('null')
     );
 
     return boot;

@@ -1,6 +1,6 @@
 'use strict';
 
-const entity = require('./entity');
+const entity2 = require('./entity');
 const ast2 = require('./ast');
 const pass2 = require('./pass');
 
@@ -13,7 +13,7 @@ module.exports = (addFunction, onExecute) => {
         onExecute: onExecute,
 
         newInstance: (instance) => {
-            const func = entity.func(String(instance.id));
+            const func = entity2.func(instance);
 
             // body
             if (instance.mainMode === 'out') {

@@ -1,19 +1,19 @@
 'use strict';
 
-const type = require('./type');
-const entity = require('./entity');
+const type1 = require('./type');
+const entity1 = require('./entity');
 const ast1 = require('./ast');
 
 module.exports = (addInstance) => {
     const pass = {
-        root: entity.instance('out'),
+        root: entity1.instance('out'),
         id: 1,
         addInstance: addInstance,
 
         literalOut: (instance, ast) => {
             return ast1.literalOut(
                 ast.value,
-                type.basic(ast.type)
+                type1.basic(ast.type)
             );
         },
 
@@ -28,7 +28,7 @@ module.exports = (addInstance) => {
 
             return ast1.literalOut(
                 null,
-                type.basic('null')
+                type1.basic('null')
             );
         },
 
@@ -44,7 +44,7 @@ module.exports = (addInstance) => {
             return ast1.pathIn(
                 ast1.reservedOut(
                     '__self',
-                    type.object(instance)
+                    type1.object(instance)
                 ),
                 ast.name,
                 type
@@ -60,7 +60,7 @@ module.exports = (addInstance) => {
                 default: {
                     let upper = ast1.reservedOut(
                         '__self',
-                        type.object(instance)
+                        type1.object(instance)
                     );
 
                     while (!upper.type.instance.modes[ast.name]) {
@@ -169,20 +169,20 @@ module.exports = (addInstance) => {
                 throw Error();
             }
 
-            let child = entity.instance(mainMode);
+            let child = entity1.instance(mainMode);
 
             // notice: __root and __self are not actual members
             child.addInit(
                 '__root', 'const',
-                type.object(pass.root)
+                type1.object(pass.root)
             );
             child.addInit(
                 '__self', 'var',
-                type.object(child)
+                type1.object(child)
             );
             child.addInit(
                 '__parent', 'var',
-                type.object(closure.parent)
+                type1.object(closure.parent)
             );
 
             before(child);
@@ -335,7 +335,7 @@ module.exports = (addInstance) => {
 
             return ast1.codeOut(
                 extend,
-                type.closure(extend.type.instance, ast)
+                type1.closure(extend.type.instance, ast)
             );
         },
 
