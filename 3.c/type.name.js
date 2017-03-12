@@ -30,11 +30,13 @@ module.exports = {
     },
 
     object: (type) => {
-        return 'frame_' + type.instance.id + '_p';
+        return 'struct frame_' + type.instance.id + ' *'; // TODO
+        // return 'frame_' + type.instance.id + '_p';
     },
 
     closure: (type) => {
-        return module.exports.visit(type.parent);
+        return 'struct frame_' + type.parent.id + ' *'; // TODO
+        // return 'frame_' + type.parent.id + '_p';
     },
 
     visit: (type) => {

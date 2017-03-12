@@ -14,7 +14,12 @@ module.exports = (writeHead, write) => {
                 'struct data_' + func.instance.id + ' {\n'
             );
 
-            // TODO
+            for (const i in func.instance.types) {
+                pass.writeHead(
+                    '    ' + typename3.visit(func.instance.types[i])
+                    + ' ' + i + ';\n'
+                );
+            }
 
             pass.writeHead(
                 '};\n'
