@@ -26,7 +26,7 @@ module.exports = {
     },
 
     array: (type) => {
-        return 'parray';
+        return 'array_p';
     },
 
     object: (type) => {

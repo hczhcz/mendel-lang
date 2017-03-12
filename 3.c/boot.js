@@ -1,6 +1,6 @@
 'use strict';
 
-const typename = require('./type.name');
+const typename3 = require('./type.name');
 const pass3 = require('./pass');
 
 module.exports = (writeHead, write) => {
@@ -101,7 +101,7 @@ module.exports = (writeHead, write) => {
         + '\n'
         + 'static void func_null() {\n'
         + '    exit(1);\n' // TODO
-        + '};\n'
+        + '}\n'
         + '\n'
     );
 

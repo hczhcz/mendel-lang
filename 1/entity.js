@@ -88,7 +88,10 @@ module.exports = {
                     throw Error();
                 }
 
-                instance.doIn(name, type);
+                instance.doIn(
+                    name,
+                    type
+                );
             },
 
             done: (id, impl) => {
