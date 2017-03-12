@@ -1,11 +1,12 @@
 'use strict';
 
 const type = require('./type');
+const entity = require('./entity');
 const ast1 = require('./ast');
 
 module.exports = (addInstance) => {
     const pass = {
-        root: type.instance('out'),
+        root: entity.instance('out'),
         id: 1,
         addInstance: addInstance,
 
@@ -43,7 +44,7 @@ module.exports = (addInstance) => {
             return ast1.pathIn(
                 ast1.reservedOut(
                     '__self',
-                    instance
+                    type.object(instance)
                 ),
                 ast.name,
                 type
@@ -59,13 +60,13 @@ module.exports = (addInstance) => {
                 default: {
                     let upper = ast1.reservedOut(
                         '__self',
-                        instance
+                        type.object(instance)
                     );
 
-                    while (!upper.type.modes[ast.name]) {
+                    while (!upper.type.instance.modes[ast.name]) {
                         upper = ast1.pathOut(
                             upper, '__parent',
-                            upper.type.accessOut('__parent')
+                            upper.type.instance.accessOut('__parent')
                         );
                     }
 
@@ -80,7 +81,7 @@ module.exports = (addInstance) => {
                 (upper) => {
                     return ast1.pathOut(
                         upper, ast.name,
-                        upper.type.accessOut(ast.name)
+                        upper.type.instance.accessOut(ast.name)
                     );
                 },
                 () => {
@@ -96,7 +97,7 @@ module.exports = (addInstance) => {
             return pass.lookup(
                 instance, ast,
                 (upper) => {
-                    upper.type.accessIn(
+                    upper.type.instance.accessIn(
                         ast.name,
                         type
                     );
@@ -127,7 +128,7 @@ module.exports = (addInstance) => {
 
             return ast1.pathOut(
                 upper, ast.name,
-                upper.type.accessOut(ast.name)
+                upper.type.instance.accessOut(ast.name)
             );
         },
 
@@ -136,7 +137,7 @@ module.exports = (addInstance) => {
                 instance, ast.upper
             );
 
-            upper.type.accessIn(
+            upper.type.instance.accessIn(
                 ast.name,
                 type
             );
@@ -168,20 +169,20 @@ module.exports = (addInstance) => {
                 throw Error();
             }
 
-            let child = type.instance(mainMode);
+            let child = entity.instance(mainMode);
 
             // notice: __root and __self are not actual members
             child.addInit(
                 '__root', 'const',
-                pass.root
+                type.object(pass.root)
             );
             child.addInit(
                 '__self', 'var',
-                child
+                type.object(child)
             );
             child.addInit(
                 '__parent', 'var',
-                closure.parent
+                type.object(closure.parent)
             );
 
             before(child);
@@ -328,9 +329,13 @@ module.exports = (addInstance) => {
                 instance, ast.extend
             );
 
+            if (extend.type.__type !== 'object') {
+                throw Error();
+            }
+
             return ast1.codeOut(
                 extend,
-                type.closure(extend.type, ast)
+                type.closure(extend.type.instance, ast)
             );
         },
 

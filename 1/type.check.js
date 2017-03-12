@@ -9,12 +9,12 @@ module.exports = {
         return module.exports.visit(type1.type, type2.type);
     },
 
-    closure: (type1, type2) => {
-        return type1 === type2; // TODO: use id to compare?
+    object: (type1, type2) => {
+        return type1.instance.id !== null && type1.instance.id === type2.instance.id;
     },
 
-    instance: (type1, type2) => {
-        return type1.id !== null && type1.id === type2.id;
+    closure: (type1, type2) => {
+        return type1 === type2; // TODO: use id to compare?
     },
 
     visit: (type1, type2) => {

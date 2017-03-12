@@ -16,7 +16,7 @@ module.exports = () => {
         reservedOut: (func, ast, target) => {
             target(ast2.cast(
                 ast2.reserved(ast.name),
-                ast.type.id
+                ast.type.instance.id
             ));
         },
 
@@ -42,7 +42,7 @@ module.exports = () => {
             target(ast2.get(
                 ast2.cast(
                     ast2.reserved('__upper'),
-                    ast.upper.type.id
+                    ast.upper.type.instance.id
                 ),
                 ast.name
             ));
@@ -63,7 +63,7 @@ module.exports = () => {
             func.add(ast2.set(
                 ast2.cast(
                     ast2.reserved('__upper'),
-                    ast.upper.type.id
+                    ast.upper.type.instance.id
                 ),
                 ast.name,
                 value
@@ -153,7 +153,7 @@ module.exports = () => {
                             '__callee',
                             '__caller'
                         ),
-                        'func_' + func.id + '_' + returnId
+                        'func_' + func.instance.id + '_' + returnId
                     ));
                     func.add(ast2.invoke(
                         ast2.reserved('__callee')

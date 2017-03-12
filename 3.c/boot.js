@@ -11,7 +11,7 @@ module.exports = (writeHead, write) => {
 
         newFunction: (func) => {
             pass.writeHead(
-                'struct data_' + func.id + ' {\n'
+                'struct data_' + func.instance.id + ' {\n'
             );
 
             // TODO
@@ -22,17 +22,17 @@ module.exports = (writeHead, write) => {
             );
 
             pass.writeHead(
-                'typedef struct frame_' + func.id
-                    + ' *frame_' + func.id + '_p;\n'
-                + 'struct frame_' + func.id + ' {\n'
+                'typedef struct frame_' + func.instance.id
+                    + ' *frame_' + func.instance.id + '_p;\n'
+                + 'struct frame_' + func.instance.id + ' {\n'
                 + '    struct head head;\n'
-                + '    struct data_' + func.id + ' data;\n'
+                + '    struct data_' + func.instance.id + ' data;\n'
                 + '};\n'
             );
 
             for (const i in func.insts) {
                 pass.write(
-                    'static void func_' + func.id + '_' + i + '() {\n'
+                    'static void func_' + func.instance.id + '_' + i + '() {\n'
                 );
 
                 for (const j in func.insts[i]) {
@@ -51,7 +51,7 @@ module.exports = (writeHead, write) => {
         execute: (func) => {
             boot.newFunction(func);
 
-            boot.executeList.push(func.id);
+            boot.executeList.push(func.instance.id);
         },
 
         collect: () => {

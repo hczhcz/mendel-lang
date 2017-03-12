@@ -29,12 +29,12 @@ module.exports = {
         return 'parray';
     },
 
-    closure: (type) => {
-        return module.exports.visit(type.parent);
+    object: (type) => {
+        return 'frame_' + type.instance.id + '_p';
     },
 
-    instance: (type) => {
-        return 'frame_' + type.id + '_p';
+    closure: (type) => {
+        return module.exports.visit(type.parent);
     },
 
     visit: (type) => {

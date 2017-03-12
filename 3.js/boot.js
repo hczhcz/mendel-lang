@@ -11,7 +11,7 @@ module.exports = (write, onSection) => {
         newFunction: (func) => {
             for (const i in func.insts) {
                 pass.write(
-                    'const func_' + func.id + '_' + i + ' = () => {\n'
+                    'const func_' + func.instance.id + '_' + i + ' = () => {\n'
                 );
 
                 for (const j in func.insts[i]) {
@@ -34,7 +34,7 @@ module.exports = (write, onSection) => {
             boot.newFunction(func);
 
             pass.write(
-                'func_' + func.id + '_0();\n'
+                'func_' + func.instance.id + '_0();\n'
                 + '\n'
             );
 

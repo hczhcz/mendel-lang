@@ -1,10 +1,10 @@
 'use strict';
 
 module.exports = {
-    func: (id) => {
+    func: (instance) => {
         const func = {
             __type: 'func',
-            id: id,
+            instance: instance,
             insts: [[]],
 
             add: (inst) => {

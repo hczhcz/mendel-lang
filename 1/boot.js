@@ -34,11 +34,11 @@ module.exports = (addInstance, onExecute, onExport) => {
 
     pass.root.addInit(
         '__root', 'const',
-        pass.root
+        type.object(pass.root)
     );
     pass.root.addInit(
         '__self', 'var',
-        pass.root
+        type.object(pass.root)
     );
     pass.root.add(
         '__return', 'out'
