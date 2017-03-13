@@ -31,11 +31,28 @@ module.exports = (main, write, onSection) => {
             boot.onSection();
         },
 
-        execute: (func) => {
-            boot.newFunction(func);
+        execute: (nextId) => {
+            for (const i in boot.main.insts) {
+                if (i >= nextId) {
+                    pass.write(
+                        'const func_' + boot.main.instance.id + '_' + i + ' = () => {\n'
+                    );
+
+                    for (const j in boot.main.insts[i]) {
+                        pass.write('    ');
+                        pass.visit(boot.main.insts[i][j]);
+                        pass.write(';\n');
+                    }
+
+                    pass.write(
+                        '};\n'
+                        + '\n'
+                    );
+                }
+            }
 
             pass.write(
-                'func_' + func.instance.id + '_0();\n'
+                'func_' + boot.main.instance.id + '_' + nextId + '();\n'
                 + '\n'
             );
 

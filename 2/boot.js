@@ -8,8 +8,8 @@ module.exports = (main, addFunction, onExecute) => {
     const pass = pass2();
 
     const boot = {
-        id: 0,
         main: main,
+        nextId: 0,
         addFunction: addFunction,
         onExecute: onExecute,
 
@@ -64,12 +64,7 @@ module.exports = (main, addFunction, onExecute) => {
             boot.addFunction(func);
         },
 
-        execute: (root, ast) => {
-            const main = entity2.func(root);
-            root.id = 'main_' + boot.id; // TODO: hack
-
-            boot.id += 1;
-
+        execute: (ast) => {
             pass.visitOut(
                 boot.main,
                 ast,
@@ -78,15 +73,16 @@ module.exports = (main, addFunction, onExecute) => {
                 }
             );
 
-            boot.onExecute(main);
+            boot.main.continuation(
+                (returnId) => {
+                    boot.onExecute(boot.nextId);
+
+                    boot.nextId = returnId;
+                }
+            );
         },
 
-        export: (root, name, ast) => {
-            const main = entity2.func(root);
-            root.id = 'main_' + boot.id; // TODO: hack
-
-            boot.id += 1;
-
+        export: (name, ast) => {
             pass.visitOut(
                 boot.main,
                 ast,
@@ -102,7 +98,13 @@ module.exports = (main, addFunction, onExecute) => {
                 }
             );
 
-            boot.onExecute(main);
+            boot.main.continuation(
+                (returnId) => {
+                    boot.onExecute(boot.nextId);
+
+                    boot.nextId = returnId;
+                }
+            );
         },
     };
 

@@ -90,15 +90,16 @@ const b3c = boot3c(
 );
 
 const b2 = boot2(
-    (func) => {
-        b3js.newFunction(func);
-        b3jsJIT.newFunction(func);
-        b3c.newFunction(func);
+    main,
+    (nextId) => {
+        b3js.newFunction(nextId);
+        b3jsJIT.newFunction(nextId);
+        b3c.newFunction(nextId);
     },
-    (func) => {
-        b3js.execute(func);
-        b3jsJIT.execute(func);
-        b3c.execute(func);
+    (nextId) => {
+        b3js.execute(nextId);
+        b3jsJIT.execute(nextId);
+        b3c.execute(nextId);
     }
 );
 

@@ -54,13 +54,13 @@ module.exports = (main, writeHead, write) => {
             }
         },
 
-        execute: (func) => {
-            boot.newFunction(func);
-
-            boot.executeList.push(func.instance.id);
+        execute: (nextId) => {
+            boot.executeList.push('func_' + boot.main.instance.id + '_' + nextId);
         },
 
         collect: () => {
+            boot.newFunction(boot.main);
+
             pass.write(
                 'int main(int argc, char *argv[]) {\n'
                 + '    GC_init();\n'
