@@ -68,8 +68,9 @@ module.exports = (writeHead, write) => {
 
         head: (ast) => {
             pass.visit(ast.source);
-            pass.write('->head = ');
+            pass.write(' = &');
             pass.visit(ast.value);
+            pass.write('->head')
         },
 
         move: (ast) => {

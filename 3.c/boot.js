@@ -38,6 +38,10 @@ module.exports = (main, writeHead, write) => {
             );
 
             for (const i in func.insts) {
+                pass.writeHead(
+                    'static void func_' + func.instance.id + '_' + i + '();\n'
+                );
+
                 pass.write(
                     'static void func_' + func.instance.id + '_' + i + '() {\n'
                 );
