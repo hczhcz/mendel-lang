@@ -4,10 +4,11 @@ const entity2 = require('./entity');
 const ast2 = require('./ast');
 const pass2 = require('./pass');
 
-module.exports = (main, addFunction, onExecute) => {
+module.exports = (root, main, addFunction, onExecute) => {
     const pass = pass2();
 
     const boot = {
+        root: root,
         main: main,
         nextId: 0,
         addFunction: addFunction,
@@ -90,7 +91,7 @@ module.exports = (main, addFunction, onExecute) => {
                     main.add(ast2.set(
                         ast2.cast(
                             ast2.reserved('__root'),
-                            0 // TODO: root.id?
+                            boot.root.id
                         ),
                         name,
                         value

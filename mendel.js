@@ -90,7 +90,7 @@ const b3c = boot3c(
 );
 
 const b2 = boot2(
-    main,
+    root, main,
     (nextId) => {
         b3js.newFunction(nextId);
         b3jsJIT.newFunction(nextId);

@@ -88,7 +88,7 @@ module.exports = (main, writeHead, write) => {
         + '#include <stdbool.h>\n'
         + '#include <stdint.h>\n'
         + '#include <stdio.h>\n'
-        + '#include <gc.h>\n'
+        + '#include <gc/gc.h>\n'
         + '\n'
         + 'typedef struct {} null_t;\n'
         + 'typedef void (*func_t)();\n'
