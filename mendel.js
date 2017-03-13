@@ -114,3 +114,4 @@ const b0 = boot0(
 libcore(b1);
 
 b0.execute(String(fs.readFileSync(path.format(inPath))));
+b3c.collect();

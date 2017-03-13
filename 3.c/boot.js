@@ -34,6 +34,7 @@ module.exports = (main, writeHead, write) => {
                 + '    struct head head;\n'
                 + '    struct data_' + func.instance.id + ' data;\n'
                 + '};\n'
+                + '\n'
             );
 
             for (const i in func.insts) {
