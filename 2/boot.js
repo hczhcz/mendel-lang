@@ -4,11 +4,12 @@ const entity2 = require('./entity');
 const ast2 = require('./ast');
 const pass2 = require('./pass');
 
-module.exports = (addFunction, onExecute) => {
+module.exports = (main, addFunction, onExecute) => {
     const pass = pass2();
 
     const boot = {
         id: 0,
+        main: main,
         addFunction: addFunction,
         onExecute: onExecute,
 
@@ -70,7 +71,7 @@ module.exports = (addFunction, onExecute) => {
             boot.id += 1;
 
             pass.visitOut(
-                main,
+                boot.main,
                 ast,
                 (value) => {
                     // notice: discard
@@ -87,7 +88,7 @@ module.exports = (addFunction, onExecute) => {
             boot.id += 1;
 
             pass.visitOut(
-                main,
+                boot.main,
                 ast,
                 (value) => {
                     main.add(ast2.set(

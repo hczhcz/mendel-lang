@@ -5,7 +5,9 @@ const fs = require('fs');
 const path = require('path');
 
 const boot0 = require('./0/boot');
+const entity1 = require('./1/entity');
 const boot1 = require('./1/boot');
+const entity2 = require('./2/entity');
 const boot2 = require('./2/boot');
 const boot3js = require('./3.js/boot');
 const boot3c = require('./3.c/boot');
@@ -36,12 +38,16 @@ const outC = fs.openSync(path.format({
     ext: '.c',
 }), 'w');
 
+const root = entity1.instance('out');
+const main = entity2.func(root);
+
 fs.writeSync(outC, '#include "' + path.format({
     name: inPath.name,
     ext: '.h',
 }) + '"\n\n');
 
 const b3js = boot3js(
+    main,
     (text) => {
         fs.writeSync(outJs, text);
     },
@@ -52,6 +58,7 @@ const b3js = boot3js(
 
 let buffer = '';
 const b3jsJIT = boot3js(
+    main,
     (text) => {
         buffer += text;
     },
@@ -73,6 +80,7 @@ const b3jsJIT = boot3js(
 );
 
 const b3c = boot3c(
+    main,
     (text) => {
         fs.writeSync(outH, text);
     },
@@ -95,7 +103,7 @@ const b2 = boot2(
 );
 
 const b1 = boot1(
-    b2.newInstance, b2.execute, b2.export
+    root, b2.newInstance, b2.execute, b2.export
 );
 
 const b0 = boot0(

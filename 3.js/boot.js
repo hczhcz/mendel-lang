@@ -2,10 +2,11 @@
 
 const pass3 = require('./pass');
 
-module.exports = (write, onSection) => {
+module.exports = (main, write, onSection) => {
     const pass = pass3(write);
 
     const boot = {
+        main: main,
         onSection: onSection,
 
         newFunction: (func) => {

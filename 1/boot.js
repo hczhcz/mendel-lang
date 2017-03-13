@@ -3,8 +3,8 @@
 const type1 = require('./type');
 const pass1 = require('./pass');
 
-module.exports = (addInstance, onExecute, onExport) => {
-    const pass = pass1(addInstance);
+module.exports = (root, addInstance, onExecute, onExport) => {
+    const pass = pass1(root, addInstance);
 
     const boot = {
         onExecute: onExecute,
@@ -15,9 +15,7 @@ module.exports = (addInstance, onExecute, onExport) => {
                 pass.root, ast
             );
 
-            boot.onExecute(
-                pass.root, impl
-            );
+            boot.onExecute(impl);
         },
 
         export: (name, mode, ast) => {
@@ -30,9 +28,7 @@ module.exports = (addInstance, onExecute, onExport) => {
                 impl.type
             );
 
-            boot.onExport(
-                pass.root, name, impl
-            );
+            boot.onExport(name, impl);
         },
     };
 

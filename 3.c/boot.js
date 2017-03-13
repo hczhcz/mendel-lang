@@ -3,10 +3,11 @@
 const typename3 = require('./type.name');
 const pass3 = require('./pass');
 
-module.exports = (writeHead, write) => {
+module.exports = (main, writeHead, write) => {
     const pass = pass3(writeHead, write);
 
     const boot = {
+        main: main,
         executeList: [],
 
         newFunction: (func) => {
