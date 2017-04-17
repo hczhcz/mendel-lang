@@ -12,28 +12,23 @@ module.exports = (main, writeHead, write) => {
 
         newFunction: (func) => {
             pass.writeHead(
-                'struct data_' + func.instance.id + ' {\n'
+                'typedef struct frame_' + func.instance.id
+                    + ' *frame_' + func.instance.id + '_p;\n'
+                + 'struct frame_' + func.instance.id + ' {\n'
+                + '    func_t __func;\n'
+                + '    head_p __caller;\n'
+                + '    head_p __outer;\n'
             );
 
             for (const i in func.instance.types) {
                 pass.writeHead(
                     '    ' + typename3.visit(func.instance.types[i])
-                    + ' ' + i + ';\n'
+                    + ' ' + pass.convName(i) + ';\n'
                 );
             }
 
             pass.writeHead(
                 '};\n'
-                + '\n'
-            );
-
-            pass.writeHead(
-                'typedef struct frame_' + func.instance.id
-                    + ' *frame_' + func.instance.id + '_p;\n'
-                + 'struct frame_' + func.instance.id + ' {\n'
-                + '    struct head head;\n'
-                + '    struct data_' + func.instance.id + ' data;\n'
-                + '};\n'
                 + '\n'
             );
 
@@ -99,8 +94,8 @@ module.exports = (main, writeHead, write) => {
         + '\n'
         + 'typedef struct array *array_p;\n'
         + 'struct array {\n'
-        + '    size_t size;\n'
-        + '    null_t data;\n'
+        + '    size_t __size;\n'
+        + '    null_t __data;\n'
         + '};\n' // TODO
         + '\n'
         + 'typedef struct head *head_p;\n'
@@ -121,8 +116,8 @@ module.exports = (main, writeHead, write) => {
         + 'static head_p __inner;\n'
         + 'static head_p __callee;\n'
         + 'static struct frame_0 __root_frame;\n'
-        + 'static head_p __root = &__root_frame.head;\n'
-        + 'static head_p __self = &__root_frame.head;\n'
+        + 'static head_p __root = (head_p) &__root_frame;\n'
+        + 'static head_p __self = (head_p) &__root_frame;\n'
         + '\n'
     );
 

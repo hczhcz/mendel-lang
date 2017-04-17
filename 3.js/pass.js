@@ -4,6 +4,14 @@ module.exports = (write) => {
     const pass = {
         write: write,
 
+        convName: (id) => {
+            if (id.slice(0, 2) === '__') {
+                return '_' + id;
+            } else {
+                return id;
+            }
+        },
+
         value: (ast) => {
             switch (ast.type) {
                 case 'bool':
@@ -63,19 +71,18 @@ module.exports = (write) => {
 
         alloc: (ast) => {
             pass.visit(ast.upper);
-            pass.write(' = new Map()');
+            pass.write(' = {}');
         },
 
         get: (ast) => {
             pass.visit(ast.upper);
-            pass.write('.get(\'' + ast.name + '\')');
+            pass.write('.' + pass.convName(ast.name));
         },
 
         set: (ast) => {
             pass.visit(ast.upper);
-            pass.write('.set(\'' + ast.name + '\', ');
+            pass.write('.' + pass.convName(ast.name) + ' = ');
             pass.visit(ast.value);
-            pass.write(')');
         },
 
         bind: (ast) => {

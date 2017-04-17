@@ -5,6 +5,14 @@ module.exports = (writeHead, write) => {
         writeHead: writeHead,
         write: write,
 
+        convName: (id) => {
+            if (id.slice(0, 2) === '__') {
+                return '_' + id;
+            } else {
+                return id;
+            }
+        },
+
         value: (ast) => {
             switch (ast.type) {
                 case 'bool': {
@@ -68,9 +76,8 @@ module.exports = (writeHead, write) => {
 
         head: (ast) => {
             pass.visit(ast.source);
-            pass.write(' = &');
+            pass.write(' = (head_p) ');
             pass.visit(ast.value);
-            pass.write('->head')
         },
 
         move: (ast) => {
@@ -90,12 +97,12 @@ module.exports = (writeHead, write) => {
 
         get: (ast) => {
             pass.visit(ast.upper);
-            pass.write('->data.' + ast.name);
+            pass.write('->' + pass.convName(ast.name));
         },
 
         set: (ast) => {
             pass.visit(ast.upper);
-            pass.write('->data.' + ast.name + ' = ');
+            pass.write('->' + pass.convName(ast.name) + ' = ');
             pass.visit(ast.value);
         },
 
