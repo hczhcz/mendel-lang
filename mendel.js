@@ -11,7 +11,7 @@ const entity2 = require('./2/entity');
 const boot2 = require('./2/boot');
 const boot3js = require('./3.js/boot');
 const boot3c = require('./3.c/boot');
-const libcore = require('./lib.core');
+const libcore = require('./lib/core');
 
 if (process.argv.length < 3) {
     throw Error();
