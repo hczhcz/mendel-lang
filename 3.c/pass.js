@@ -15,6 +15,11 @@ module.exports = (writeHead, write) => {
 
         value: (ast) => {
             switch (ast.type) {
+                case 'null': {
+                    pass.write('(null_t) {}')
+
+                    break;
+                }
                 case 'bool': {
                     if (ast.value) {
                         pass.write('true');
@@ -50,7 +55,7 @@ module.exports = (writeHead, write) => {
                     break;
                 }
                 case 'string': {
-                    pass.write(JSON.stringify(ast.value));
+                    pass.write(JSON.stringify(ast.value)); // TODO
 
                     break;
                 }

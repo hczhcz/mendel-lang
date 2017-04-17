@@ -14,6 +14,11 @@ module.exports = (write) => {
 
         value: (ast) => {
             switch (ast.type) {
+                case 'null': {
+                    pass.write('null');
+
+                    break;
+                }
                 case 'bool':
                 case 'int':
                 case 'i8':
