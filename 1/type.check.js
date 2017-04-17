@@ -10,7 +10,8 @@ module.exports = {
     },
 
     object: (type1, type2) => {
-        return type1.instance.id !== null && type1.instance.id === type2.instance.id;
+        return type1.instance.id !== null
+            && type1.instance.id === type2.instance.id;
     },
 
     closure: (type1, type2) => {

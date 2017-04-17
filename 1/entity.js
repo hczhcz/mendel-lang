@@ -1,5 +1,7 @@
 'use strict';
 
+const typecheck = require('./type.check');
+
 module.exports = {
     instance: (mainMode) => {
         const instance = {

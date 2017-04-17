@@ -23,7 +23,7 @@ module.exports = (main, writeHead, write) => {
             for (const i in func.instance.types) {
                 pass.writeHead(
                     '    ' + typename3.visit(func.instance.types[i])
-                    + ' ' + pass.convName(i) + ';\n'
+                        + ' ' + pass.convName(i) + ';\n'
                 );
             }
 
@@ -55,7 +55,9 @@ module.exports = (main, writeHead, write) => {
         },
 
         execute: (nextId) => {
-            boot.executeList.push('func_' + boot.main.instance.id + '_' + nextId);
+            boot.executeList.push(
+                'func_' + boot.main.instance.id + '_' + nextId
+            );
         },
 
         collect: () => {

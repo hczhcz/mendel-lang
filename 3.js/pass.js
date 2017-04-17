@@ -7,9 +7,9 @@ module.exports = (write) => {
         convName: (id) => {
             if (id.slice(0, 2) === '__') {
                 return '_' + id;
-            } else {
-                return id;
             }
+
+            return id;
         },
 
         value: (ast) => {
@@ -31,7 +31,7 @@ module.exports = (write) => {
                     break;
                 }
                 case 'string': {
-                    pass.write(JSON.stringify(ast.value));
+                    pass.write(JSON.stringify(ast.value)); // TODO
 
                     break;
                 }
