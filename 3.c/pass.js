@@ -16,7 +16,7 @@ module.exports = (writeHead, write) => {
         value: (ast) => {
             switch (ast.type) {
                 case 'null': {
-                    pass.write('(null_t) {}')
+                    pass.write('(null_t) {}');
 
                     break;
                 }

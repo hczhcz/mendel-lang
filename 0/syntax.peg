@@ -160,13 +160,13 @@ While = $('while' _k) _ '(' _ cond:Expr _ ')' _ body:Block {
         ast0.lookup('__while'),
         [
             ast0.code(
-                ast0.lookup("__self"), [], [],
-                '',
+                ast0.lookup("__self"),
+                [], [], '',
                 cond
             ),
             ast0.code(
-                ast0.lookup("__self"), [], [],
-                '',
+                ast0.lookup("__self"),
+                [], [], '',
                 body
             ),
         ]
